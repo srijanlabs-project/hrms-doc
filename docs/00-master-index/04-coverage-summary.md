@@ -2,7 +2,7 @@
 id: HRMS-DOC-004
 title: Enterprise HRMS Documentation Coverage Summary
 document: 04-coverage-summary.md
-version: 1.4
+version: 1.5
 status: Draft
 ---
 
@@ -21,7 +21,7 @@ As of the current expansion wave, the library contains:
 - `44` appendix documents including indexed master references and populated engineering reference tables
 - `1` dedicated SaaS operating-model section covering provider-side operations, customer-side admin hierarchy, tenant governance, and privacy controls
 - `10` dedicated industry solution pack documents plus `1` industry-pack master document covering sector-specific implementation variants
-- `104` pixel-ready annotated mockup assets covering all `30` Wave `0` priority screens, `2` shared global screens, `2` Wave `1` workforce-home screens, `10` Wave `2` operations screens, `5` Wave `3` recruiting screens, `1` Wave `4` service-workbench screen, and `2` Wave `5` analytics screens in desktop and mobile variants
+- `180` pixel-ready annotated mockup assets covering all `30` Wave `0` priority screens, all `3` shared global screens, `27` Wave `1` workforce, manager, HR-operations, and people-profile screens, `18` Wave `2` operations screens, `6` Wave `3` recruiting screens, `1` Wave `4` service-workbench screen, and `5` Wave `5` analytics screens in desktop and mobile variants
 
 Current deep-spec maturity indicators:
 
