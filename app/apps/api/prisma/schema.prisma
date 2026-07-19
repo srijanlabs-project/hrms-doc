@@ -1,0 +1,46 @@
+// Staffsy data model — Phase 1: tenancy foundation.
+// Column standard per docs/07-appendices/24 & 29: snake_case names, uuid PKs,
+// TIMESTAMPTZ, tenant_id on every tenant-scoped table, soft delete via deleted_at.
+// RLS policies live in the migration SQL (Prisma does not model them).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Platform-plane table (no RLS): the tenant registry itself.
+model Tenant {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique
+  name      String
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  legalEntities LegalEntity[]
+
+  @@map("tenants")
+}
+
+/// Tenant-plane table (RLS enforced): first entity of the Org service.
+model LegalEntity {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  code      String
+  name      String
+  country   String    @default("IN")
+  status    String    @default("active")
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("legal_entities")
+}
