@@ -22,6 +22,7 @@ Done:
 - T-001 My Staffsy page faithful to the board (placeholder data)
 - AI brand: Ridz across all touchpoints
 - **Phase 1 complete**: Postgres RLS tenancy (tenants + legal_entities), PrismaService.withTenant(), request-context middleware, canonical error envelope, first tenant-scoped API (org/legal-entity, controller/service/repository split), seed + rls-check scripts, ESLint max-lines enforcement. RLS isolation proven both at the DB layer (rls-check script) and over real HTTP (403 tenant-boundary, 422 validation, 201 create, 409 conflict, tenant-scoped 200s all verified against the running API)
+- **Phase 2 complete (proving slice)**: Department (org module) and Employee (people module) built against their sub-module specs, both RLS-protected. T-003 Enterprise Workbench (directory: filters, table, quick-preview drawer, add-employee form) and T-004 360° Workspace (profile: header, tabs, About, honestly-placeholder KPIs for modules that don't exist yet) built from the boards and wired to live data end to end — create, list, filter, duplicate-conflict, and cross-tenant isolation all verified via curl and in the browser. Two documented simplifications: the create form is single-step (T-005's full stepper deferred) and the pages run inside the existing employee-facing shell rather than a dedicated WS-03 HR Workspace shell (T-003's own Data Management nav deferred to when that template is built)
 
 # 3. Phase 1 — Data Platform Foundation ✅ Done
 
@@ -37,7 +38,7 @@ Goal: the unretrofittable parts.
 
 Done when: two tenants seeded; a query with tenant A's context provably cannot read tenant B's rows (automated test).
 
-# 4. Phase 2 — Org & People Core (the proving slice)
+# 4. Phase 2 — Org & People Core (the proving slice) ✅ Done
 
 Goal: employee system of record end to end.
 

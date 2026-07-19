@@ -55,7 +55,7 @@ const sections: NavSection[] = [
     items: [
       { label: "Documents", to: "/documents", icon: FolderOpen, disabled: true },
       { label: "Policies", to: "/policies", icon: ShieldCheck, disabled: true },
-      { label: "Directory", to: "/directory", icon: Users, disabled: true },
+      { label: "Employees", to: "/people/employees", icon: Users },
       { label: "Reports", to: "/reports", icon: BarChart3, disabled: true },
     ],
   },

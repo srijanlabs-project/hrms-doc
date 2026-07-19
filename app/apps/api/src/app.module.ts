@@ -1,6 +1,7 @@
 import { type MiddlewareConsumer, Module, type NestModule } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { OrgModule } from "./org/org.module";
+import { PeopleModule } from "./people/people.module";
 import { ContextModule } from "./platform/context/context.module";
 import { RequestContextMiddleware } from "./platform/context/request-context.middleware";
 import { AllExceptionsFilter } from "./platform/errors/all-exceptions.filter";
@@ -14,7 +15,7 @@ import { PrismaModule } from "./platform/prisma/prisma.module";
  * here as their build waves start.
  */
 @Module({
-  imports: [PrismaModule, ContextModule, PlatformModule, OrgModule],
+  imports: [PrismaModule, ContextModule, PlatformModule, OrgModule, PeopleModule],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
 export class AppModule implements NestModule {

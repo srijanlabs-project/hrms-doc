@@ -1,4 +1,4 @@
-// Staffsy data model — Phase 1: tenancy foundation.
+// Staffsy data model.
 // Column standard per docs/07-appendices/24 & 29: snake_case names, uuid PKs,
 // TIMESTAMPTZ, tenant_id on every tenant-scoped table, soft delete via deleted_at.
 // RLS policies live in the migration SQL (Prisma does not model them).
@@ -22,6 +22,8 @@ model Tenant {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   legalEntities LegalEntity[]
+  departments   Department[]
+  employees     Employee[]
 
   @@map("tenants")
 }
@@ -43,4 +45,73 @@ model LegalEntity {
   @@unique([tenantId, code])
   @@index([tenantId])
   @@map("legal_entities")
+}
+
+/// Org service, second sub-module. Spec: docs/08-submodule-specifications/01-organization-management/03-department.md
+/// Phase 2 slice: code, name, single-level-or-deeper parent hierarchy, and a
+/// simplified Active/Inactive status. The full spec's Draft/Restructuring/
+/// Retired states, ownership assignments, and merge/split workflows are
+/// deferred to a later organization-management pass.
+model Department {
+  id       String  @id @default(uuid()) @db.Uuid
+  tenantId String  @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  status   String  @default("Active")
+
+  parentDepartmentId String?     @map("parent_department_id") @db.Uuid
+  parentDepartment   Department? @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  childDepartments   Department[] @relation("DepartmentHierarchy")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id])
+  employees Employee[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("departments")
+}
+
+/// People Core service. Spec: docs/08-submodule-specifications/02-people-management/01-employee-master.md
+/// Phase 2 "proving slice": the master record, org assignment, and the
+/// documented lifecycle state enum. Deliberately deferred to later phases:
+/// effective-dated assignment history (employee_assignment), duplicate
+/// detection, rehire linkage, concurrent-employment policy, and sensitive
+/// field masking/reveal workflows — all called out explicitly in the spec's
+/// section 19 edge cases and section 3 detailed rules.
+model Employee {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  employeeCode String  @map("employee_code")
+
+  legalName     String    @map("legal_name")
+  preferredName String?   @map("preferred_name")
+  dateOfBirth   DateTime? @map("date_of_birth") @db.Date
+  personalEmail String?   @map("personal_email")
+  mobileNumber  String?   @map("mobile_number")
+
+  departmentId String?     @map("department_id") @db.Uuid
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  managerId String?    @map("manager_id") @db.Uuid
+  manager   Employee?  @relation("EmployeeManager", fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  reports   Employee[] @relation("EmployeeManager")
+
+  /// Spec section 15 state machine: Draft, Pre-Active, Active, Suspended, Separated, Archived.
+  status      String    @default("Draft")
+  joiningDate DateTime? @map("joining_date") @db.Date
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, employeeCode])
+  @@index([tenantId])
+  @@index([tenantId, departmentId])
+  @@map("employees")
 }
