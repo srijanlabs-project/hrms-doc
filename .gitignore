@@ -1,0 +1,23 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Archives and working exports (keep source folders, not zips)
+*.zip
+
+# Local tool state
+.codex/
+.DS_Store
+Thumbs.db

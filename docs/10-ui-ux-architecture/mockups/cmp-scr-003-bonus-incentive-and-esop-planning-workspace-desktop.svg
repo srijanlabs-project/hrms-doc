@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">Variable Pay</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)"/>
+  <text x="62" y="116" class="inverse">Enterprise HRMS</text>
+  <rect x='40' y='144' width='216' height='40' rx='12' fill='rgba(255,255,255,0.12)'/>
+<text x='60' y='168' class='inverse'>Pools</text>
+<rect x='40' y='196' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/>
+<text x='60' y='220' class='inverse'>Incentives</text>
+<rect x='40' y='248' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/>
+<text x='60' y='272' class='inverse'>ESOP</text>
+<rect x='40' y='300' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/>
+<text x='60' y='324' class='inverse'>Scenarios</text>
+<rect x='40' y='352' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/>
+<text x='60' y='376' class='inverse'>Approvals</text>
+<rect x='40' y='404' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/>
+<text x='60' y='428' class='inverse'>Publish</text>
+
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="360" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="338" y="61" class="small">Search pool, grant, incentive, employee, or scenario</text>
+  <rect x="1060" y="40" width="92" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1106" y="58" class="small" text-anchor="middle">Pool</text>
+  <rect x="1164" y="40" width="96" height="28" rx="14" fill="#FDEAD7"/>
+  <text x="1212" y="58" class="small" text-anchor="middle">Alerts 03</text>
+  <rect x="1272" y="40" width="116" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="1330" y="58" class="small" text-anchor="middle">Scenarios 04</text>
+
+  <text x="310" y="128" class="title">Bonus, Incentive, and ESOP Planning Workspace</text>
+  <rect x="296" y="152" width="132" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="362" y="170" class="small" text-anchor="middle">Bonus pools</text>
+  <circle cx="312" cy="166" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="312" y="171" class="inverse" text-anchor="middle">1</text>
+  <rect x="440" y="152" width="132" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="506" y="170" class="small" text-anchor="middle">ESOP grants</text>
+  <rect x="584" y="152" width="148" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="658" y="170" class="small" text-anchor="middle">Incentives</text>
+  <rect x="808" y="146" width="168" height="40" rx="14" fill="#2563EB"/>
+  <text x="892" y="172" class="inverse" text-anchor="middle">Open payout plan</text>
+  <circle cx="820" cy="146" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="820" y="151" class="inverse" text-anchor="middle">2</text>
+  <rect x="988" y="146" width="170" height="40" rx="14" fill="#0F766E"/>
+  <text x="1073" y="172" class="inverse" text-anchor="middle">Compare grant scenarios</text>
+
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="520" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="338" y="249" class="body">Filter bonus pools, incentive plans, grants, or scenario variance</text>
+  <rect x="856" y="226" width="86" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="899" y="244" class="small" text-anchor="middle">Pools</text>
+  <rect x="952" y="226" width="98" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1001" y="244" class="small" text-anchor="middle">Grants</text>
+  <rect x="1060" y="226" width="92" height="28" rx="14" fill="#10324A"/>
+  <text x="1106" y="244" class="inverse" text-anchor="middle">Scenario</text>
+  <circle cx="320" cy="216" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="221" class="inverse" text-anchor="middle">3</text>
+
+    <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="308" y="314" width="44" height="44" rx="12" fill="#15803D"/>
+  <text x="364" y="332" class="small">Pools</text>
+  <text x="364" y="362" class="metric">07</text>
+  <rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="530" y="314" width="44" height="44" rx="12" fill="#D97706"/>
+  <text x="586" y="332" class="small">Grants</text>
+  <text x="586" y="362" class="metric">24</text>
+  <rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="752" y="314" width="44" height="44" rx="12" fill="#B42318"/>
+  <text x="808" y="332" class="small">Exceptions</text>
+  <text x="808" y="362" class="metric">05</text>
+  <rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="974" y="314" width="44" height="44" rx="12" fill="#2563EB"/>
+  <text x="1030" y="332" class="small">Scenarios</text>
+  <text x="1030" y="362" class="metric">04</text>
+
+  <rect x="296" y="422" width="332" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Pool allocation and grant planning</text>
+  <text x="312" y="464" class="small">Variable pay planning should keep incentives, pools, and grants in one governed surface.</text>
+  <circle cx="314" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="443" class="inverse" text-anchor="middle">4</text>
+  <circle cx='314' cy='482' r='3' fill='#2563EB'/>
+<text x='326' y='486' class='body'>Bonus pools remain visible by team and funding source</text>
+<circle cx='314' cy='504' r='3' fill='#2563EB'/>
+<text x='326' y='508' class='body'>Grant status and vesting visibility stay close to the employee list</text>
+<circle cx='314' cy='526' r='3' fill='#2563EB'/>
+<text x='326' y='530' class='body'>Scenario variance is easy to compare</text>
+<circle cx='314' cy='548' r='3' fill='#2563EB'/>
+<text x='326' y='552' class='body'>Exceptions and caps stand out</text>
+
+  <rect x="648" y="422" width="510" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="664" y="446" class="h3">Scenario review and controlled release</text>
+  <text x="664" y="464" class="small">Leaders need flexibility without losing transparency.</text>
+  <circle cx="666" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="666" y="443" class="inverse" text-anchor="middle">5</text>
+  <circle cx='666' cy='482' r='3' fill='#2563EB'/>
+<text x='678' y='486' class='body'>Scenarios compare payout impact and grant mix</text>
+<circle cx='666' cy='504' r='3' fill='#2563EB'/>
+<text x='678' y='508' class='body'>Approval state remains visible before release</text>
+<circle cx='666' cy='526' r='3' fill='#2563EB'/>
+<text x='678' y='530' class='body'>Grant and incentive rationale stay attached</text>
+<circle cx='666' cy='548' r='3' fill='#2563EB'/>
+<text x='678' y='552' class='body'>Publish and rollback behavior are clearly separated</text>
+
+  <rect x="296" y="712" width="862" height="222" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="312" y="736" class="h3">Leadership-ready planning</text>
+  <text x="312" y="754" class="small">The workspace should support fast executive review.</text>
+  <circle cx="314" cy="728" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="733" class="inverse" text-anchor="middle">6</text>
+  <circle cx='314' cy='782' r='3' fill='#2563EB'/>
+<text x='326' y='786' class='body'>Summary views reduce meeting prep time</text>
+<circle cx='314' cy='804' r='3' fill='#2563EB'/>
+<text x='326' y='808' class='body'>Outliers remain explorable</text>
+<circle cx='314' cy='826' r='3' fill='#2563EB'/>
+<text x='326' y='830' class='body'>Final decisions preserve planning context</text>
+
+  <rect x="1178" y="152" width="238" height="782" rx="18" fill="#F8FBFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="1196" y="180" class="h2">Desktop annotations</text>
+    <circle cx="1202" cy="204" r="12" fill="#2563EB"/>
+  <text x="1202" y="208" class="inverse" text-anchor="middle">1</text>
+  <text x="1224" y="206" class="annoTitle">Pools with context</text>
+  <text x="1224" y="224" class="annoText">Bonus pools need business context, not only totals.</text>
+  <circle cx="1202" cy="258" r="12" fill="#2563EB"/>
+  <text x="1202" y="262" class="inverse" text-anchor="middle">2</text>
+  <text x="1224" y="260" class="annoTitle">Grant visibility</text>
+  <text x="1224" y="278" class="annoText">Grant planning should remain easy to inspect at employee level.</text>
+  <circle cx="1202" cy="312" r="12" fill="#2563EB"/>
+  <text x="1202" y="316" class="inverse" text-anchor="middle">3</text>
+  <text x="1224" y="314" class="annoTitle">Scenario discipline</text>
+  <text x="1224" y="332" class="annoText">Scenario comparison supports better leadership tradeoffs.</text>
+  <circle cx="1202" cy="366" r="12" fill="#2563EB"/>
+  <text x="1202" y="370" class="inverse" text-anchor="middle">4</text>
+  <text x="1224" y="368" class="annoTitle">Exception visibility</text>
+  <text x="1224" y="386" class="annoText">Exceptions should never hide inside aggregate views.</text>
+  <circle cx="1202" cy="420" r="12" fill="#2563EB"/>
+  <text x="1202" y="424" class="inverse" text-anchor="middle">5</text>
+  <text x="1224" y="422" class="annoTitle">Publish control</text>
+  <text x="1224" y="440" class="annoText">Release controls matter for payouts and grants.</text>
+  <circle cx="1202" cy="474" r="12" fill="#2563EB"/>
+  <text x="1202" y="478" class="inverse" text-anchor="middle">6</text>
+  <text x="1224" y="476" class="annoTitle">Decision retention</text>
+  <text x="1224" y="494" class="annoText">Decision history helps later audit and employee queries.</text>
+</svg>

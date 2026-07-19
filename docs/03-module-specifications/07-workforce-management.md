@@ -46,6 +46,7 @@ The Workforce Management module shall support the full lifecycle of master data,
 In-scope capability areas:
 
 - Biometric, GPS, face recognition, AI selfie, QR, AI attendance kiosk, and manual attendance inputs
+- Privacy-governed computer-vision zone attendance using registered CCTV or ceiling-camera feeds where tenant policy, legal basis, signage, and worker notice explicitly allow it
 - Shift management, rotation, rostering, flexible hours, timesheets, and overtime
 - Comp-off, attendance regularization, and exception handling
 - Scheduling and time summary preparation for payroll
@@ -97,6 +98,7 @@ Design details to refine during implementation:
 Representative APIs:
 
 - `POST /api/v1/wfm/attendance-events`
+- `POST /api/v1/wfm/vision-attendance-observations`
 - `POST /api/v1/wfm/rosters`
 - `POST /api/v1/wfm/regularizations`
 - `GET /api/v1/wfm/time-summaries`
@@ -120,6 +122,7 @@ Core entities:
 
 - `attendance_event`
 - `attendance_day_summary`
+- `vision_attendance_observation`
 - `shift`
 - `roster`
 - `timesheet`
@@ -144,6 +147,7 @@ Database design concerns:
 Published events:
 
 - `wfm.attendance.recorded`
+- `wfm.vision.attendance.flagged`
 - `wfm.roster.published`
 - `wfm.overtime.approved`
 - `attendance.period.finalized`
@@ -197,6 +201,7 @@ Security requirements:
 - Support approval and override controls for high-impact workforce management actions.
 - Restrict export, print, download, or API bulk-read paths for workforce management where the module contains sensitive or payroll-impacting information.
 - Support maker-checker, delegation, and segregation-of-duties enforcement where workforce management exposes privileged operations.
+- Require explicit tenant enablement, lawful-basis capture, site signage confirmation, retention limits, and privacy review before any CCTV-derived attendance capability is activated.
 
 # 10. Audit
 
@@ -217,6 +222,7 @@ AI opportunities:
 - Recommend likely regularization outcomes
 - Forecast staffing gaps from roster patterns
 - Validate selfie or kiosk-based attendance confidence and flag suspicious punch patterns for review
+- Detect buddy-punching, cross-device mismatch, ghost attendance, and zone-presence anomalies from approved computer-vision feeds, while always routing final action to a human reviewer
 
 AI guardrails:
 
@@ -234,6 +240,7 @@ Representative test cases:
 - Verify reporting outputs and audit traceability
 - Verify positive, negative, boundary, and recovery paths for the most critical workforce management workflows.
 - Verify that workforce management behaves correctly across role scopes, company scopes, and tenant configuration variations.
+- Verify CCTV-derived attendance remains disabled by default, requires explicit enablement, respects camera-zone policy boundaries, and fails closed when confidence is low or privacy policy is missing.
 
 # 13. Workflows
 

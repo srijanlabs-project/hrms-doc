@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="390" height="844" fill="#F4F7FB"/>
+  <rect width="390" height="92" fill="#10324A"/>
+  <text x="20" y="36" class="inverse">Enterprise HRMS</text>
+  <rect x="280" y="18" width="90" height="28" rx="14" fill="rgba(255,255,255,0.12)"/>
+  <text x="325" y="36" class="inverse" text-anchor="middle">Privacy</text>
+  <text x="20" y="76" class="h2inv">Exports and DSR</text>
+
+  <rect x="16" y="108" width="358" height="96" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="30" y="136" class="small">Brightline Education</text>
+  <text x="30" y="170" class="metric">14</text>
+  <text x="82" y="170" class="body">pending</text>
+  <rect x="248" y="122" width="110" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="303" y="140" class="small" text-anchor="middle">Warn 03</text>
+  <rect x="248" y="156" width="110" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="303" y="174" class="small" text-anchor="middle">DPO on</text>
+  <circle cx="28" cy="122" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="28" y="127" class="inverse" text-anchor="middle">1</text>
+
+  <rect x="16" y="220" width="358" height="150" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="244" class="h3">Approval queue</text>
+  <text x="32" y="262" class="small">Mobile keeps the request pipeline visible before the officer opens one item</text>
+  <circle cx="34" cy="280" r="3" fill="#2563EB"/>
+  <text x="46" y="284" class="body">EXP-2026-019 employee export for litigation support due 18 Jul 2026</text>
+  <circle cx="34" cy="300" r="3" fill="#2563EB"/>
+  <text x="46" y="304" class="body">DSR-2026-044 ex-employee right-to-access across payroll and attendance</text>
+  <circle cx="34" cy="320" r="3" fill="#2563EB"/>
+  <text x="46" y="324" class="body">DEL-2026-011 deletion blocked by statutory retention and legal hold review</text>
+  <circle cx="30" cy="236" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="241" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="16" y="386" width="358" height="180" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="410" class="h3">Request detail and masking preview</text>
+  <text x="32" y="428" class="small">The officer sees request basis and field-level preview before any export job is approved</text>
+  <circle cx="34" cy="438" r="3" fill="#2563EB"/>
+  <text x="46" y="442" class="body">Subject: Priya Mehta, scope includes employee, payroll, leave, and documents</text>
+  <circle cx="34" cy="458" r="3" fill="#2563EB"/>
+  <text x="46" y="462" class="body">Legal basis: data-subject access, tied to audit event EXP-2026-019</text>
+  <circle cx="34" cy="478" r="3" fill="#2563EB"/>
+  <text x="46" y="482" class="body">PAN appears as ABCDE1234F, bank as ••••8192, mobile as +91•••••3048</text>
+  <circle cx="34" cy="498" r="3" fill="#2563EB"/>
+  <text x="46" y="502" class="body">Address lines and medical notes stay redacted where policy requires</text>
+  <circle cx="30" cy="402" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="407" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="16" y="582" width="358" height="140" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="606" class="h3">Retention and decision state</text>
+  <text x="32" y="624" class="small">Warnings sit next to decisioning so legal constraints are visible at action time</text>
+  <circle cx="34" cy="634" r="3" fill="#2563EB"/>
+  <text x="46" y="638" class="body">Deletion is blocked by seven-year payroll retention and may require legal-hold escalation</text>
+  <circle cx="34" cy="654" r="3" fill="#2563EB"/>
+  <text x="46" y="658" class="body">Export link expires after 72 hours and needs MFA before share or download</text>
+  <circle cx="34" cy="674" r="3" fill="#2563EB"/>
+  <text x="46" y="678" class="body">State options: draft review, approved, escalated hold, or rejected with reason</text>
+  <circle cx="30" cy="598" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="30" y="603" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="16" y="738" width="358" height="88" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="34" y="766" class="h2">Mobile notes</text>
+  <circle cx="40" cy="790" r="12" fill="#2563EB"/>
+  <text x="40" y="794" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="792" class="annoTitle">Decision-safe mobile flow</text>
+  <text x="62" y="810" class="annoText">Mobile preserves queue triage, masking preview, retention warnings, and privacy-officer state before action buttons.</text>
+</svg>

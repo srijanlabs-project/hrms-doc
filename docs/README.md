@@ -16,6 +16,7 @@ Primary sections:
 - `09-product-backlog` - delivery backlog, epic register, and feature-group breakdown
 - `10-ui-ux-architecture` - information architecture, screen inventory, design system, and UX quality model
 - `11-saas-operating-model` - SaaS-first operating model, tenant boundaries, packaging, and data trust architecture
+- `design system` - Staffsy application design system, foundations, components, templates, accessibility rules, and tokens
 
 Current expansion status:
 
@@ -76,3 +77,4 @@ Current cornerstone documents:
 - `09-product-backlog/README.md`
 - `10-ui-ux-architecture/README.md`
 - `11-saas-operating-model/README.md`
+- `design system/README.md`

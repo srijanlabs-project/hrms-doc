@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">Organization Setup</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)"/>
+  <text x="62" y="116" class="inverse">Enterprise HRMS</text>
+  <rect x="40" y="144" width="216" height="40" rx="12" fill="rgba(255,255,255,0.12)"/>
+  <text x="60" y="168" class="inverse">Calendar and Policy</text>
+  <rect x="40" y="196" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="220" class="inverse">Holiday and Fiscal</text>
+  <rect x="40" y="248" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="272" class="inverse">Brand and Classification</text>
+  <rect x="40" y="300" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="324" class="inverse">Governance</text>
+  <rect x="40" y="352" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="376" class="inverse">Acknowledgments</text>
+  <rect x="40" y="404" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="428" class="inverse">Audit</text>
+
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="360" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="61" class="small">Search calendar, policy, fiscal year, code, or approval</text>
+  <rect x="1060" y="40" width="110" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1115" y="58" class="small" text-anchor="middle">Org Admin</text>
+  <rect x="1184" y="40" width="106" height="28" rx="14" fill="#FDEAD7"/>
+  <text x="1237" y="58" class="small" text-anchor="middle">Alerts 06</text>
+  <rect x="1304" y="40" width="96" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="1352" y="58" class="small" text-anchor="middle">Tasks 11</text>
+
+  <text x="310" y="128" class="title">Calendar, Policy, and Classification Console</text>
+  <rect x="296" y="152" width="150" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="371" y="170" class="small" text-anchor="middle">Apex Manufacturing India</text>
+  <rect x="458" y="152" width="110" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="513" y="170" class="small" text-anchor="middle">Go-live 04 Aug</text>
+  <rect x="580" y="152" width="124" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="642" y="170" class="small" text-anchor="middle">Publish locks 02</text>
+  <rect x="812" y="146" width="172" height="40" rx="14" fill="#2563EB"/>
+  <text x="898" y="172" class="inverse" text-anchor="middle">Review governance gaps</text>
+  <circle cx="824" cy="146" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="824" y="151" class="inverse" text-anchor="middle">1</text>
+  <rect x="996" y="146" width="162" height="40" rx="14" fill="#0F766E"/>
+  <text x="1077" y="172" class="inverse" text-anchor="middle">Publish setup pack</text>
+
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="520" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="249" class="body">Search work week, holiday group, policy family, brand asset, or class code</text>
+  <rect x="856" y="226" width="90" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="901" y="244" class="small" text-anchor="middle">India FY27</text>
+  <rect x="956" y="226" width="92" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1002" y="244" class="small" text-anchor="middle">HQ cluster</text>
+  <rect x="1058" y="226" width="92" height="28" rx="14" fill="#10324A"/>
+  <text x="1104" y="244" class="inverse" text-anchor="middle">In use only</text>
+  <circle cx="320" cy="216" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="221" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="308" y="314" width="44" height="44" rx="12" fill="#15803D"/>
+  <text x="364" y="332" class="small">Work calendars</text>
+  <text x="364" y="362" class="metric">03</text>
+  <circle cx="320" cy="316" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="321" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="530" y="314" width="44" height="44" rx="12" fill="#D97706"/>
+  <text x="586" y="332" class="small">Holiday conflicts</text>
+  <text x="586" y="362" class="metric">02</text>
+
+  <rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="752" y="314" width="44" height="44" rx="12" fill="#2563EB"/>
+  <text x="808" y="332" class="small">Ack completion</text>
+  <text x="808" y="362" class="metric">94%</text>
+
+  <rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="974" y="314" width="44" height="44" rx="12" fill="#7C3AED"/>
+  <text x="1030" y="332" class="small">Class gaps</text>
+  <text x="1030" y="362" class="metric">06</text>
+
+  <rect x="1184" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="1196" y="314" width="44" height="44" rx="12" fill="#B42318"/>
+  <text x="1252" y="332" class="small">Governance holds</text>
+  <text x="1252" y="362" class="metric">03</text>
+
+  <rect x="296" y="422" width="332" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Calendar and period setup</text>
+  <text x="312" y="464" class="small">Implementation lead view keeps calendar anchors, holidays, and fiscal boundaries together</text>
+  <circle cx="314" cy="480" r="3" fill="#2563EB"/>
+  <text x="326" y="484" class="body">Mon-Sat plant calendar with 2nd and 4th Saturday off for factory staff</text>
+  <circle cx="314" cy="500" r="3" fill="#2563EB"/>
+  <text x="326" y="504" class="body">India payroll cutoff closes on 26 Jul 2026 with attendance lock at 20:00 IST</text>
+  <circle cx="314" cy="520" r="3" fill="#2563EB"/>
+  <text x="326" y="524" class="body">Maharashtra holiday group conflicts with one shared-services fiscal close day</text>
+  <circle cx="314" cy="540" r="3" fill="#2563EB"/>
+  <text x="326" y="544" class="body">FY27 opens on 01 Apr 2026 and quarter labels drive leave and payroll reporting</text>
+  <circle cx="314" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="443" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="648" y="422" width="510" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="446" class="h3">Policy and classification matrix</text>
+  <text x="664" y="464" class="small">Policies, grade families, and employee-facing tags share one governed setup frame</text>
+  <rect x="666" y="470" width="110" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="721" y="488" class="small" text-anchor="middle">Blue Collar</text>
+  <rect x="788" y="470" width="118" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="847" y="488" class="small" text-anchor="middle">Corporate Staff</text>
+  <rect x="918" y="470" width="90" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="963" y="488" class="small" text-anchor="middle">Union 2026</text>
+  <rect x="1020" y="470" width="120" height="28" rx="14" fill="#EDE9FE"/>
+  <text x="1080" y="488" class="small" text-anchor="middle">Grade A1 to M4</text>
+  <circle cx="666" cy="514" r="3" fill="#2563EB"/>
+  <text x="678" y="518" class="body">Leave, notice, probation, and shift policies inherit by legal entity plus worker class</text>
+  <circle cx="666" cy="534" r="3" fill="#2563EB"/>
+  <text x="678" y="538" class="body">Brand pack maps logo, help email, and letterhead set by company and language</text>
+  <circle cx="666" cy="554" r="3" fill="#2563EB"/>
+  <text x="678" y="558" class="body">Classification codes feed analytics, roster rules, and policy acknowledgment campaigns</text>
+  <circle cx="666" cy="574" r="3" fill="#2563EB"/>
+  <text x="678" y="578" class="body">Six active employees remain attached to retired cost-center labels pending remap</text>
+  <circle cx="666" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="666" y="443" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="296" y="712" width="332" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="736" class="h3">Branding and employee-facing cues</text>
+  <text x="312" y="754" class="small">Structural placeholder for assets, label language, and downstream usage</text>
+  <circle cx="314" cy="770" r="3" fill="#2563EB"/>
+  <text x="326" y="774" class="body">Offer, ID, and policy PDF templates all inherit the India HQ brand pack</text>
+  <circle cx="314" cy="790" r="3" fill="#2563EB"/>
+  <text x="326" y="794" class="body">Employee self-service labels require English and Marathi copy completeness</text>
+  <circle cx="314" cy="810" r="3" fill="#2563EB"/>
+  <text x="326" y="814" class="body">Help-desk escalation footer varies by subsidiary and contract workforce type</text>
+  <circle cx="314" cy="830" r="3" fill="#2563EB"/>
+  <text x="326" y="834" class="body">Classification badges appear in roster, profile, and approval summaries</text>
+
+  <rect x="648" y="712" width="510" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="736" class="h3">In-use governance and release controls</text>
+  <text x="664" y="754" class="small">Org admin can inspect blast radius before publishing any setup object already in use</text>
+  <circle cx="666" cy="770" r="3" fill="#2563EB"/>
+  <text x="678" y="774" class="body">Policy change affects 1,284 active workers across plant, sales, and shared services</text>
+  <circle cx="666" cy="790" r="3" fill="#2563EB"/>
+  <text x="678" y="794" class="body">Maker-checker stays mandatory for fiscal calendar edits after first payroll close</text>
+  <circle cx="666" cy="810" r="3" fill="#2563EB"/>
+  <text x="678" y="814" class="body">Holiday deletion is blocked where attendance, leave, or payroll has posted downstream records</text>
+  <circle cx="666" cy="830" r="3" fill="#2563EB"/>
+  <text x="678" y="834" class="body">Acknowledge-and-publish flow shows impacted templates, letters, and self-service messages</text>
+  <circle cx="666" cy="728" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="666" y="733" class="inverse" text-anchor="middle">6</text>
+
+  <rect x="296" y="952" width="862" height="98" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="976" class="h3">Pinned org setup lenses</text>
+  <text x="312" y="994" class="small">Frequently revisited setup slices remain one click away for rollout and steady-state governance</text>
+  <rect x="320" y="990" width="92" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="366" y="1008" class="small" text-anchor="middle">FY27 India</text>
+  <rect x="424" y="990" width="104" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="476" y="1008" class="small" text-anchor="middle">Holiday gaps</text>
+  <rect x="540" y="990" width="124" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="602" y="1008" class="small" text-anchor="middle">Policy acks due</text>
+  <rect x="676" y="990" width="122" height="28" rx="14" fill="#EDE9FE"/>
+  <text x="737" y="1008" class="small" text-anchor="middle">Class remap</text>
+  <rect x="810" y="990" width="118" height="28" rx="14" fill="#F8FAFC"/>
+  <text x="869" y="1008" class="small" text-anchor="middle">Publish locks</text>
+  <circle cx="320" cy="966" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="971" class="inverse" text-anchor="middle">7</text>
+
+  <rect x="1178" y="152" width="238" height="898" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="1196" y="180" class="h2">Desktop annotations</text>
+  <circle cx="1202" cy="204" r="12" fill="#2563EB"/>
+  <text x="1202" y="208" class="inverse" text-anchor="middle">1</text>
+  <text x="1224" y="206" class="annoTitle">Governed org action bar</text>
+  <text x="1224" y="224" class="annoText">Primary actions stay focused on review and publish, not raw object creation.</text>
+  <circle cx="1202" cy="256" r="12" fill="#2563EB"/>
+  <text x="1202" y="260" class="inverse" text-anchor="middle">2</text>
+  <text x="1224" y="258" class="annoTitle">Search by setup artifact</text>
+  <text x="1224" y="276" class="annoText">Calendar, policy, brand, and class-code lookup share one structural finder.</text>
+  <circle cx="1202" cy="308" r="12" fill="#2563EB"/>
+  <text x="1202" y="312" class="inverse" text-anchor="middle">3</text>
+  <text x="1224" y="310" class="annoTitle">KPI row before detail</text>
+  <text x="1224" y="328" class="annoText">Calendar readiness, acknowledgments, and governance debt appear before configuration detail.</text>
+  <circle cx="1202" cy="360" r="12" fill="#2563EB"/>
+  <text x="1202" y="364" class="inverse" text-anchor="middle">4</text>
+  <text x="1224" y="362" class="annoTitle">Implementation-first setup</text>
+  <text x="1224" y="380" class="annoText">Work calendar, holiday, and fiscal framing are combined for rollout accuracy.</text>
+  <circle cx="1202" cy="412" r="12" fill="#2563EB"/>
+  <text x="1202" y="416" class="inverse" text-anchor="middle">5</text>
+  <text x="1224" y="414" class="annoTitle">Policy plus class linkage</text>
+  <text x="1224" y="432" class="annoText">Policies are shown as dependent on worker classification and brand context.</text>
+  <circle cx="1202" cy="464" r="12" fill="#2563EB"/>
+  <text x="1202" y="468" class="inverse" text-anchor="middle">6</text>
+  <text x="1224" y="466" class="annoTitle">In-use safety rails</text>
+  <text x="1224" y="484" class="annoText">Once records are live, edits expose blast radius, blockers, and approval obligations.</text>
+  <circle cx="1202" cy="516" r="12" fill="#2563EB"/>
+  <text x="1202" y="520" class="inverse" text-anchor="middle">7</text>
+  <text x="1224" y="518" class="annoTitle">Daily operating lenses</text>
+  <text x="1224" y="536" class="annoText">Pinned chips reflect the way org admins revisit recurring setup slices.</text>
+</svg>

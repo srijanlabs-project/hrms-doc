@@ -238,6 +238,18 @@ Separate mockups required when:
 ## 5.1 Cross-Cutting Condition Codes
 
 | Code | Meaning | Separate Mockup Required When |
+
+## 5.2 Innovation And AI Condition Codes
+
+| Code | Meaning | Separate Mockup Required When |
+|---|---|---|
+| `COND-AI-BRIEFING` | AI-generated morning brief, prioritization strip, or guided task summary is visible | the dashboard or workspace adds a new briefing rail, reordered card stack, or AI-prioritized action block |
+| `COND-ANOMALY-EXPLAINED` | the system shows anomaly explanation, confidence, and likely root cause | explanation content materially changes the normal validation or review layout |
+| `COND-ROUTE-PENDING` | AI or rule-driven routing recommendation is waiting for human confirmation | route preview, approver chain, or decision controls appear that are not present in the default state |
+| `COND-CELEBRATION-DUE` | milestone, birthday, anniversary, or join-date celebration becomes active | celebration cards, greeting assets, or approval actions displace the default content blocks |
+| `COND-QUOTE-PERSONALIZED` | dashboard or feed content is personalized for role, audience, location, or recent context | the personalized quote, nudge, or recommendation area changes message hierarchy or content placement |
+| `COND-FESTIVAL-CAMPAIGN` | a festival, national occasion, or enterprise campaign theme becomes active | themed visuals, targeted message packs, or celebration modules materially alter the default composition |
+| `COND-CONVERSATIONAL-RESULT` | AI reporting returns a narrative answer, chart-ready summary, or drill-down result | the reporting surface switches from prompt-entry mode to a structured result, citation, or follow-up state |
 |---|---|---|
 | `COND-APPROVAL-PENDING` | item cannot be edited until approval completes | approval ribbon or action bar changes materially |
 | `COND-COMPARE` | user is comparing two versions or scopes | diff layout introduces new columns, panels, or highlights |

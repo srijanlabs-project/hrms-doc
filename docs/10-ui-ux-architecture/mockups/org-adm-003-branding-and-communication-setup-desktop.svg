@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">Org Administration</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)"/>
+  <text x="62" y="116" class="inverse">Enterprise HRMS</text>
+  <rect x="40" y="144" width="216" height="40" rx="12" fill="rgba(255,255,255,0.12)"/>
+  <text x="60" y="168" class="inverse">Brand and Comms</text>
+  <rect x="40" y="196" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="220" class="inverse">Logo and Theme</text>
+  <rect x="40" y="248" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="272" class="inverse">Email Sender</text>
+  <rect x="40" y="300" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="324" class="inverse">Document Identity</text>
+  <rect x="40" y="352" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="376" class="inverse">Publish Review</text>
+  <rect x="40" y="404" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="428" class="inverse">Audit Trail</text>
+
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="392" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="61" class="small">Search brand pack, sender profile, signature block, template identity, or publish review note</text>
+  <rect x="1056" y="40" width="106" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1109" y="58" class="small" text-anchor="middle">Tenant brand</text>
+  <rect x="1176" y="40" width="122" height="28" rx="14" fill="#FDEAD7"/>
+  <text x="1237" y="58" class="small" text-anchor="middle">Review state 04</text>
+  <rect x="1312" y="40" width="88" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="1356" y="58" class="small" text-anchor="middle">Draft 06</text>
+
+  <text x="310" y="128" class="title">Branding and Communication Setup</text>
+  <rect x="296" y="152" width="124" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="358" y="170" class="small" text-anchor="middle">Brand pack</text>
+  <circle cx="312" cy="166" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="312" y="171" class="inverse" text-anchor="middle">1</text>
+  <rect x="432" y="152" width="148" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="506" y="170" class="small" text-anchor="middle">Senders verified 03</text>
+  <rect x="592" y="152" width="152" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="668" y="170" class="small" text-anchor="middle">Review blocks 02</text>
+  <rect x="808" y="146" width="162" height="40" rx="14" fill="#2563EB"/>
+  <text x="889" y="172" class="inverse" text-anchor="middle">Preview identity pack</text>
+  <rect x="984" y="146" width="170" height="40" rx="14" fill="#0F766E"/>
+  <text x="1069" y="172" class="inverse" text-anchor="middle">Publish to tenant</text>
+
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="530" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="249" class="body">Search assets, sender domains, document shells, locale variants, or review checkpoints</text>
+  <rect x="866" y="226" width="80" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="906" y="244" class="small" text-anchor="middle">Brand</text>
+  <rect x="956" y="226" width="80" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="996" y="244" class="small" text-anchor="middle">Email</text>
+  <rect x="1046" y="226" width="102" height="28" rx="14" fill="#10324A"/>
+  <text x="1097" y="244" class="inverse" text-anchor="middle">Document ID</text>
+  <circle cx="320" cy="216" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="221" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="308" y="314" width="44" height="44" rx="12" fill="#15803D"/>
+  <text x="364" y="332" class="small">Brand assets</text>
+  <text x="364" y="362" class="metric">12</text>
+  <circle cx="320" cy="316" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="321" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="530" y="314" width="44" height="44" rx="12" fill="#2563EB"/>
+  <text x="586" y="332" class="small">Verified senders</text>
+  <text x="586" y="362" class="metric">03</text>
+
+  <rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="752" y="314" width="44" height="44" rx="12" fill="#D97706"/>
+  <text x="808" y="332" class="small">Draft variants</text>
+  <text x="808" y="362" class="metric">06</text>
+
+  <rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="974" y="314" width="44" height="44" rx="12" fill="#7C3AED"/>
+  <text x="1030" y="332" class="small">Doc identities</text>
+  <text x="1030" y="362" class="metric">09</text>
+
+  <rect x="1184" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="1196" y="314" width="44" height="44" rx="12" fill="#B42318"/>
+  <text x="1252" y="332" class="small">Publish blocks</text>
+  <text x="1252" y="362" class="metric">02</text>
+
+  <rect x="296" y="422" width="332" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Logo, palette, and tenant brand posture</text>
+  <text x="312" y="464" class="small">Brand setup reads like a governed identity pack, not a marketing-only theme editor.</text>
+  <rect x="312" y="478" width="292" height="118" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <rect x="330" y="496" width="56" height="56" rx="16" fill="#10324A"/>
+  <rect x="398" y="500" width="66" height="18" rx="9" fill="#14B8A6"/>
+  <rect x="398" y="528" width="52" height="18" rx="9" fill="#F59E0B"/>
+  <text x="328" y="574" class="body">ApexOne People logo, teal primary, amber accent, and neutral print-safe palette are staged together.</text>
+  <text x="328" y="592" class="small">Asset rules: SVG preferred / dark-header safe / monochrome seal required for official letters</text>
+  <circle cx="314" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="443" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="648" y="422" width="510" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="446" class="h3">Sender setup and document identity preview</text>
+  <text x="664" y="464" class="small">Email origin, signatures, and document shells are reviewed together because users experience them as one brand.</text>
+  <rect x="666" y="474" width="474" height="90" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <text x="684" y="496" class="small">Preview pack</text>
+  <text x="684" y="522" class="body">Sender people@apexone.com is DKIM verified and maps to onboarding, leave, payroll, and case notifications with local footer disclaimers.</text>
+  <text x="684" y="544" class="small">Document shell: Offer letter, appointment letter, payslip cover, and HR case notice share the same seal and signature block.</text>
+  <rect x="666" y="580" width="154" height="40" rx="14" fill="#2563EB"/>
+  <text x="743" y="606" class="inverse" text-anchor="middle">Preview documents</text>
+  <rect x="834" y="580" width="148" height="40" rx="14" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="908" y="606" class="body" text-anchor="middle">Test sender</text>
+  <rect x="996" y="580" width="118" height="40" rx="14" fill="#FEE2E2"/>
+  <text x="1055" y="606" class="body" text-anchor="middle">Needs review</text>
+  <circle cx="666" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="666" y="443" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="296" y="712" width="332" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="736" class="h3">Publish and review states</text>
+  <text x="312" y="754" class="small">Brand packs move through review so every visible artifact does not change unexpectedly on employees.</text>
+  <circle cx="314" cy="770" r="3" fill="#2563EB"/>
+  <text x="326" y="774" class="body">Draft identity packs keep proposed logo, palette, and footer variants without affecting live employee touchpoints.</text>
+  <circle cx="314" cy="790" r="3" fill="#2563EB"/>
+  <text x="326" y="794" class="body">Email and document templates can be previewed by locale and communication event before publication.</text>
+  <circle cx="314" cy="810" r="3" fill="#2563EB"/>
+  <text x="326" y="814" class="body">Missing sender verification or signature approval blocks publication automatically.</text>
+  <circle cx="314" cy="830" r="3" fill="#2563EB"/>
+  <text x="326" y="834" class="body">Audit retains who changed identity assets, which events were affected, and when the brand pack went live.</text>
+
+  <rect x="648" y="712" width="510" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="736" class="h3">Tenant-safe boundaries and communications governance</text>
+  <text x="664" y="754" class="small">Local branding freedom remains visible, but regulated assets and provider-owned shells stay bounded.</text>
+  <circle cx="666" cy="770" r="3" fill="#2563EB"/>
+  <text x="678" y="774" class="body">Org admins may update logos, footers, and sender mappings, but provider-owned legal disclaimer shells remain read-only.</text>
+  <circle cx="666" cy="790" r="3" fill="#2563EB"/>
+  <text x="678" y="794" class="body">Brand packs can be scoped by tenant, locale, and document family while still sharing a common identity registry.</text>
+  <circle cx="666" cy="810" r="3" fill="#2563EB"/>
+  <text x="678" y="814" class="body">Test sends route to approval inboxes and never to employees until publish state becomes active.</text>
+  <circle cx="666" cy="830" r="3" fill="#2563EB"/>
+  <text x="678" y="834" class="body">Document identity previews help HR, legal, and design review the same artifact before enabling live use.</text>
+  <circle cx="666" cy="728" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="666" y="733" class="inverse" text-anchor="middle">6</text>
+
+  <rect x="296" y="952" width="862" height="98" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="976" class="h3">Pinned identity lenses</text>
+  <text x="312" y="994" class="small">Teams can revisit the communication surfaces that matter most without leaving the brand workspace.</text>
+  <rect x="320" y="990" width="92" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="366" y="1008" class="small" text-anchor="middle">Logo pack</text>
+  <rect x="424" y="990" width="108" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="478" y="1008" class="small" text-anchor="middle">Email sender</text>
+  <rect x="544" y="990" width="118" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="603" y="1008" class="small" text-anchor="middle">Doc preview</text>
+  <rect x="674" y="990" width="110" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="729" y="1008" class="small" text-anchor="middle">Review hold</text>
+  <rect x="796" y="990" width="126" height="28" rx="14" fill="#EDE9FE"/>
+  <text x="859" y="1008" class="small" text-anchor="middle">Locale variants</text>
+  <circle cx="320" cy="966" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="971" class="inverse" text-anchor="middle">7</text>
+
+  <rect x="1178" y="152" width="238" height="898" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="1196" y="180" class="h2">Desktop annotations</text>
+  <circle cx="1202" cy="204" r="12" fill="#2563EB"/>
+  <text x="1202" y="208" class="inverse" text-anchor="middle">1</text>
+  <text x="1224" y="206" class="annoTitle">Branding is operational</text>
+  <text x="1224" y="224" class="annoText">The page frames branding as a governed identity pack tied to employee communications, not visual polish alone.</text>
+  <circle cx="1202" cy="256" r="12" fill="#2563EB"/>
+  <text x="1202" y="260" class="inverse" text-anchor="middle">2</text>
+  <text x="1224" y="258" class="annoTitle">One search across channels</text>
+  <text x="1224" y="276" class="annoText">Assets, sender profiles, document shells, and locale variants share one finder and one governance frame.</text>
+  <circle cx="1202" cy="308" r="12" fill="#2563EB"/>
+  <text x="1202" y="312" class="inverse" text-anchor="middle">3</text>
+  <text x="1224" y="310" class="annoTitle">Signal strip shows readiness</text>
+  <text x="1224" y="328" class="annoText">Brand assets, sender verification, draft variants, and publish blocks summarize identity readiness at a glance.</text>
+  <circle cx="1202" cy="360" r="12" fill="#2563EB"/>
+  <text x="1202" y="364" class="inverse" text-anchor="middle">4</text>
+  <text x="1224" y="362" class="annoTitle">Logo pack is structural</text>
+  <text x="1224" y="380" class="annoText">The mockup defines asset rules, print posture, and dark-header safety instead of pixel-perfect art direction.</text>
+  <circle cx="1202" cy="412" r="12" fill="#2563EB"/>
+  <text x="1202" y="416" class="inverse" text-anchor="middle">5</text>
+  <text x="1224" y="414" class="annoTitle">Email and documents connect</text>
+  <text x="1224" y="432" class="annoText">Sender setup, signatures, and document identity live together because employees experience them as one system voice.</text>
+  <circle cx="1202" cy="464" r="12" fill="#2563EB"/>
+  <text x="1202" y="468" class="inverse" text-anchor="middle">6</text>
+  <text x="1224" y="466" class="annoTitle">Review gates are explicit</text>
+  <text x="1224" y="484" class="annoText">Verification, legal approval, test sends, and publish state are surfaced as first-class brand workflow steps.</text>
+  <circle cx="1202" cy="516" r="12" fill="#2563EB"/>
+  <text x="1202" y="520" class="inverse" text-anchor="middle">7</text>
+  <text x="1224" y="518" class="annoTitle">Local freedom, safe boundaries</text>
+  <text x="1224" y="536" class="annoText">Tenant admins can shape their identity pack while provider-owned legal or compliance shells remain protected.</text>
+</svg>

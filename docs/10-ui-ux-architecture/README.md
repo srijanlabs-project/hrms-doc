@@ -31,6 +31,11 @@ Documents:
 - `17-module-submodule-to-screen-coverage-matrix.md`
 - `18-screen-coverage-gap-checklist.md`
 - `19-screen-surface-decomposition-standard.md`
+- `20-screen-template-architecture-and-conversion-model.md`
+- `21-screen-template-assignment-matrix.md`
+- `22-mockup-production-batches.md`
+- `23-screen-ui-template-conversion-batches.md`
+- `24-dual-track-mockup-and-screen-ui-production-plan.md`
 
 Important boundary note:
 
@@ -60,5 +65,8 @@ Scope note:
 
 - This section is derived from the completed module specifications, deep sub-module specifications, stakeholder journeys, and product backlog
 - It is intentionally architecture- and delivery-oriented, not a substitute for pixel-perfect visual design files
+- The dedicated visual and component standard now lives in `docs/design system`
 - Screen-level wireframes and mockups now exist for the first Wave `0` priority admin screens and can be extended from the same structural baseline
 - Later operational families still need additional mockup waves beyond the current Wave `0` pack
+- The next design phase should use the template conversion model in `20-screen-template-architecture-and-conversion-model.md` so the mockup library can scale into final UI design boards consistently
+- Mockup production and final screen UI conversion should now run as parallel tracks coordinated through `24-dual-track-mockup-and-screen-ui-production-plan.md`

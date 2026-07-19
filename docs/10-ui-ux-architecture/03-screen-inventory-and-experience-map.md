@@ -50,6 +50,7 @@ Shared global screens:
 ## Manager
 
 - Team dashboard
+- Manager daily briefing workspace
 - Team people list
 - Manager approvals
 - Performance review workspace
@@ -79,9 +80,16 @@ Shared global screens:
 - Payroll control center
 - Payroll run details
 - Validation queue
+- Payroll anomaly copilot workspace
 - Statutory workbench
 - Compliance calendar
 - Retro and settlement workspace
+
+## AI and Experience Innovation
+
+- Conversational reporting workspace
+- Celebration campaign studio
+- Ridz quote and recognition personalization engine
 
 ## Admin and Platform
 
@@ -140,8 +148,21 @@ Shared global screens:
 - Payroll setup screens
 - Payroll run dashboard
 - Validation workbench
+- Payroll anomaly copilot workspace
 - Retro and arrears case view
 - Full and final settlement screen
+
+## `E15` Employee Experience Innovation
+
+- Celebration campaign studio
+- Quote and recognition personalization engine
+- Birthday and milestone greeting generation flow
+
+## `E26` AI and Conversational Experience
+
+- Conversational reporting workspace
+- Manager daily briefing workspace
+- Payroll anomaly explanation and routing workspace
 
 ## `E28` Administration
 

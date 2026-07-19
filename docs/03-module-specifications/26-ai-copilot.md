@@ -51,6 +51,8 @@ In-scope capability areas:
 - Model result review and feedback capture
 - Permission-aware grounding and response controls
 - Agentic AI orchestration for governed multi-step HR workflows spanning HR, manager, employee, payroll, helpdesk, and integration actions
+- Multimodal AI generation for governed HR assets such as milestone greeting cards, celebration copy, dashboard nudges, and vision-review evidence summaries
+- Employee and manager conversational reporting over approved people, attendance, leave, performance, payroll, and engagement datasets with permission-aware drill-down
 
 Core functional expectations:
 
@@ -71,6 +73,7 @@ User experience should provide:
 
 - Copilot chat workspace
 - Command bar with typed action execution and confirmation
+- Conversational reporting workspace for employee-safe and manager-safe analytics questions
 - Insight review panel
 - Prediction dashboard
 - Prompt and policy admin console
@@ -79,6 +82,7 @@ Key screens:
 
 - Copilot chat workspace
 - Command bar with typed action execution and confirmation
+- Conversational reporting workspace for employee-safe and manager-safe analytics questions
 - Insight review panel
 - Prediction dashboard
 - Prompt and policy admin console
@@ -104,6 +108,9 @@ Representative APIs:
 - `POST /api/v1/ai/copilot/query`
 - `POST /api/v1/ai/copilot/commands/interpret`
 - `POST /api/v1/ai/copilot/commands/execute`
+- `POST /api/v1/ai/reporting/query`
+- `POST /api/v1/ai/celebrations/generate`
+- `POST /api/v1/ai/vision/attendance-review`
 - `POST /api/v1/ai/predictions/attrition`
 - `GET /api/v1/ai/skills-graph`
 - `POST /api/v1/ai/feedback`
@@ -128,7 +135,10 @@ Core entities:
 
 - `ai_prompt_policy`
 - `ai_interaction`
+- `ai_reporting_query`
 - `prediction_result`
+- `ai_generated_asset`
+- `vision_review_case`
 - `skills_graph_node`
 - `model_feedback`
 
@@ -153,6 +163,9 @@ Published events:
 - `ai.command.interpreted`
 - `ai.command.executed`
 - `ai.command.rejected`
+- `ai.reporting.responded`
+- `ai.asset.generated`
+- `ai.vision.review.flagged`
 - `ai.prediction.generated`
 - `ai.feedback.captured`
 
@@ -225,12 +238,18 @@ AI opportunities:
 - Interpret typed user commands such as "show me attendance for this department" into governed queries or guided transactions
 - Automate cross-department HR tasks end to end where policies, approvals, and human-handoff boundaries are explicitly defined
 - Recommend employee-to-project or project-to-talent matches using skills, availability, proficiency confidence, location, mobility, and business constraints where project staffing data is available
+- Generate personalized birthday, anniversary, joining-day, or achievement cards from approved templates, consented photos, and configurable brand voice
+- Recommend quote-of-the-day or morale nudges based on calendar context, company campaigns, role, location, and recent activity while remaining non-intrusive and explainable
+- Summarize computer-vision attendance review evidence into human-readable exception cases instead of auto-finalizing attendance from low-confidence detections
+- Support `Ridz` as the governed Staffsy bot persona for morale content, celebration copy, and quote personalization while keeping business-action copilots separate from casual engagement voice where needed
+- Answer employee and manager reporting questions such as leave balance trends, attendance exceptions, pending approvals, recognition activity, or learning completion with source-backed narrative summaries and chart-ready outputs
 
 AI guardrails:
 
 - AI output related to ai and copilot must be permission-aware and scoped to authorized data.
 - AI suggestions should remain explainable, reviewable, and non-final for high-risk ai and copilot decisions unless explicitly governed otherwise.
 - Free-text commands must never bypass workflow approvals, field validations, entitlement checks, or maker-checker controls just because the request originated from a conversational interface.
+- Multimodal generation using employee photos, voice, or camera feeds must require explicit consent, purpose limitation, retention control, and geography-specific legal review before activation.
 
 # 12. Test Cases
 

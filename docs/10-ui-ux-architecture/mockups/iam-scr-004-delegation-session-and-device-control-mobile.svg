@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="390" height="844" fill="#F4F7FB"/>
+  <rect width="390" height="92" fill="#10324A"/>
+  <text x="20" y="36" class="inverse">Enterprise HRMS</text>
+  <rect x="284" y="18" width="86" height="28" rx="14" fill="rgba(255,255,255,0.12)"/>
+  <text x="327" y="36" class="inverse" text-anchor="middle">Sec Admin</text>
+  <text x="20" y="76" class="h2inv">Delegation Control</text>
+
+  <rect x="16" y="108" width="358" height="96" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="30" y="136" class="small">Delegation safety overview</text>
+  <text x="30" y="170" class="metric">11</text>
+  <text x="82" y="170" class="body">active windows</text>
+  <rect x="248" y="122" width="110" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="303" y="140" class="small" text-anchor="middle">Sessions 08</text>
+  <rect x="248" y="156" width="110" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="303" y="174" class="small" text-anchor="middle">Holds 02</text>
+  <circle cx="28" cy="122" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="28" y="127" class="inverse" text-anchor="middle">1</text>
+
+  <rect x="16" y="220" width="358" height="170" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="244" class="h3">Delegation queue</text>
+  <text x="32" y="262" class="small">Mobile starts with who can act, for how long, and what remains excluded</text>
+  <circle cx="34" cy="280" r="3" fill="#2563EB"/>
+  <text x="46" y="284" class="body">Priya Nair delegates leave, roster, and helpdesk approvals to Arjun Rao until 24 Jul 2026</text>
+  <circle cx="34" cy="300" r="3" fill="#2563EB"/>
+  <text x="46" y="304" class="body">Payroll release, bank updates, and user termination stay blocked from delegation</text>
+  <circle cx="34" cy="320" r="3" fill="#2563EB"/>
+  <text x="46" y="324" class="body">One proxy-enabled request is still waiting for security signoff and incident reference</text>
+  <circle cx="34" cy="340" r="3" fill="#2563EB"/>
+  <text x="46" y="344" class="body">Dual attribution remains mandatory in approval and audit timelines</text>
+  <circle cx="30" cy="236" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="241" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="16" y="406" width="358" height="190" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="430" class="h3">Delegated session and device review</text>
+  <text x="32" y="448" class="small">The desktop evidence panel becomes one stacked inspection card on mobile</text>
+  <circle cx="34" cy="460" r="3" fill="#2563EB"/>
+  <text x="46" y="464" class="body">Arjun Rao is acting for Priya Nair with ticket INC-4821 and auto-expiry set for 22:00 IST</text>
+  <circle cx="34" cy="480" r="3" fill="#2563EB"/>
+  <text x="46" y="484" class="body">Managed Windows device passed trust posture and geofence checks before session start</text>
+  <circle cx="34" cy="500" r="3" fill="#2563EB"/>
+  <text x="46" y="504" class="body">Blocked Android login attempt remains attached to the same identity review trail</text>
+  <circle cx="34" cy="520" r="3" fill="#2563EB"/>
+  <text x="46" y="524" class="body">Masked salary, bank, and identity proof zones stay visible as guarded placeholders</text>
+  <rect x="30" y="540" width="144" height="34" rx="12" fill="#2563EB"/>
+  <text x="102" y="562" class="inverse" text-anchor="middle">End session</text>
+  <rect x="188" y="540" width="168" height="34" rx="12" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="272" y="562" class="body" text-anchor="middle">Review evidence</text>
+  <circle cx="30" cy="422" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="427" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="16" y="612" width="358" height="124" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="636" class="h3">Proxy and support safeguards</text>
+  <text x="32" y="654" class="small">Support context remains explicit, short-lived, and reviewable on small screens</text>
+  <circle cx="34" cy="664" r="3" fill="#2563EB"/>
+  <text x="46" y="668" class="body">Proxy login requires ticket, MFA re-check, timeout limit, and read/write declaration</text>
+  <circle cx="34" cy="684" r="3" fill="#2563EB"/>
+  <text x="46" y="688" class="body">Org admin can terminate support-context sessions while security retains evidence package</text>
+  <circle cx="34" cy="704" r="3" fill="#2563EB"/>
+  <text x="46" y="708" class="body">Concurrent delegated and proxied access to one worker record is flagged for collision review</text>
+  <circle cx="30" cy="628" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="30" y="633" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="16" y="752" width="358" height="74" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="34" y="780" class="h2">Mobile notes</text>
+  <circle cx="40" cy="804" r="12" fill="#2563EB"/>
+  <text x="40" y="808" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="806" class="annoTitle">Trust-first compression</text>
+  <text x="62" y="824" class="annoText">Mobile keeps delegation bounds, live session evidence, and support safeguards ahead of secondary settings.</text>
+</svg>

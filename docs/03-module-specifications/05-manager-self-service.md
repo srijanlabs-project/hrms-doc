@@ -49,6 +49,7 @@ In-scope capability areas:
 - Escalation handling and delegated approvals
 - Visibility into team documents, assets, and service cases within policy scope
 - Single manager workspace for approvals, team actions, and growth conversations with AI-assisted task support
+- Daily manager briefing with risk, birthdays, absences, pending approvals, celebrations, and recommended next actions
 
 Core functional expectations:
 
@@ -68,6 +69,7 @@ Business rule themes:
 User experience should provide:
 
 - Manager dashboard
+- Daily briefing strip or morning digest panel
 - Manager command center for approvals, follow-ups, and guided conversations
 - Team roster
 - Approval inbox
@@ -76,6 +78,7 @@ User experience should provide:
 Key screens:
 
 - Manager dashboard
+- Daily briefing strip or morning digest panel
 - Team roster
 - Approval inbox
 - Team analytics and review screens
@@ -98,6 +101,7 @@ Design details to refine during implementation:
 Representative APIs:
 
 - `GET /api/v1/mss/team-dashboard`
+- `GET /api/v1/mss/daily-briefing`
 - `POST /api/v1/mss/approvals/{requestId}/decision`
 - `GET /api/v1/mss/team-members`
 - `GET /api/v1/mss/analytics`
@@ -174,6 +178,7 @@ Dashboards should show:
 - `Pending approvals`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Team leave calendar`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Performance and attrition indicators`: summary view intended to surface actionable indicators, pending issues, and movement over time.
+- `Manager daily briefing`: summary view intended to combine team risk, birthdays, absences, pending approvals, celebration prompts, and AI-prioritized next actions in one morning-ready panel.
 
 Dashboard expectations:
 
@@ -211,6 +216,7 @@ AI opportunities:
 - Prioritize approval queue
 - Draft feedback and review summaries
 - Help managers run growth conversations using role context, prior goals, review history, learning progress, and risk indicators
+- Generate a manager-ready morning brief that prioritizes absence risk, birthdays, anniversaries, pending approvals, flight-risk signals, and overdue actions with explainable reasons
 
 AI guardrails:
 

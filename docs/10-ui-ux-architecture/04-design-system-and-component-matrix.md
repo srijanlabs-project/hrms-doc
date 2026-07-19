@@ -153,3 +153,19 @@ Mobile-priority components:
 # 13. Design System Outcome
 
 This matrix should be used as the shared UI contract for design and frontend engineering, and later expanded into actual component documentation or a coded design system.
+
+# 14. Detailed Design System Pack
+
+The detailed `Staffsy` design-system documentation pack now exists in:
+
+- [README.md](<D:/HRMS-doc/docs/design system/README.md>)
+- [01-brand-identity.md](<D:/HRMS-doc/docs/design system/01-brand-identity.md>)
+- [02-foundations-color-type-layout.md](<D:/HRMS-doc/docs/design system/02-foundations-color-type-layout.md>)
+- [03-components-core-ui.md](<D:/HRMS-doc/docs/design system/03-components-core-ui.md>)
+- [04-dashboard-ai-and-data-patterns.md](<D:/HRMS-doc/docs/design system/04-dashboard-ai-and-data-patterns.md>)
+- [05-screen-templates.md](<D:/HRMS-doc/docs/design system/05-screen-templates.md>)
+- [06-responsive-accessibility-rules.md](<D:/HRMS-doc/docs/design system/06-responsive-accessibility-rules.md>)
+- [07-design-tokens.md](<D:/HRMS-doc/docs/design system/07-design-tokens.md>)
+- [staffsy-design-tokens.json](<D:/HRMS-doc/docs/design system/staffsy-design-tokens.json>)
+
+This UI UX matrix should remain the summary contract, while the dedicated pack becomes the implementation-depth visual standard.

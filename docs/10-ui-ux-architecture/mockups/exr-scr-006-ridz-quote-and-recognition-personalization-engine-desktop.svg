@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" stroke="#10324A" stroke-width="1" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">EXR-SCR-006</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+  <text x="62" y="116" class="inverse">Ridz Quote and Recognition</text>
+  <rect x='40' y='144' width='216' height='40' rx='12' fill='rgba(255,255,255,0.12)'/><text x="60" y="168" class="inverse">Ridz</text><rect x='40' y='196' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/><text x="60" y="220" class="inverse">Quotes</text><rect x='40' y='248' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/><text x="60" y="272" class="inverse">Festivals</text><rect x='40' y='300' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/><text x="60" y="324" class="inverse">Audience</text><rect x='40' y='352' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/><text x="60" y="376" class="inverse">Approvals</text><rect x='40' y='404' width='216' height='40' rx='12' fill='rgba(255,255,255,0.04)'/><text x="60" y="428" class="inverse">History</text>
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="380" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="338" y="61" class="small">Search task, anomaly, quote, campaign, or report</text>
+  <rect x="1164" y="40" width="108" height="28" rx="14" fill="#FDEAD7" stroke="#FDEAD7" stroke-width="1"/>
+  <text x="1218" y="58" class="small" text-anchor="middle">Tasks 08</text>
+  <rect x="1284" y="40" width="104" height="28" rx="14" fill="#E3F2FD" stroke="#E3F2FD" stroke-width="1"/>
+  <text x="1336" y="58" class="small" text-anchor="middle">Alerts 03</text>
+  <text x="296" y="128" class="title">Ridz Quote and Recognition Personalization Engine</text>
+  <rect x="296" y="152" width="92" height="28" rx="14" fill="#EAF2F8" stroke="#EAF2F8" stroke-width="1"/><text x="342.0" y="170" class="small" text-anchor="middle">Ridz</text><rect x="400" y="152" width="92" height="28" rx="14" fill="#FDEAD7" stroke="#FDEAD7" stroke-width="1"/><text x="446.0" y="170" class="small" text-anchor="middle">Festival</text><rect x="504" y="152" width="112" height="28" rx="14" fill="#DCFCE7" stroke="#DCFCE7" stroke-width="1"/><text x="560.0" y="170" class="small" text-anchor="middle">Personalized</text>
+  <rect x="808" y="146" width="168" height="40" rx="14" fill="#2563EB" stroke="#2563EB" stroke-width="1"/>
+  <text x="892" y="172" class="inverse" text-anchor="middle">Open workbench</text>
+  <rect x="988" y="146" width="170" height="40" rx="14" fill="#0F766E" stroke="#0F766E" stroke-width="1"/>
+  <text x="1073" y="172" class="inverse" text-anchor="middle">Review signals</text>
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="520" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="338" y="249" class="body">Targeted quote, festival, and morale-message personalization using the Staffsy bot persona</text>
+  <rect x="856" y="226" width="86" height="28" rx="14" fill="#EAF2F8" stroke="#EAF2F8" stroke-width="1"/>
+  <text x="899" y="244" class="small" text-anchor="middle">Focus</text>
+  <rect x="952" y="226" width="98" height="28" rx="14" fill="#EAF2F8" stroke="#EAF2F8" stroke-width="1"/>
+  <text x="1001" y="244" class="small" text-anchor="middle">Signals</text>
+  <rect x="1060" y="226" width="92" height="28" rx="14" fill="#10324A" stroke="#10324A" stroke-width="1"/>
+  <text x="1106" y="244" class="inverse" text-anchor="middle">Review</text>
+  <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/><rect x="308" y="314" width="44" height="44" rx="12" fill="#15803D" stroke="#15803D" stroke-width="1"/><text x="364" y="332" class="small">Quote packs</text><text x="364" y="362" class="metric">126</text><rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/><rect x="530" y="314" width="44" height="44" rx="12" fill="#D97706" stroke="#D97706" stroke-width="1"/><text x="586" y="332" class="small">Active audiences</text><text x="586" y="362" class="metric">18</text><rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/><rect x="752" y="314" width="44" height="44" rx="12" fill="#B42318" stroke="#B42318" stroke-width="1"/><text x="808" y="332" class="small">Today</text><text x="808" y="362" class="metric">09</text><rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/><rect x="974" y="314" width="44" height="44" rx="12" fill="#2563EB" stroke="#2563EB" stroke-width="1"/><text x="1030" y="332" class="small">Blocked</text><text x="1030" y="362" class="metric">01</text>
+  <rect x="296" y="422" width="332" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Quote library, targeting, and occasion logic</text>
+  <text x="312" y="464" class="small">Structural mockup for development-ready requirements coverage.</text>
+  <circle cx='314' cy='492' r='3' fill='#2563EB'/><text x="326" y="496" class="body">Ridz content should support festivals, campaigns, and values moments.</text><circle cx='314' cy='514' r='3' fill='#2563EB'/><text x="326" y="518" class="body">HR can curate, approve, and schedule quote families by audience.</text><circle cx='314' cy='536' r='3' fill='#2563EB'/><text x="326" y="540" class="body">Targeting needs geography, role, and event sensitivity.</text>
+  <rect x="648" y="422" width="510" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="664" y="446" class="h3">Recognition-linked nudges and moderation controls</text>
+  <text x="664" y="464" class="small">Annotated operational surface with action and governance context.</text>
+  <circle cx='666' cy='492' r='3' fill='#2563EB'/><text x="678" y="496" class="body">Recognition prompts and quote moments can work together.</text><circle cx='666' cy='514' r='3' fill='#2563EB'/><text x="678" y="518" class="body">Tone and message style must remain brand-safe and explainable.</text><circle cx='666' cy='536' r='3' fill='#2563EB'/><text x="678" y="540" class="body">Overuse controls should stop dashboard fatigue.</text>
+  <rect x="296" y="712" width="862" height="222" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="312" y="736" class="h3">Primary workspace layout</text>
+  <rect x="320" y="760" width="516" height="146" rx="14" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="340" y="788" class="body">Left surface: queue, builder, or briefing stack depending on screen purpose</text>
+  <rect x="856" y="760" width="278" height="146" rx="14" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="876" y="788" class="body">Right surface: detail, explanation, route, or preview pane</text>
+  <rect x="320" y="924" width="814" height="94" rx="14" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="340" y="952" class="body">Lower strip: audit, campaigns, history, metrics, or next-action utilities</text>
+  <rect x="1178" y="206" width="238" height="812" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="1196" y="236" class="annoTitle">Mockup notes</text>
+  <circle cx='1198' cy='272' r='3' fill='#2563EB'/><text x="1210" y="276" class="body">Desktop board exists for implementation mapping.</text><circle cx='1198' cy='294' r='3' fill='#2563EB'/><text x="1210" y="298" class="body">Mobile pair exists for parity and planning.</text><circle cx='1198' cy='316' r='3' fill='#2563EB'/><text x="1210" y="320" class="body">Condition variants are captured in the catalog.</text><circle cx='1198' cy='338' r='3' fill='#2563EB'/><text x="1210" y="342" class="body">Use this as annotated structure, not final UI polish.</text>
+  <text x="24" y="1248" class="small">Innovation mockup extension</text>
+</svg>

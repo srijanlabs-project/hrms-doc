@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="390" height="844" fill="#F4F7FB"/>
+  <rect width="390" height="92" fill="#10324A"/>
+  <text x="20" y="36" class="inverse">Enterprise HRMS</text>
+  <rect x="302" y="18" width="68" height="28" rx="14" fill="rgba(255,255,255,0.12)"/>
+  <text x="336" y="36" class="inverse" text-anchor="middle">PROD</text>
+  <text x="20" y="76" class="h2inv">SSO and MFA</text>
+
+  <rect x="16" y="108" width="358" height="96" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="30" y="136" class="small">Tenant Acme India</text>
+  <text x="30" y="170" class="metric">92%</text>
+  <text x="92" y="170" class="body">identity readiness</text>
+  <rect x="248" y="122" width="110" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="303" y="140" class="small" text-anchor="middle">IdP healthy</text>
+  <rect x="248" y="156" width="110" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="303" y="174" class="small" text-anchor="middle">Cert 28 Jul</text>
+  <circle cx="28" cy="122" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="28" y="127" class="inverse" text-anchor="middle">1</text>
+
+  <rect x="16" y="220" width="358" height="162" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="244" class="h3">SSO and federation state</text>
+  <text x="32" y="262" class="small">Mobile keeps the admin story focused on trust, rollover, and safe sign-in checks</text>
+  <circle cx="34" cy="280" r="3" fill="#2563EB"/>
+  <text x="46" y="284" class="body">Primary login domain and ACS callback are verified for the production tenant</text>
+  <circle cx="34" cy="300" r="3" fill="#2563EB"/>
+  <text x="46" y="304" class="body">One signing certificate expires on 28 Jul 2026 and needs staged rollover confirmation</text>
+  <circle cx="34" cy="320" r="3" fill="#2563EB"/>
+  <text x="46" y="324" class="body">Backup metadata file is available before replacing the live federation link</text>
+  <circle cx="34" cy="340" r="3" fill="#2563EB"/>
+  <text x="46" y="344" class="body">Test sign-in and trace download are exposed as tenant-safe next steps</text>
+  <circle cx="30" cy="236" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="241" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="16" y="398" width="358" height="176" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="422" class="h3">MFA posture</text>
+  <text x="32" y="440" class="small">Assurance and exception drift stay readable without showing deep policy syntax</text>
+  <circle cx="34" cy="452" r="3" fill="#2563EB"/>
+  <text x="46" y="456" class="body">Admins require phishing-resistant MFA for device registration and policy edits</text>
+  <circle cx="34" cy="472" r="3" fill="#2563EB"/>
+  <text x="46" y="476" class="body">17 employees still rely on SMS fallback and remain in the enrollment campaign</text>
+  <circle cx="34" cy="492" r="3" fill="#2563EB"/>
+  <text x="46" y="496" class="body">Payroll export and role-change paths trigger step-up verification</text>
+  <circle cx="34" cy="512" r="3" fill="#2563EB"/>
+  <text x="46" y="516" class="body">Trusted-device grace periods and admin exceptions remain audit-visible</text>
+  <rect x="30" y="526" width="136" height="40" rx="14" fill="#2563EB"/>
+  <text x="98" y="552" class="inverse" text-anchor="middle">Review gaps</text>
+  <rect x="180" y="526" width="156" height="40" rx="14" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="258" y="552" class="body" text-anchor="middle">Open sign-in test</text>
+  <circle cx="30" cy="414" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="419" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="16" y="590" width="358" height="146" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="614" class="h3">Provisioning and troubleshooting</text>
+  <text x="32" y="632" class="small">Sync health and repeat-safe diagnostics compress into one mobile action stack</text>
+  <circle cx="34" cy="642" r="3" fill="#2563EB"/>
+  <text x="46" y="646" class="body">Last SCIM delta sync finished 14 minutes ago with 2 manager attribute mismatches</text>
+  <circle cx="34" cy="662" r="3" fill="#2563EB"/>
+  <text x="46" y="666" class="body">Connector pause affects only provisioning and does not disable active SSO sessions</text>
+  <circle cx="34" cy="682" r="3" fill="#2563EB"/>
+  <text x="46" y="686" class="body">Admin can pivot to sign-in trace, claim drift, sync retry, and audit history lenses</text>
+  <circle cx="30" cy="606" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="30" y="611" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="16" y="752" width="358" height="74" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="34" y="780" class="h2">Mobile notes</text>
+  <circle cx="40" cy="804" r="12" fill="#2563EB"/>
+  <text x="40" y="808" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="806" class="annoTitle">Trust and recovery first</text>
+  <text x="62" y="824" class="annoText">Mobile prioritizes readiness, trust rollover, MFA drift, and tenant-safe diagnostics before deeper config editing.</text>
+</svg>

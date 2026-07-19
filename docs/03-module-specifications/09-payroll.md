@@ -50,6 +50,7 @@ In-scope capability areas:
 - Payslip publication, bank advice, posting outputs, and full-and-final settlement
 - Multi-company and external payroll engine support where required
 - AI-assisted anomaly detection across payroll inputs, results, reimbursement outliers, statutory patterns, and unexpected workforce-cost movement
+- Payroll anomaly copilot with root-cause explanation, confidence scoring, and approval-routing recommendations for blocking or high-value exceptions
 
 Core functional expectations:
 
@@ -70,6 +71,7 @@ User experience should provide:
 
 - Payroll run cockpit
 - Validation and exception queue
+- Payroll anomaly review and approval-routing workspace
 - Employee payroll detail screen
 - Payslip viewer
 - Full-and-final workspace
@@ -78,6 +80,7 @@ Key screens:
 
 - Payroll run cockpit
 - Validation and exception queue
+- Payroll anomaly review and approval-routing workspace
 - Employee payroll detail screen
 - Payslip viewer
 - Full-and-final workspace
@@ -102,6 +105,8 @@ Representative APIs:
 - `POST /api/v1/payroll/runs`
 - `POST /api/v1/payroll/runs/{runId}/validate`
 - `POST /api/v1/payroll/runs/{runId}/process`
+- `POST /api/v1/payroll/anomalies/analyze`
+- `POST /api/v1/payroll/anomalies/{anomalyId}/route`
 - `GET /api/v1/payroll/employees/{employeeId}/payslips`
 
 API expectations:
@@ -126,6 +131,8 @@ Core entities:
 - `payroll_run`
 - `payroll_input`
 - `payroll_result`
+- `payroll_anomaly_case`
+- `payroll_anomaly_explanation`
 - `payslip`
 - `final_settlement`
 
@@ -147,6 +154,8 @@ Database design concerns:
 Published events:
 
 - `payroll.run.validated`
+- `payroll.anomaly.detected`
+- `payroll.anomaly.routed`
 - `payroll.run.closed`
 - `payroll.payslip.published`
 
@@ -182,6 +191,7 @@ Dashboards should show:
 - `Payroll runs by status`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Employees processed vs pending`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Period variance indicators`: summary view intended to surface actionable indicators, pending issues, and movement over time.
+- `Anomaly severity and route backlog`: summary view intended to surface blocking anomalies, explanation confidence, and pending decision routing by owner.
 
 Dashboard expectations:
 
@@ -219,11 +229,13 @@ AI opportunities:
 - Explain likely causes of payroll exceptions
 - Recommend validation checks from prior periods
 - Flag suspicious outliers before approval using peer-group, prior-period, policy-threshold, and cost-center-based anomaly models
+- Recommend approver routing, urgency, and evidence checklist for each anomaly case without auto-approving or auto-closing payroll-impacting decisions
 
 AI guardrails:
 
 - AI output related to payroll must be permission-aware and scoped to authorized data.
 - AI suggestions should remain explainable, reviewable, and non-final for high-risk payroll decisions unless explicitly governed otherwise.
+- Any anomaly explanation must preserve traceability back to source records, comparison cohorts, triggered rules, and threshold logic so payroll users can challenge or override the recommendation safely.
 
 # 12. Test Cases
 

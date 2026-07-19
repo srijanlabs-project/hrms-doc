@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">Org Administration</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)"/>
+  <text x="62" y="116" class="inverse">Enterprise HRMS</text>
+  <rect x="40" y="144" width="216" height="40" rx="12" fill="rgba(255,255,255,0.12)"/>
+  <text x="60" y="168" class="inverse">Tenant Settings</text>
+  <rect x="40" y="196" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="220" class="inverse">Defaults</text>
+  <rect x="40" y="248" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="272" class="inverse">Policies</text>
+  <rect x="40" y="300" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="324" class="inverse">Approvals</text>
+  <rect x="40" y="352" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="376" class="inverse">Configuration Keys</text>
+  <rect x="40" y="404" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="428" class="inverse">Audit Trail</text>
+
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="390" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="61" class="small">Search setting key, default, policy switch, approval hold, or configuration note</text>
+  <rect x="1058" y="40" width="108" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1112" y="58" class="small" text-anchor="middle">Tenant scope</text>
+  <rect x="1180" y="40" width="116" height="28" rx="14" fill="#FDEAD7"/>
+  <text x="1238" y="58" class="small" text-anchor="middle">Pending review 05</text>
+  <rect x="1310" y="40" width="90" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="1355" y="58" class="small" text-anchor="middle">Draft 09</text>
+
+  <text x="310" y="128" class="title">Tenant Settings</text>
+  <rect x="296" y="152" width="126" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="359" y="170" class="small" text-anchor="middle">Tenant keys</text>
+  <circle cx="312" cy="166" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="312" y="171" class="inverse" text-anchor="middle">1</text>
+  <rect x="434" y="152" width="164" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="516" y="170" class="small" text-anchor="middle">Defaults inherited 14</text>
+  <rect x="610" y="152" width="150" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="685" y="170" class="small" text-anchor="middle">High-risk 03</text>
+  <rect x="808" y="146" width="162" height="40" rx="14" fill="#2563EB"/>
+  <text x="889" y="172" class="inverse" text-anchor="middle">Review change set</text>
+  <rect x="984" y="146" width="172" height="40" rx="14" fill="#0F766E"/>
+  <text x="1070" y="172" class="inverse" text-anchor="middle">Create local override</text>
+
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="520" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="249" class="body">Find by key, module, scope path, inheritance source, approver, or risk flag</text>
+  <rect x="856" y="226" width="92" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="902" y="244" class="small" text-anchor="middle">Defaults</text>
+  <rect x="958" y="226" width="96" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1006" y="244" class="small" text-anchor="middle">Overrides</text>
+  <rect x="1064" y="226" width="86" height="28" rx="14" fill="#10324A"/>
+  <text x="1107" y="244" class="inverse" text-anchor="middle">Scoped</text>
+  <circle cx="320" cy="216" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="221" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="308" y="314" width="44" height="44" rx="12" fill="#15803D"/>
+  <text x="364" y="332" class="small">Config keys</text>
+  <text x="364" y="362" class="metric">184</text>
+  <circle cx="320" cy="316" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="321" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="530" y="314" width="44" height="44" rx="12" fill="#2563EB"/>
+  <text x="586" y="332" class="small">Local overrides</text>
+  <text x="586" y="362" class="metric">29</text>
+
+  <rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="752" y="314" width="44" height="44" rx="12" fill="#D97706"/>
+  <text x="808" y="332" class="small">Pending approvals</text>
+  <text x="808" y="362" class="metric">05</text>
+
+  <rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="974" y="314" width="44" height="44" rx="12" fill="#7C3AED"/>
+  <text x="1030" y="332" class="small">Inherited defaults</text>
+  <text x="1030" y="362" class="metric">14</text>
+
+  <rect x="1184" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="1196" y="314" width="44" height="44" rx="12" fill="#B42318"/>
+  <text x="1252" y="332" class="small">Guardrails</text>
+  <text x="1252" y="362" class="metric">03</text>
+
+  <rect x="296" y="422" width="332" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Key catalog, scopes, and default posture</text>
+  <text x="312" y="464" class="small">The settings list reads like a scoped configuration registry, not a loose page of toggles.</text>
+  <rect x="312" y="478" width="292" height="58" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <text x="328" y="500" class="body">attendance.cutoff.time is inherited from platform default and overridden only for night-shift tenant policy packs.</text>
+  <text x="328" y="520" class="small">Scope chips: Tenant / Attendance / Default source Platform / Timezone Asia-Calcutta</text>
+  <rect x="312" y="548" width="292" height="58" rx="12" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="328" y="570" class="body">leave.probation.apply.enabled is tenant-local because ApexOne allows probation leave requests after 30 days.</text>
+  <text x="328" y="590" class="small">Scope chips: Tenant / Leave / Override active / Approval mode Maker-checker</text>
+  <circle cx="314" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="443" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="648" y="422" width="510" height="270" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="446" class="h3">Change approval state and high-risk review</text>
+  <text x="664" y="464" class="small">AD-02 catalog posture meets PAT-16 guardrails when a configuration can affect payroll, access, or compliance.</text>
+  <rect x="666" y="474" width="474" height="86" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <text x="684" y="496" class="small">Pending change set</text>
+  <text x="684" y="522" class="body">Changing payroll.lock.before.disbursement from 2 hours to 30 minutes reduces finance review time and may affect reversal handling for July payroll close.</text>
+  <text x="684" y="544" class="small">Risk tier: High / Requires Finance head plus Org Admin / Planned effective 31 Jul 2026 / Diff preview attached</text>
+  <rect x="666" y="576" width="138" height="40" rx="14" fill="#2563EB"/>
+  <text x="735" y="602" class="inverse" text-anchor="middle">View diff</text>
+  <rect x="818" y="576" width="164" height="40" rx="14" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="900" y="602" class="body" text-anchor="middle">Request approvals</text>
+  <rect x="996" y="576" width="118" height="40" rx="14" fill="#FEE2E2"/>
+  <text x="1055" y="602" class="body" text-anchor="middle">Block publish</text>
+  <circle cx="666" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="666" y="443" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="296" y="712" width="332" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="736" class="h3">Policy switches and inheritance logic</text>
+  <text x="312" y="754" class="small">Policy toggles are documented with source, blast radius, and fallbacks before enablement.</text>
+  <circle cx="314" cy="770" r="3" fill="#2563EB"/>
+  <text x="326" y="774" class="body">Each switch shows whether it inherits from provider default, tenant override, or temporary release flag.</text>
+  <circle cx="314" cy="790" r="3" fill="#2563EB"/>
+  <text x="326" y="794" class="body">High-impact settings such as payroll locks, SSO enforcement, and document retention need maker-checker.</text>
+  <circle cx="314" cy="810" r="3" fill="#2563EB"/>
+  <text x="326" y="814" class="body">Rollback posture includes effective dates, previous value snapshot, and impacted jobs or workflows.</text>
+  <circle cx="314" cy="830" r="3" fill="#2563EB"/>
+  <text x="326" y="834" class="body">Tenant-safe keys prevent local admins from crossing platform governance boundaries.</text>
+
+  <rect x="648" y="712" width="510" height="220" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="664" y="736" class="h3">Guardrails, release posture, and audit trail</text>
+  <text x="664" y="754" class="small">High-risk changes remain observable from drafting through approval, rollout, and rollback.</text>
+  <circle cx="666" cy="770" r="3" fill="#2563EB"/>
+  <text x="678" y="774" class="body">Guardrails warn when a setting affects attendance cutoffs, leave year-end carryover, or payroll disbursement windows.</text>
+  <circle cx="666" cy="790" r="3" fill="#2563EB"/>
+  <text x="678" y="794" class="body">Draft change sets keep before and after values, approver chain, and scheduled effectivity in one audit record.</text>
+  <circle cx="666" cy="810" r="3" fill="#2563EB"/>
+  <text x="678" y="814" class="body">Preview mode shows which screens, imports, APIs, and jobs consume a given key before it is published live.</text>
+  <circle cx="666" cy="830" r="3" fill="#2563EB"/>
+  <text x="678" y="834" class="body">Platform-owned settings display read-only badges so org admins do not treat them as editable local switches.</text>
+  <circle cx="666" cy="728" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="666" y="733" class="inverse" text-anchor="middle">6</text>
+
+  <rect x="296" y="952" width="862" height="98" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="976" class="h3">Pinned settings lenses</text>
+  <text x="312" y="994" class="small">Common admin slices keep settings review organized around operational risk instead of technical key sprawl.</text>
+  <rect x="320" y="990" width="104" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="372" y="1008" class="small" text-anchor="middle">Attendance</text>
+  <rect x="436" y="990" width="84" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="478" y="1008" class="small" text-anchor="middle">Leave</text>
+  <rect x="532" y="990" width="92" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="578" y="1008" class="small" text-anchor="middle">Payroll</text>
+  <rect x="636" y="990" width="126" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="699" y="1008" class="small" text-anchor="middle">High-risk edits</text>
+  <rect x="774" y="990" width="122" height="28" rx="14" fill="#EDE9FE"/>
+  <text x="835" y="1008" class="small" text-anchor="middle">Rollback ready</text>
+  <circle cx="320" cy="966" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="971" class="inverse" text-anchor="middle">7</text>
+
+  <rect x="1178" y="152" width="238" height="898" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="1196" y="180" class="h2">Desktop annotations</text>
+  <circle cx="1202" cy="204" r="12" fill="#2563EB"/>
+  <text x="1202" y="208" class="inverse" text-anchor="middle">1</text>
+  <text x="1224" y="206" class="annoTitle">Settings act like governed data</text>
+  <text x="1224" y="224" class="annoText">The console treats configuration as scoped records with source, owner, and approval state.</text>
+  <circle cx="1202" cy="256" r="12" fill="#2563EB"/>
+  <text x="1202" y="260" class="inverse" text-anchor="middle">2</text>
+  <text x="1224" y="258" class="annoTitle">Search spans keys and risk</text>
+  <text x="1224" y="276" class="annoText">Admins can find settings by technical key, module usage, scope path, or approval posture.</text>
+  <circle cx="1202" cy="308" r="12" fill="#2563EB"/>
+  <text x="1202" y="312" class="inverse" text-anchor="middle">3</text>
+  <text x="1224" y="310" class="annoTitle">Health strip shows inheritance</text>
+  <text x="1224" y="328" class="annoText">Key counts, overrides, pending approvals, and guardrails summarize the tenant configuration landscape.</text>
+  <circle cx="1202" cy="360" r="12" fill="#2563EB"/>
+  <text x="1202" y="364" class="inverse" text-anchor="middle">4</text>
+  <text x="1224" y="362" class="annoTitle">Scope chips do real work</text>
+  <text x="1224" y="380" class="annoText">Every setting card makes scope, inheritance source, and maker-checker posture explicit before editing.</text>
+  <circle cx="1202" cy="412" r="12" fill="#2563EB"/>
+  <text x="1202" y="416" class="inverse" text-anchor="middle">5</text>
+  <text x="1224" y="414" class="annoTitle">High-risk changes are staged</text>
+  <text x="1224" y="432" class="annoText">A change set, diff, effectivity window, and approver chain are part of the UX for sensitive edits.</text>
+  <circle cx="1202" cy="464" r="12" fill="#2563EB"/>
+  <text x="1202" y="468" class="inverse" text-anchor="middle">6</text>
+  <text x="1224" y="466" class="annoTitle">Guardrails stay visible</text>
+  <text x="1224" y="484" class="annoText">The mockup keeps rollback, blast radius, and read-only platform boundaries visible inside the main frame.</text>
+  <circle cx="1202" cy="516" r="12" fill="#2563EB"/>
+  <text x="1202" y="520" class="inverse" text-anchor="middle">7</text>
+  <text x="1224" y="518" class="annoTitle">Pinned lenses reduce sprawl</text>
+  <text x="1224" y="536" class="annoText">Operational slices such as attendance, payroll, and rollback-ready edits help the catalog stay navigable.</text>
+</svg>

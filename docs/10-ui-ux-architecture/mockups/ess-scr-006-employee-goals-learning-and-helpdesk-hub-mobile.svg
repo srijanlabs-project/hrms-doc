@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect width="390" height="844" fill="#F4F7FB"/>
+  <rect width="390" height="96" fill="#10324A"/>
+  <text x="20" y="36" class="inverse">Employee Self-Service</text>
+  <text x="20" y="74" class="h2" fill="white">Growth and Helpdesk Hub</text>
+  <rect x="16" y="110" width="108" height="28" rx="14" fill="#DCFCE7"/><text x="70" y="128" class="small" text-anchor="middle">Goals 78%</text>
+  <rect x="132" y="110" width="106" height="28" rx="14" fill="#FEF3C7"/><text x="185" y="128" class="small" text-anchor="middle">Learning 2</text>
+  <rect x="246" y="110" width="128" height="28" rx="14" fill="#DBEAFE"/><text x="310" y="128" class="small" text-anchor="middle">Case open 1</text>
+  <circle cx="28" cy="124" r="14" fill="#2563EB" stroke="white" stroke-width="3"/><text x="28" y="129" class="inverse" text-anchor="middle">1</text>
+
+  <rect x="16" y="154" width="358" height="122" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="180" class="h3">Growth snapshot</text>
+  <text x="32" y="200" class="small">Goals and learning readiness stay together</text>
+  <text x="32" y="228" class="metric">3 / 4</text><text x="96" y="228" class="body">goals on track</text>
+  <circle cx="34" cy="244" r="4" fill="#2563EB"/><text x="46" y="248" class="body">Leadership path lesson due tomorrow</text>
+  <circle cx="34" cy="264" r="4" fill="#2563EB"/><text x="46" y="268" class="body">Manager check-in Friday 11:00 AM</text>
+  <circle cx="30" cy="168" r="14" fill="#2563EB" stroke="white" stroke-width="3"/><text x="30" y="173" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="16" y="292" width="358" height="142" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="318" class="h3">Helpdesk and AI assist</text>
+  <text x="32" y="338" class="small">Case status and AI guidance share one stack</text>
+  <circle cx="34" cy="358" r="4" fill="#2563EB"/><text x="46" y="362" class="body">HR-291 payroll clarification in progress</text>
+  <circle cx="34" cy="380" r="4" fill="#2563EB"/><text x="46" y="384" class="body">AI found 3 matching policy articles</text>
+  <rect x="30" y="396" width="148" height="32" rx="12" fill="#0F766E"/><text x="104" y="417" class="inverse" text-anchor="middle">Ask self-service AI</text>
+  <rect x="190" y="396" width="156" height="32" rx="12" fill="#EEF2FF"/><text x="268" y="417" class="body" text-anchor="middle">Open ticket timeline</text>
+  <circle cx="30" cy="306" r="14" fill="#2563EB" stroke="white" stroke-width="3"/><text x="30" y="311" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="16" y="450" width="358" height="132" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="476" class="h3">Learning reminders</text>
+  <text x="32" y="496" class="small">Due learning and recommendations collapse into one mobile card</text>
+  <circle cx="34" cy="516" r="4" fill="#2563EB"/><text x="46" y="520" class="body">Data privacy refresher due in 3 days</text>
+  <circle cx="34" cy="538" r="4" fill="#2563EB"/><text x="46" y="542" class="body">AI suggested project management badge</text>
+  <rect x="30" y="548" width="150" height="28" rx="12" fill="#2563EB"/><text x="105" y="567" class="inverse" text-anchor="middle">Continue course</text>
+  <circle cx="30" cy="464" r="14" fill="#2563EB" stroke="white" stroke-width="3"/><text x="30" y="469" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="16" y="598" width="358" height="120" rx="16" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="32" y="624" class="h3">Quick actions and knowledge</text>
+  <rect x="30" y="642" width="96" height="32" rx="12" fill="#E3F2FD"/><text x="78" y="663" class="body" text-anchor="middle">Goals</text>
+  <rect x="138" y="642" width="96" height="32" rx="12" fill="#DCFCE7"/><text x="186" y="663" class="body" text-anchor="middle">Learning</text>
+  <rect x="246" y="642" width="98" height="32" rx="12" fill="#FDEAD7"/><text x="295" y="663" class="body" text-anchor="middle">Helpdesk</text>
+  <text x="30" y="698" class="small">Knowledge: how variable pay is computed</text>
+  <circle cx="30" cy="612" r="14" fill="#2563EB" stroke="white" stroke-width="3"/><text x="30" y="617" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="16" y="734" width="358" height="92" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="34" y="762" class="h2">Mobile notes</text>
+  <circle cx="40" cy="786" r="12" fill="#2563EB"/><text x="40" y="790" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="788" class="annoTitle">Action-oriented stack</text>
+  <text x="62" y="806" class="annoText">Growth, helpdesk, and AI assistance appear in one scroll flow for faster self-service.</text>
+</svg>

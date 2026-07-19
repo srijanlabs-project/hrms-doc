@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+  <rect x="0" y="0" width="390" height="844" fill="#F4F7FB"/>
+  <rect x="0" y="0" width="390" height="92" fill="#10324A"/>
+  <text x="20" y="36" class="inverse" text-anchor="start">Enterprise HRMS</text>
+  <rect x="286" y="18" width="84" height="28" rx="14" fill="rgba(255,255,255,0.12)"/>
+  <text x="328" y="36" class="inverse" text-anchor="middle">Org Admin</text>
+  <text x="20" y="76" class="h2inv" text-anchor="start">Hierarchy Explorer</text>
+
+  <rect x="16" y="108" width="64" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="48" y="126" class="small" text-anchor="middle">Tree</text>
+  <circle cx="28" cy="122" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="28" y="127" class="inverse" text-anchor="middle">1</text>
+  <rect x="88" y="108" width="84" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="130" y="126" class="small" text-anchor="middle">Compare</text>
+  <rect x="180" y="108" width="88" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="224" y="126" class="small" text-anchor="middle">Finance</text>
+
+  <rect x="16" y="154" width="358" height="58" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="34" y="190" class="body" text-anchor="start">Search node, manager, branch, office, region, or cost center</text>
+  <circle cx="28" cy="168" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="28" y="173" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="16" y="228" width="358" height="156" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="32" y="252" class="h3" text-anchor="start">Active node and drill path</text>
+  <text x="32" y="270" class="small" text-anchor="start">Mobile starts with the selected node and its trusted place in the tree.</text>
+  <circle cx="34" cy="280" r="3" fill="#2563EB"/>
+  <text x="46" y="284" class="body" text-anchor="start">West Region &gt; Pune Branch &gt; Chakan Plant</text>
+  <circle cx="34" cy="300" r="3" fill="#2563EB"/>
+  <text x="46" y="304" class="body" text-anchor="start">1,248 workers and 37 managers in scope</text>
+  <circle cx="34" cy="320" r="3" fill="#2563EB"/>
+  <text x="46" y="324" class="body" text-anchor="start">Office, branch, and region tags stay separate</text>
+  <circle cx="34" cy="340" r="3" fill="#2563EB"/>
+  <text x="46" y="344" class="body" text-anchor="start">2 acting-manager gaps remain visible</text>
+  <circle cx="30" cy="244" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="249" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="16" y="400" width="358" height="182" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="32" y="424" class="h3" text-anchor="start">Reporting map and compare</text>
+  <text x="32" y="442" class="small" text-anchor="start">Manager lines, overlays, and compare cues stay easy to review.</text>
+  <circle cx="34" cy="452" r="3" fill="#2563EB"/>
+  <text x="46" y="456" class="body" text-anchor="start">Primary manager plus dotted project approvers</text>
+  <circle cx="34" cy="472" r="3" fill="#2563EB"/>
+  <text x="46" y="476" class="body" text-anchor="start">Compare current tree against Q1 realignment</text>
+  <circle cx="34" cy="492" r="3" fill="#2563EB"/>
+  <text x="46" y="496" class="body" text-anchor="start">11 span alerts and 6 moved teams summarized</text>
+  <circle cx="34" cy="512" r="3" fill="#2563EB"/>
+  <text x="46" y="516" class="body" text-anchor="start">Publish blocked while orphan nodes remain</text>
+  <rect x="30" y="526" width="126" height="40" rx="14" fill="#2563EB"/>
+  <text x="93" y="552" class="inverse" text-anchor="middle">Open map</text>
+  <rect x="170" y="526" width="126" height="40" rx="14" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="233" y="552" class="body" text-anchor="middle">Compare view</text>
+  <circle cx="30" cy="416" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="421" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="16" y="598" width="358" height="138" rx="14" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1" filter="url(#shadow)"/>
+  <text x="32" y="622" class="h3" text-anchor="start">Finance and project cues</text>
+  <text x="32" y="640" class="small" text-anchor="start">Downstream rollups compress into a fast blocker stack.</text>
+  <circle cx="34" cy="648" r="3" fill="#2563EB"/>
+  <text x="46" y="652" class="body" text-anchor="start">Cost center 4100 and profit center IND-MFG linked</text>
+  <circle cx="34" cy="668" r="3" fill="#2563EB"/>
+  <text x="46" y="672" class="body" text-anchor="start">Project Falcon overlay active on this plant</text>
+  <circle cx="34" cy="688" r="3" fill="#2563EB"/>
+  <text x="46" y="692" class="body" text-anchor="start">Payroll and budget consumers listed before publish</text>
+  <circle cx="34" cy="708" r="3" fill="#2563EB"/>
+  <text x="46" y="712" class="body" text-anchor="start">3 orphan nodes still block final commit</text>
+  <circle cx="30" cy="614" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="30" y="619" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="16" y="752" width="358" height="74" rx="18" fill="#F8FBFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="34" y="780" class="h2" text-anchor="start">Mobile notes</text>
+  <circle cx="40" cy="804" r="12" fill="#2563EB"/>
+  <text x="40" y="808" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="806" class="annoTitle" text-anchor="start">Hierarchy mobile stays triage-first</text>
+  <text x="62" y="824" class="annoText" text-anchor="start">The active node, compare path, and publish blockers stay visible before deeper tree drill.</text>
+</svg>

@@ -46,6 +46,9 @@ In-scope capability areas:
 
 - Surveys, pulse surveys, recognition, rewards, social feed, communities, events, and wellness programs
 - Employee communications and campaign participation
+- Configurable quote and culture-message libraries for dashboard inspiration, role-based nudges, and HR-pushed daily highlights
+- Milestone celebration programs including birthdays, work anniversaries, service awards, and AI-assisted greeting-card generation
+- Recognition and quote personalization engine for festivals, national occasions, campaign days, location-specific celebrations, and values-based moments using curated or AI-generated Staffsy bot content
 - Engagement action tracking and follow-up workflows
 - Sentiment and participation analytics
 
@@ -68,6 +71,8 @@ User experience should provide:
 
 - Survey builder and response dashboard
 - Recognition feed
+- Celebration campaign studio
+- Quote and culture personalization console
 - Community space
 - Wellness program portal
 
@@ -75,6 +80,8 @@ Key screens:
 
 - Survey builder and response dashboard
 - Recognition feed
+- Celebration campaign studio
+- Quote and culture personalization console
 - Community space
 - Wellness program portal
 
@@ -97,6 +104,9 @@ Representative APIs:
 
 - `POST /api/v1/experience/surveys`
 - `POST /api/v1/experience/recognitions`
+- `POST /api/v1/experience/celebrations/{campaignId}/generate`
+- `POST /api/v1/experience/quotes`
+- `POST /api/v1/experience/celebrations`
 - `GET /api/v1/experience/communities`
 - `POST /api/v1/experience/events`
 
@@ -120,6 +130,10 @@ Core entities:
 - `survey`
 - `survey_response`
 - `recognition`
+- `quote_library`
+- `quote_targeting_rule`
+- `celebration_campaign`
+- `celebration_asset`
 - `community`
 - `event`
 - `wellness_program`
@@ -143,6 +157,9 @@ Published events:
 
 - `experience.survey.published`
 - `experience.recognition.created`
+- `experience.quote.published`
+- `experience.quote.personalized`
+- `experience.celebration.generated`
 - `experience.event.announced`
 
 Consumed events:
@@ -176,6 +193,9 @@ Dashboards should show:
 - `Engagement score trend`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Recognition activity heatmap`: summary view intended to surface actionable indicators, pending issues, and movement over time.
 - `Community participation`: summary view intended to surface actionable indicators, pending issues, and movement over time.
+- `Daily quote or culture nudge`: summary view intended to surface contextual inspiration, policy-aligned messages, or HR-curated morale content without becoming visual noise.
+- `Today birthdays and milestones`: summary view intended to surface upcoming celebrations, generated greeting assets, and manager action prompts.
+- `Festival and occasion spotlight`: summary view intended to surface culturally relevant greetings, quotes, and celebration moments based on geography, company calendar, and active campaigns.
 
 Dashboard expectations:
 
@@ -193,6 +213,7 @@ Security requirements:
 - Support approval and override controls for high-impact employee experience actions.
 - Restrict export, print, download, or API bulk-read paths for employee experience where the module contains sensitive or payroll-impacting information.
 - Support maker-checker, delegation, and segregation-of-duties enforcement where employee experience exposes privileged operations.
+- Photo-based celebration assets must respect employee consent, opt-out preferences, brand moderation policy, and geography-specific privacy rules before generation or publication.
 
 # 10. Audit
 
@@ -212,6 +233,9 @@ AI opportunities:
 - Summarize open-text feedback themes
 - Suggest recognition moments from milestones
 - Identify engagement risk clusters
+- Personalize dashboard quotes or culture nudges using role, location, campaign calendar, and recent employee context without using sensitive attributes unfairly
+- Generate birthday or milestone greeting cards using consented employee photos, approved brand templates, and HR-configured tone rules before human or rule-based publication
+- Generate festival, occasion, and values-themed quote packs through the Staffsy bot persona `Ridz`, while requiring brand-safe templates, approval rules, and locale-sensitive fallback behavior
 
 AI guardrails:
 
@@ -229,6 +253,8 @@ Representative test cases:
 - Verify reporting outputs and audit traceability
 - Verify positive, negative, boundary, and recovery paths for the most critical employee experience workflows.
 - Verify that employee experience behaves correctly across role scopes, company scopes, and tenant configuration variations.
+- Verify quote widgets obey audience targeting, schedule windows, locale fallback, and mute or dismiss preferences.
+- Verify AI-generated celebration cards require consented photo use, prevent duplicate sends, and degrade gracefully when no usable photo exists.
 
 # 13. Workflows
 

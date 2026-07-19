@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1280" viewBox="0 0 1440 1280" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 28px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2 { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h2inv { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .tiny { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 12px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 14px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#102A43" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="1280" fill="#F4F7FB"/>
+  <rect x="24" y="24" width="248" height="1232" rx="24" fill="#10324A" filter="url(#shadow)"/>
+  <text x="52" y="72" class="inverse">Org Administration</text>
+  <rect x="48" y="92" width="200" height="36" rx="12" fill="rgba(255,255,255,0.10)"/>
+  <text x="62" y="116" class="inverse">Enterprise HRMS</text>
+  <rect x="40" y="144" width="216" height="40" rx="12" fill="rgba(255,255,255,0.12)"/>
+  <text x="60" y="168" class="inverse">Privacy Requests</text>
+  <rect x="40" y="196" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="220" class="inverse">Exports</text>
+  <rect x="40" y="248" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="272" class="inverse">Masking Preview</text>
+  <rect x="40" y="300" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="324" class="inverse">Retention</text>
+  <rect x="40" y="352" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="376" class="inverse">Privacy Officer</text>
+  <rect x="40" y="404" width="216" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+  <text x="60" y="428" class="inverse">Decision State</text>
+
+  <rect x="296" y="24" width="1120" height="64" rx="20" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="40" width="360" height="32" rx="16" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="61" class="small">Search request id, employee, data subject, export reason, or legal basis</text>
+  <rect x="1058" y="40" width="112" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1114" y="58" class="small" text-anchor="middle">Privacy mode</text>
+  <rect x="1184" y="40" width="110" height="28" rx="14" fill="#FDEAD7"/>
+  <text x="1239" y="58" class="small" text-anchor="middle">Queue 14</text>
+  <rect x="1308" y="40" width="92" height="28" rx="14" fill="#E3F2FD"/>
+  <text x="1354" y="58" class="small" text-anchor="middle">Masked</text>
+
+  <text x="310" y="128" class="title">Export and Privacy Request Review</text>
+  <rect x="296" y="152" width="152" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="372" y="170" class="small" text-anchor="middle">Brightline Education</text>
+  <rect x="460" y="152" width="116" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="518" y="170" class="small" text-anchor="middle">DPO assigned</text>
+  <rect x="588" y="152" width="122" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="649" y="170" class="small" text-anchor="middle">Retention warn</text>
+  <rect x="812" y="146" width="172" height="40" rx="14" fill="#2563EB"/>
+  <text x="898" y="172" class="inverse" text-anchor="middle">Open review bundle</text>
+  <circle cx="824" cy="146" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="824" y="151" class="inverse" text-anchor="middle">1</text>
+  <rect x="996" y="146" width="160" height="40" rx="14" fill="#0F766E"/>
+  <text x="1076" y="172" class="inverse" text-anchor="middle">Create masked export</text>
+
+  <rect x="296" y="206" width="862" height="76" rx="18" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="320" y="226" width="420" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="338" y="249" class="body">Filter by request type, legal basis, region, urgency, retention, or officer state</text>
+  <rect x="756" y="226" width="108" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="810" y="244" class="small" text-anchor="middle">Pending only</text>
+  <rect x="874" y="226" width="112" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="930" y="244" class="small" text-anchor="middle">Sensitive data</text>
+  <rect x="996" y="226" width="86" height="28" rx="14" fill="#EAF2F8"/>
+  <text x="1039" y="244" class="small" text-anchor="middle">Region IN</text>
+  <rect x="1092" y="226" width="58" height="28" rx="14" fill="#10324A"/>
+  <text x="1121" y="244" class="inverse" text-anchor="middle">DPO</text>
+  <circle cx="320" cy="216" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="221" class="inverse" text-anchor="middle">2</text>
+
+  <rect x="296" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="308" y="314" width="44" height="44" rx="12" fill="#2563EB"/>
+  <text x="364" y="332" class="small">Pending queue</text>
+  <text x="364" y="362" class="metric">14</text>
+  <circle cx="320" cy="316" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="321" class="inverse" text-anchor="middle">3</text>
+
+  <rect x="518" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="530" y="314" width="44" height="44" rx="12" fill="#0F766E"/>
+  <text x="586" y="332" class="small">Ready exports</text>
+  <text x="586" y="362" class="metric">05</text>
+
+  <rect x="740" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="752" y="314" width="44" height="44" rx="12" fill="#D97706"/>
+  <text x="808" y="332" class="small">Retention warns</text>
+  <text x="808" y="362" class="metric">03</text>
+
+  <rect x="962" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="974" y="314" width="44" height="44" rx="12" fill="#B42318"/>
+  <text x="1030" y="332" class="small">Escalations</text>
+  <text x="1030" y="362" class="metric">02</text>
+
+  <rect x="1184" y="302" width="198" height="92" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <rect x="1196" y="314" width="44" height="44" rx="12" fill="#7C3AED"/>
+  <text x="1252" y="332" class="small">Officer states</text>
+  <text x="1252" y="362" class="metric">04</text>
+
+  <rect x="296" y="422" width="286" height="510" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="446" class="h3">Approval queue and request stack</text>
+  <text x="312" y="464" class="small">The queue stays explicit so privacy officers can triage by legal basis, urgency, and data scope</text>
+  <circle cx="314" cy="482" r="3" fill="#2563EB"/>
+  <text x="326" y="486" class="body">EXP-2026-019: employee master export for litigation support, due 18 Jul 2026</text>
+  <circle cx="314" cy="502" r="3" fill="#2563EB"/>
+  <text x="326" y="506" class="body">DSR-2026-044: right-to-access request for ex-employee across payroll and attendance</text>
+  <circle cx="314" cy="522" r="3" fill="#2563EB"/>
+  <text x="326" y="526" class="body">DEL-2026-011: privacy deletion request blocked by statutory payroll retention rules</text>
+  <circle cx="314" cy="542" r="3" fill="#2563EB"/>
+  <text x="326" y="546" class="body">Every request shows origin event, policy basis, and approver path before export generation</text>
+  <rect x="320" y="574" width="122" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="381" y="592" class="small" text-anchor="middle">Access request</text>
+  <rect x="450" y="574" width="108" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="504" y="592" class="small" text-anchor="middle">Retention</text>
+  <rect x="320" y="614" width="118" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="379" y="632" class="small" text-anchor="middle">Masked only</text>
+  <rect x="446" y="614" width="112" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="502" y="632" class="small" text-anchor="middle">Escalated</text>
+  <circle cx="314" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="314" y="443" class="inverse" text-anchor="middle">4</text>
+
+  <rect x="602" y="422" width="556" height="250" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="618" y="446" class="h3">Request detail and masking preview</text>
+  <text x="618" y="464" class="small">The review detail pairs data-scope summary with a structural preview of what the export will actually reveal</text>
+  <rect x="620" y="482" width="250" height="166" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <text x="638" y="506" class="small">Request summary</text>
+  <text x="638" y="532" class="body">Subject: Priya Mehta</text>
+  <text x="638" y="554" class="body">Scope: employee, payroll, leave, documents</text>
+  <text x="638" y="576" class="body">Legal basis: data-subject access</text>
+  <text x="638" y="598" class="body">Origin: privacy ticket plus audit event EXP-2026-019</text>
+  <rect x="886" y="482" width="254" height="166" rx="12" fill="#FBFDFF" stroke="#D9E2EC"/>
+  <text x="904" y="506" class="small">Masking preview</text>
+  <text x="904" y="532" class="body">PAN: ABCDE1234F</text>
+  <text x="904" y="554" class="body">Mobile: +91•••••3048</text>
+  <text x="904" y="576" class="body">Bank a/c: ••••8192</text>
+  <text x="904" y="598" class="body">Address lines: redacted where policy requires</text>
+  <circle cx="620" cy="438" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="620" y="443" class="inverse" text-anchor="middle">5</text>
+
+  <rect x="602" y="692" width="556" height="240" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="618" y="716" class="h3">Retention warnings and privacy-officer decision state</text>
+  <text x="618" y="734" class="small">Decisioning lives beside warnings so the approver cannot miss legal constraints before action</text>
+  <circle cx="620" cy="754" r="3" fill="#2563EB"/>
+  <text x="632" y="758" class="body">Deletion cannot proceed because payroll and tax records remain under seven-year statutory retention</text>
+  <circle cx="620" cy="774" r="3" fill="#2563EB"/>
+  <text x="632" y="778" class="body">Export package expires after 72 hours and requires MFA before download or share actions</text>
+  <circle cx="620" cy="794" r="3" fill="#2563EB"/>
+  <text x="632" y="798" class="body">Decision state tracks draft review, officer approved, escalated legal hold, or rejected with reason</text>
+  <circle cx="620" cy="814" r="3" fill="#2563EB"/>
+  <text x="632" y="818" class="body">All decisions write back to immutable audit events and can spawn masked evidence or final export jobs</text>
+  <rect x="620" y="842" width="136" height="40" rx="14" fill="#2563EB"/>
+  <text x="688" y="868" class="inverse" text-anchor="middle">Approve request</text>
+  <rect x="770" y="842" width="154" height="40" rx="14" fill="#EEF2FF"/>
+  <text x="847" y="868" class="body" text-anchor="middle">Escalate legal hold</text>
+  <rect x="938" y="842" width="164" height="40" rx="14" fill="#F8FAFC" stroke="#D9E2EC"/>
+  <text x="1020" y="868" class="body" text-anchor="middle">Reject with reason</text>
+  <circle cx="620" cy="708" r="14" fill="#B42318" stroke="white" stroke-width="3"/>
+  <text x="620" y="713" class="inverse" text-anchor="middle">6</text>
+
+  <rect x="296" y="952" width="862" height="98" rx="14" fill="#FFFFFF" stroke="#D9E2EC" filter="url(#shadow)"/>
+  <text x="312" y="976" class="h3">Pinned privacy lenses</text>
+  <text x="312" y="994" class="small">Reviewers can pivot quickly across recurring request shapes without rebuilding their queue view</text>
+  <rect x="320" y="990" width="106" height="28" rx="14" fill="#DCFCE7"/>
+  <text x="373" y="1008" class="small" text-anchor="middle">Access DSR</text>
+  <rect x="438" y="990" width="120" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="498" y="1008" class="small" text-anchor="middle">Masked export</text>
+  <rect x="570" y="990" width="132" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="636" y="1008" class="small" text-anchor="middle">Retention block</text>
+  <rect x="714" y="990" width="126" height="28" rx="14" fill="#FEE2E2"/>
+  <text x="777" y="1008" class="small" text-anchor="middle">Legal hold</text>
+  <rect x="852" y="990" width="108" height="28" rx="14" fill="#F8FAFC"/>
+  <text x="906" y="1008" class="small" text-anchor="middle">Officer state</text>
+  <circle cx="320" cy="966" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="320" y="971" class="inverse" text-anchor="middle">7</text>
+
+  <rect x="1178" y="152" width="238" height="898" rx="18" fill="#F8FBFF" stroke="#D9E2EC"/>
+  <text x="1196" y="180" class="h2">Desktop annotations</text>
+  <circle cx="1202" cy="204" r="12" fill="#2563EB"/>
+  <text x="1202" y="208" class="inverse" text-anchor="middle">1</text>
+  <text x="1224" y="206" class="annoTitle">Sensitive review framing</text>
+  <text x="1224" y="224" class="annoText">The top actions are about opening a review bundle and generating a masked export, not direct download.</text>
+  <circle cx="1202" cy="256" r="12" fill="#2563EB"/>
+  <text x="1202" y="260" class="inverse" text-anchor="middle">2</text>
+  <text x="1224" y="258" class="annoTitle">Queueable privacy filters</text>
+  <text x="1224" y="276" class="annoText">Type, region, legal basis, urgency, retention, and officer state anchor the triage model.</text>
+  <circle cx="1202" cy="308" r="12" fill="#2563EB"/>
+  <text x="1202" y="312" class="inverse" text-anchor="middle">3</text>
+  <text x="1224" y="310" class="annoTitle">Signal cards expose risk</text>
+  <text x="1224" y="328" class="annoText">Queue depth, ready exports, retention warnings, escalations, and decision-state spread lead the screen.</text>
+  <circle cx="1202" cy="360" r="12" fill="#2563EB"/>
+  <text x="1202" y="364" class="inverse" text-anchor="middle">4</text>
+  <text x="1224" y="362" class="annoTitle">Queue before payload</text>
+  <text x="1224" y="380" class="annoText">The left stack makes the request pipeline visible before the officer drills into one package.</text>
+  <circle cx="1202" cy="412" r="12" fill="#2563EB"/>
+  <text x="1202" y="416" class="inverse" text-anchor="middle">5</text>
+  <text x="1224" y="414" class="annoTitle">Masking preview is concrete</text>
+  <text x="1224" y="432" class="annoText">Reviewers see what fields will be partially revealed or redacted before any export is approved.</text>
+  <circle cx="1202" cy="464" r="12" fill="#2563EB"/>
+  <text x="1202" y="468" class="inverse" text-anchor="middle">6</text>
+  <text x="1224" y="466" class="annoTitle">Warnings and decisions co-exist</text>
+  <text x="1224" y="484" class="annoText">Retention blockers and officer state live together so legal constraints are inseparable from action choice.</text>
+  <circle cx="1202" cy="516" r="12" fill="#2563EB"/>
+  <text x="1202" y="520" class="inverse" text-anchor="middle">7</text>
+  <text x="1224" y="518" class="annoTitle">Desktop suits detailed review</text>
+  <text x="1224" y="536" class="annoText">The layout supports queue triage, data-scope validation, retention analysis, and final decisioning in one pass.</text>
+</svg>

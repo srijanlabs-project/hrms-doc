@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="1540" viewBox="0 0 390 1540" fill="none">
+  <defs>
+    <style>
+      .title { font: 700 22px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .h3 { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .metric { font: 700 20px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .body { font: 500 12px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .small { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+      .inverse { font: 600 11px 'Segoe UI', Arial, sans-serif; fill: white; }
+      .annoTitle { font: 700 13px 'Segoe UI', Arial, sans-serif; fill: #102A43; }
+      .annoText { font: 500 11px 'Segoe UI', Arial, sans-serif; fill: #486581; }
+    </style>
+  </defs>
+  <rect width="390" height="1540" fill="#F4F7FB"/>
+  <rect x="16" y="16" width="358" height="1508" rx="30" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="28" y="54" class="body">â˜°</text>
+  <text x="58" y="54" class="body">Manager Reviews</text>
+  <circle cx="314" cy="48" r="12" fill="#EAF2F8"/>
+  <circle cx="344" cy="48" r="12" fill="#FDEAD7"/>
+
+  <text x="28" y="96" class="title">Manager Reviews and Team Performance Hub</text>
+  <text x="28" y="118" class="small">Team review due dates, goals, feedback, and check-ins</text>
+  <rect x="28" y="138" width="334" height="36" rx="18" fill="#F8FAFC" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="160" class="small">Search review, goal, feedback, or due conversation</text>
+  <circle cx="44" cy="132" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="44" y="137" class="inverse" text-anchor="middle">1</text>
+
+  <rect x="28" y="188" width="160" height="28" rx="14" fill="#DBEAFE"/>
+  <text x="108" y="206" class="small" text-anchor="middle">Goals</text>
+  <rect x="198" y="188" width="164" height="28" rx="14" fill="#FEF3C7"/>
+  <text x="280" y="206" class="small" text-anchor="middle">Feedback</text>
+
+  <rect x="28" y="236" width="158" height="82" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="264" class="small">Due</text>
+  <text x="44" y="292" class="metric">07</text>
+  <rect x="204" y="236" width="158" height="82" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="220" y="264" class="small">Feedback</text>
+  <text x="220" y="292" class="metric">05</text>
+  <rect x="28" y="334" width="158" height="82" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="362" class="small">Risk</text>
+  <text x="44" y="390" class="metric">02</text>
+  <rect x="204" y="334" width="158" height="82" rx="18" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="220" y="362" class="small">Team</text>
+  <text x="220" y="390" class="metric">42</text>
+
+  <rect x="28" y="434" width="334" height="46" rx="16" fill="#2563EB"/>
+  <text x="195" y="463" class="inverse" text-anchor="middle">Open review hub</text>
+  <circle cx="40" cy="440" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="40" y="445" class="inverse" text-anchor="middle">2</text>
+  <rect x="28" y="492" width="334" height="46" rx="16" fill="#0F766E"/>
+  <text x="195" y="521" class="inverse" text-anchor="middle">Schedule check-in</text>
+
+  <rect x="28" y="558" width="334" height="262" rx="20" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="586" class="h3">Team review rhythm and follow-through</text>
+  <text x="44" y="606" class="small">Managers need one surface to track reviews, goals, and feedback without context loss.</text>
+  <circle cx="40" cy="574" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="40" y="579" class="inverse" text-anchor="middle">3</text>
+  <circle cx='42' cy='650' r='3' fill='#2563EB'/>
+<text x='54' y='654' class='body'>Due work stays visible</text>
+<circle cx='42' cy='672' r='3' fill='#2563EB'/>
+<text x='54' y='676' class='body'>Feedback coverage remains clear</text>
+<circle cx='42' cy='694' r='3' fill='#2563EB'/>
+<text x='54' y='698' class='body'>Check-ins stay nearby</text>
+
+  <rect x="28" y="846" width="334" height="230" rx="20" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="874" class="h3">Performance action and readiness</text>
+  <text x="44" y="894" class="small">The hub should support both day-to-day coaching and formal review deadlines.</text>
+  <circle cx="40" cy="862" r="14" fill="#2563EB" stroke="white" stroke-width="3"/>
+  <text x="40" y="867" class="inverse" text-anchor="middle">4</text>
+  <circle cx='42' cy='936' r='3' fill='#2563EB'/>
+<text x='54' y='940' class='body'>Risk cues stand out</text>
+<circle cx='42' cy='958' r='3' fill='#2563EB'/>
+<text x='54' y='962' class='body'>History supports decisions</text>
+<circle cx='42' cy='980' r='3' fill='#2563EB'/>
+<text x='54' y='984' class='body'>Action remains central</text>
+
+  <rect x="28" y="1104" width="334" height="392" rx="20" fill="#F8FBFF" stroke="#D9E2EC" stroke-width="1"/>
+  <text x="44" y="1132" class="h3">Mobile annotations</text>
+    <circle cx="40" cy="1296" r="12" fill="#2563EB"/>
+  <text x="40" y="1300" class="inverse" text-anchor="middle">1</text>
+  <text x="62" y="1298" class="annoTitle">One review rhythm</text>
+  <text x="62" y="1316" class="annoText">Managers work better when review rhythm lives in one place.</text>
+  <circle cx="40" cy="1344" r="12" fill="#2563EB"/>
+  <text x="40" y="1348" class="inverse" text-anchor="middle">2</text>
+  <text x="62" y="1346" class="annoTitle">Feedback coverage visible</text>
+  <text x="62" y="1364" class="annoText">Feedback coverage helps improve fairness.</text>
+  <circle cx="40" cy="1392" r="12" fill="#2563EB"/>
+  <text x="40" y="1396" class="inverse" text-anchor="middle">3</text>
+  <text x="62" y="1394" class="annoTitle">Check-ins near goals</text>
+  <text x="62" y="1412" class="annoText">Check-ins should sit close to goals and reviews.</text>
+  <circle cx="40" cy="1440" r="12" fill="#2563EB"/>
+  <text x="40" y="1444" class="inverse" text-anchor="middle">4</text>
+  <text x="62" y="1442" class="annoTitle">Risk cues remain visible</text>
+  <text x="62" y="1460" class="annoText">Risk cues should stay obvious before deadlines slip.</text>
+  <circle cx="40" cy="1488" r="12" fill="#2563EB"/>
+  <text x="40" y="1492" class="inverse" text-anchor="middle">5</text>
+  <text x="62" y="1490" class="annoTitle">Action over passive charts</text>
+  <text x="62" y="1508" class="annoText">This hub should drive action more than passive analysis.</text>
+</svg>
