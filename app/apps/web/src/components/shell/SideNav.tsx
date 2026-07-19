@@ -1,6 +1,5 @@
 import {
   BarChart3,
-  Bot,
   Building2,
   CalendarCheck,
   CalendarDays,
@@ -20,6 +19,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { RidzAvatar } from "../ui/RidzAvatar";
 
 type NavItem = { label: string; to: string; icon: LucideIcon; disabled?: boolean };
 type NavSection = { title: string; items: NavItem[] };
@@ -113,7 +113,7 @@ export function SideNav() {
       {/* Ask Ridz card (Staffsy AI assistant), per board T-001 */}
       <div className="mt-auto rounded-(--radius-card) bg-primary-soft p-4">
         <div className="flex items-center gap-2 font-semibold text-primary">
-          <Bot className="h-5 w-5" />
+          <RidzAvatar size={28} />
           Ask Ridz
         </div>
         <p className="mt-1 text-xs text-ink-muted">Your smart HR assistant</p>

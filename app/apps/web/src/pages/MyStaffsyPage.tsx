@@ -9,7 +9,6 @@ import {
   Receipt,
   Send,
   Settings2,
-  Sparkles,
   Upload,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -17,6 +16,7 @@ import { Avatar } from "../components/ui/Avatar";
 import { Badge, type BadgeTone } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { ProgressBar } from "../components/ui/ProgressBar";
+import { RidzAvatar } from "../components/ui/RidzAvatar";
 
 /**
  * T-001 My Staffsy Workspace — employee landing page.
@@ -260,7 +260,7 @@ export function MyStaffsyPage() {
       <aside className="hidden w-80 shrink-0 space-y-4 min-[1400px]:block">
         <Card>
           <div className="mb-3 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
+            <RidzAvatar size={32} />
             <span className="font-semibold">Ridz</span>
             <Badge tone="primary">BETA</Badge>
           </div>
