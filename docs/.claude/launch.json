@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "staffsy-web",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "D:/HRMS-doc/app/apps/web"],
+      "port": 5173
+    },
+    {
+      "name": "staffsy-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "D:/HRMS-doc/app/apps/api"],
+      "port": 3000
+    }
+  ]
+}
