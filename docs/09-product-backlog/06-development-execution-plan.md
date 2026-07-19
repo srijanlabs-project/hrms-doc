@@ -53,6 +53,19 @@ Goal: employee system of record end to end.
 
 Done when: create employee → appears in directory → open 360 profile → data survives restart → all under RLS.
 
+## 4.1 Deferred from Phase 2, tracked for a future People Core pass
+
+Personal-information is its own sub-module by spec design (`02-personal-information.md`), separate from the employee-master core built above — not a Phase 2 gap, a deliberate boundary.
+
+| Item | Spec status | Notes |
+|---|---|---|
+| DOB, marital/marriage status, dependents (incl. kids, parents as dependents), address, emergency contacts | Spec'd — `02-personal-information.md`, `DTO-EMP-DEP-001` | Ready to build against; not started |
+| Certificates | Spec'd, split across two modules | Professional certs: `12-learning-and-development/02-certifications.md`. Certificate files: `14-employee-documents.md` (generic document repository) |
+| Parent details (father's/mother's name) | Not explicit | Inferred to reuse the dependents model (`relationship_type = parent`); needs spec confirmation before building |
+| Hobbies, sports, personal awards/recognitions | **Not in the spec library at all** | Needs a spec addition (personal-information or employee-experience module) before this can be built with the same discipline as everything else |
+
+This becomes its own People Core pass once Phase 3 (Identity & Access) lands, since several of these fields are self-service-editable with approval workflows that need real auth/roles to be meaningful.
+
 # 5. Phase 3 — Identity & Access
 
 | Deliverable | Spec |
