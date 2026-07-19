@@ -1,14 +1,6 @@
-import {
-  Bell,
-  ChevronDown,
-  HelpCircle,
-  LayoutGrid,
-  Mail,
-  Menu,
-  Plus,
-  Search,
-} from "lucide-react";
+import { Bell, ChevronDown, HelpCircle, LayoutGrid, Mail, Menu, Plus, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { UserMenu } from "./UserMenu";
 
 function IconButton({ icon: Icon, badge, label }: { icon: LucideIcon; badge?: number; label: string }) {
   return (
@@ -74,19 +66,7 @@ export function TopBar() {
           <IconButton icon={LayoutGrid} label="Apps" />
         </div>
 
-        <button type="button" className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-canvas">
-          <span
-            aria-hidden
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-soft font-semibold text-primary"
-          >
-            RS
-          </span>
-          <span className="hidden text-left lg:block">
-            <span className="block font-semibold leading-tight">Rahul Sharma</span>
-            <span className="block text-xs leading-tight text-ink-faint">Product Designer</span>
-          </span>
-          <ChevronDown className="h-4 w-4 text-ink-faint" />
-        </button>
+        <UserMenu />
       </div>
     </header>
   );

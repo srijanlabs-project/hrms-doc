@@ -24,6 +24,8 @@ model Tenant {
   legalEntities LegalEntity[]
   departments   Department[]
   employees     Employee[]
+  users         User[]
+  sessions      Session[]
 
   @@map("tenants")
 }
@@ -109,9 +111,62 @@ model Employee {
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
+  users  User[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
   @@index([tenantId, departmentId])
   @@map("employees")
+}
+
+/// Identity & Access, "RBAC v1" slice per docs/03-module-specifications/03-identity-access.md
+/// and 08-.../03-identity-and-access/01-authentication.md. Deliberately
+/// deferred: the full role/permission governance catalog (versioning,
+/// publish/retire, SoD, certification — 04-roles.md, 05-permissions.md),
+/// SSO/federation and MFA (02-sso.md, 03-mfa.md — Keycloak/OIDC per the
+/// tech-stack ADR, blocked on Docker availability), delegation, service
+/// accounts, and lockout/step-up-auth policy. `roles` is a plain string
+/// array standing in for the governed role catalog until that pass exists.
+model User {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  email        String
+  passwordHash String  @map("password_hash")
+  roles        String[] @default([])
+
+  /// Spec section 14 state machine: Invited, Active, Locked, Suspended, Deprovisioned.
+  status String @default("Active")
+
+  employeeId String?   @map("employee_id") @db.Uuid
+  employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  sessions Session[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+}
+
+/// Backs real session revocation (auth.session_revoked event, spec section 6)
+/// rather than purely stateless JWTs — the JWT carries this row's id (`sid`)
+/// and AuthGuard checks it hasn't been revoked or expired on every request.
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  issuedAt  DateTime  @default(now()) @map("issued_at") @db.Timestamptz(6)
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("sessions")
 }

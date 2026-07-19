@@ -1,5 +1,3 @@
-import { CURRENT_TENANT_CODE } from "../tenant";
-
 /** Mirrors the canonical envelope in docs/07-appendices/17-error-payload-schema-and-recovery-patterns.md. */
 export interface ApiErrorPayload {
   errorRef: string;
@@ -27,13 +25,19 @@ export class ApiError extends Error {
  * Hand-written typed fetch client. Fast-follow per the tech-stack ADR
  * (docs/06-cross-cutting-specs/19): once OpenAPI YAML is authored for the
  * org and people services, this becomes a generated client instead.
+ *
+ * Tenant identity now comes from the httpOnly session cookie (Phase 3
+ * AuthGuard), not a client-supplied header — a client can no longer claim a
+ * tenant it doesn't have a session for. `credentials: "include"` is set
+ * explicitly so cookies are sent even if the API is ever served from a
+ * different origin than the Vite dev proxy's same-origin default.
  */
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api/v1${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      "X-Tenant-Code": CURRENT_TENANT_CODE,
       ...init?.headers,
     },
   });

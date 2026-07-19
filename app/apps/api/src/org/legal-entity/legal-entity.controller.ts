@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Post } from "@nestjs/common";
+import { Roles } from "../../auth/decorators/roles.decorator";
 import { CreateLegalEntityDto } from "./dto/create-legal-entity.dto";
 import { LegalEntityService } from "./legal-entity.service";
 
@@ -13,6 +14,7 @@ export class LegalEntityController {
     return { data };
   }
 
+  @Roles("org_admin")
   @Post()
   @HttpCode(201)
   async create(@Body() dto: CreateLegalEntityDto) {

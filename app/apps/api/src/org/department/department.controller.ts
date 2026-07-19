@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, Post } from "@nestjs/common";
+import { Roles } from "../../auth/decorators/roles.decorator";
 import { CreateDepartmentDto } from "./dto/create-department.dto";
 import { DepartmentService } from "./department.service";
 
@@ -13,6 +14,7 @@ export class DepartmentController {
     return { data };
   }
 
+  @Roles("org_admin", "hr_ops")
   @Post()
   @HttpCode(201)
   async create(@Body() dto: CreateDepartmentDto) {

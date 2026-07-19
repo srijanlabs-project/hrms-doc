@@ -23,6 +23,7 @@ Done:
 - AI brand: Ridz across all touchpoints
 - **Phase 1 complete**: Postgres RLS tenancy (tenants + legal_entities), PrismaService.withTenant(), request-context middleware, canonical error envelope, first tenant-scoped API (org/legal-entity, controller/service/repository split), seed + rls-check scripts, ESLint max-lines enforcement. RLS isolation proven both at the DB layer (rls-check script) and over real HTTP (403 tenant-boundary, 422 validation, 201 create, 409 conflict, tenant-scoped 200s all verified against the running API)
 - **Phase 2 complete (proving slice)**: Department (org module) and Employee (people module) built against their sub-module specs, both RLS-protected. T-003 Enterprise Workbench (directory: filters, table, quick-preview drawer, add-employee form) and T-004 360° Workspace (profile: header, tabs, About, honestly-placeholder KPIs for modules that don't exist yet) built from the boards and wired to live data end to end — create, list, filter, duplicate-conflict, and cross-tenant isolation all verified via curl and in the browser. Two documented simplifications: the create form is single-step (T-005's full stepper deferred) and the pages run inside the existing employee-facing shell rather than a dedicated WS-03 HR Workspace shell (T-003's own Data Management nav deferred to when that template is built)
+- **Phase 3 complete (RBAC v1)**: real local auth (bcryptjs + DB-backed revocable sessions + JWT cookie), User/Session models under RLS, AuthGuard + RolesGuard wired globally, four seeded roles (org_admin, hr_ops, manager, employee — via seeded users, not yet a self-serve admin UI). Closed a real security gap in the process: Phase 1/2 trusted a client-supplied `X-Tenant-Code` header for every request; AuthGuard now overrides tenant scope with the verified session's tenantId, so a spoofed header can no longer widen access (proven with a live test: a valid acme session sending `X-Tenant-Code: globex` still only sees acme data). Verified end to end: unauthenticated → 401, wrong role → 403, correct login → 200 + working cookie, logout → session revoked and subsequent reuse → 401, cross-tenant login isolation. Login page has no template board (checked the full registry, genuinely not there) — built from tokens.
 
 # 3. Phase 1 — Data Platform Foundation ✅ Done
 
@@ -66,16 +67,18 @@ Personal-information is its own sub-module by spec design (`02-personal-informat
 
 This becomes its own People Core pass once Phase 3 (Identity & Access) lands, since several of these fields are self-service-editable with approval workflows that need real auth/roles to be meaningful.
 
-# 5. Phase 3 — Identity & Access
+# 5. Phase 3 — Identity & Access ✅ Done (RBAC v1; SSO deferred)
 
-| Deliverable | Spec |
-|---|---|
-| Keycloak (Docker) with OIDC; login flow in web | `08-.../03-identity-access` |
-| Role model: Employee, Manager, HR Ops, Org Admin (RBAC v1) | Doc 17, appendix 38 |
-| Route guards + permission-aware nav (disabled items become role-driven) | Appendix 10 |
-| Audit-event capture on auth and people mutations | Doc 11 |
+| Deliverable | Spec | Status |
+|---|---|---|
+| Local auth (login/logout/session) with real revocable sessions; login flow in web | `08-.../03-identity-and-access/01-authentication` | Done |
+| Role model: org_admin, hr_ops, manager, employee (RBAC v1) | Doc 17, appendix 38 | Done — plain string roles, not the governed role/permission catalog (04-roles.md, 05-permissions.md) |
+| API route guards (AuthGuard + RolesGuard) | Appendix 10 | Done |
+| Keycloak (OIDC) SSO/MFA/federation | `08-.../02-sso`, `03-mfa` | **Deferred** — blocked on Docker/hosted IdP availability; see ADR §7 revisit trigger. Local auth is the spec-sanctioned interim path, not a replacement |
+| Permission-aware nav (sidebar items conditionally shown by role) | Appendix 10 | **Deferred** — nav is currently role-blind; only gates API writes, not nav visibility |
+| Audit-event capture on auth and people mutations | Doc 11 | **Deferred** — no audit log yet; login/logout/mutation events aren't persisted. Next-highest-value hardening after this phase |
 
-Done when: role-scoped users see role-scoped UI and API access; mutations produce audit rows.
+Done when: role-scoped users see role-scoped API access — met. UI-level nav gating and audit trail are explicitly carried forward, not silently dropped.
 
 # 6. Phase 4 — Leave (first workflow vertical)
 

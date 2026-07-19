@@ -1,11 +1,20 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 /**
- * Local dev seed: two tenants, each with a legal entity, departments, and
- * employees, so RLS isolation and the People/Org UI can be demonstrated with
+ * Local dev seed: two tenants, each with a legal entity, departments,
+ * employees, and login-capable users covering the RBAC v1 role set, so
+ * RLS isolation and the People/Org/Auth UI can all be demonstrated with
  * realistic data. Run with `npm run db:seed`.
+ *
+ * Dev-only credentials (never used outside local seed data):
+ *   workspace "acme"   priya.sharma@acme.example   Passw0rd!123   (org_admin)
+ *   workspace "acme"   rohit.singh@acme.example    Passw0rd!123   (manager)
+ *   workspace "acme"   sneha.reddy@acme.example    Passw0rd!123   (hr_ops)
+ *   workspace "globex" alex.carter@globex.example  Passw0rd!123   (org_admin)
  */
 const prisma = new PrismaClient();
+const DEV_PASSWORD_HASH = bcrypt.hashSync("Passw0rd!123", 10);
 
 async function main() {
   const acme = await prisma.tenant.upsert({
@@ -41,7 +50,7 @@ async function main() {
       create: { tenantId: acme.id, code: "PEOPLE", name: "People Operations" },
     });
 
-    const manager = await tx.employee.upsert({
+    const priya = await tx.employee.upsert({
       where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0001" } },
       update: {},
       create: {
@@ -58,7 +67,7 @@ async function main() {
       },
     });
 
-    await tx.employee.upsert({
+    const rohit = await tx.employee.upsert({
       where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0002" } },
       update: {},
       create: {
@@ -70,13 +79,13 @@ async function main() {
         personalEmail: "rohit.singh@acme.example",
         mobileNumber: "+919812345002",
         departmentId: engineering.id,
-        managerId: manager.id,
+        managerId: priya.id,
         status: "Active",
         joiningDate: new Date("2023-03-20"),
       },
     });
 
-    await tx.employee.upsert({
+    const sneha = await tx.employee.upsert({
       where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0003" } },
       update: {},
       create: {
@@ -86,6 +95,42 @@ async function main() {
         personalEmail: "sneha.reddy@acme.example",
         departmentId: peopleOps.id,
         status: "Draft",
+      },
+    });
+
+    await tx.user.upsert({
+      where: { tenantId_email: { tenantId: acme.id, email: "priya.sharma@acme.example" } },
+      update: {},
+      create: {
+        tenantId: acme.id,
+        email: "priya.sharma@acme.example",
+        passwordHash: DEV_PASSWORD_HASH,
+        roles: ["org_admin"],
+        employeeId: priya.id,
+      },
+    });
+
+    await tx.user.upsert({
+      where: { tenantId_email: { tenantId: acme.id, email: "rohit.singh@acme.example" } },
+      update: {},
+      create: {
+        tenantId: acme.id,
+        email: "rohit.singh@acme.example",
+        passwordHash: DEV_PASSWORD_HASH,
+        roles: ["manager"],
+        employeeId: rohit.id,
+      },
+    });
+
+    await tx.user.upsert({
+      where: { tenantId_email: { tenantId: acme.id, email: "sneha.reddy@acme.example" } },
+      update: {},
+      create: {
+        tenantId: acme.id,
+        email: "sneha.reddy@acme.example",
+        passwordHash: DEV_PASSWORD_HASH,
+        roles: ["hr_ops"],
+        employeeId: sneha.id,
       },
     });
   });
@@ -105,7 +150,7 @@ async function main() {
       create: { tenantId: globex.id, code: "OPS", name: "Operations" },
     });
 
-    await tx.employee.upsert({
+    const alex = await tx.employee.upsert({
       where: { tenantId_employeeCode: { tenantId: globex.id, employeeCode: "GLX-0001" } },
       update: {},
       create: {
@@ -116,6 +161,18 @@ async function main() {
         departmentId: ops.id,
         status: "Active",
         joiningDate: new Date("2022-06-01"),
+      },
+    });
+
+    await tx.user.upsert({
+      where: { tenantId_email: { tenantId: globex.id, email: "alex.carter@globex.example" } },
+      update: {},
+      create: {
+        tenantId: globex.id,
+        email: "alex.carter@globex.example",
+        passwordHash: DEV_PASSWORD_HASH,
+        roles: ["org_admin"],
+        employeeId: alex.id,
       },
     });
   });

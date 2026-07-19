@@ -30,7 +30,7 @@ This document records the technology stack decisions for building the Staffsy En
 | UI primitives | shadcn/ui-style headless components restyled to Staffsy | Accessibility without design lock-in |
 | Data fetching | TanStack Query + generated OpenAPI client | The authored contract is the frontend SDK |
 | Tables / charts | TanStack Table + Recharts | Workbench and dashboard patterns across all boards |
-| AuthN/AuthZ | Keycloak (OIDC) for identity; RBAC in-app, ABAC/SoD per doc 17 later | Per-tenant SSO/MFA demands a dedicated IdP; never hand-rolled |
+| AuthN/AuthZ | **Phase 3 (shipped):** local email/password auth in NestJS — bcryptjs hashing, DB-backed sessions (revocable, not purely stateless), JWT cookie carrying the session id. RBAC v1: a plain string-array `roles` column, `@Roles()`/`RolesGuard` gating. **Target (deferred):** Keycloak (OIDC) for SSO/MFA/federation once Docker or a hosted IdP is available — see §7. | Local auth is an explicitly sanctioned pattern in `08-.../03-identity-and-access/01-authentication.md` §3 ("username-password... approved enterprise authentication pattern"); building it now doesn't abandon Keycloak, it implements the spec's own interim allowance while federation is blocked on infrastructure |
 | Queue / jobs | BullMQ + Redis | Payroll runs, imports, notifications, accruals per doc 09 |
 | Object storage | S3-compatible (AWS S3 / MinIO) | Doc 13 file platform: signed URLs, scan hooks, tenant-prefixed keys |
 | Search | Postgres full-text first; OpenSearch when needed | Doc 15 security-trimmed search can start on Postgres |
@@ -53,7 +53,7 @@ This document records the technology stack decisions for building the Staffsy En
 | Java / Spring Boot | Viable equal; rejected only to keep one language end-to-end for current team profile |
 | MongoDB / document store | Statutory payroll and effective-dated HR data are relational and audit-bound |
 | Kafka at start | No event volume to justify it; BullMQ covers job semantics; envelopes stay broker-ready |
-| Hand-rolled auth | Enterprise SSO/MFA/SAML federation is a solved, high-risk domain |
+| Hand-rolled SSO/MFA/SAML federation | This remains rejected — it's a solved, high-risk domain that belongs in Keycloak. This does **not** cover the local email/password path shipped in Phase 3, which the authentication spec explicitly sanctions as an interim pattern; only federation, MFA, and cross-IdP trust are off-limits to hand-roll |
 
 # 6. Known Stress Points and Planned Answers
 
@@ -68,3 +68,4 @@ This record must be revisited when any of the following occurs:
 - Event fan-out needs exceed in-process + queue semantics (introduce broker)
 - Search relevance/scale outgrows Postgres full-text (introduce OpenSearch)
 - Team composition shifts decisively toward another ecosystem
+- Docker (or a hosted Keycloak instance) becomes available, or a customer requires real SSO/MFA/SAML — swap the local-auth AuthGuard for OIDC token verification against Keycloak; the session/role model (User.roles, RequestContextService, RolesGuard) does not need to change, only how a session is established

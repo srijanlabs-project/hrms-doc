@@ -37,6 +37,48 @@ export class ValidationAppError extends AppError {
   }
 }
 
+/**
+ * Not authenticated: missing, invalid, expired, or revoked session.
+ * Message is deliberately generic per 01-authentication.md §4 UX
+ * expectations: "Error messages should guide recovery without helping
+ * attackers enumerate accounts" — used both for "no session cookie" and for
+ * failed login (wrong tenant, email, or password all render identically).
+ */
+export class AuthenticationAppError extends AppError {
+  constructor(correlationId: string, message = "Your session has expired or is no longer valid.") {
+    super({
+      errorRef: "ERR-AUTH-001",
+      code: "AUTH-001",
+      category: "authentication",
+      severity: "high",
+      httpStatus: 401,
+      message,
+      userAction: "Sign in again to continue.",
+      retryable: false,
+      tenantSafe: true,
+      details: { correlationId },
+    });
+  }
+}
+
+/** Authenticated, but the caller's roles don't include one required for this action. */
+export class ForbiddenAppError extends AppError {
+  constructor(correlationId: string) {
+    super({
+      errorRef: "ERR-AUTHZ-001",
+      code: "AUTHZ-001",
+      category: "authorization",
+      severity: "high",
+      httpStatus: 403,
+      message: "You do not have access to perform this action.",
+      userAction: "Request the required role, or contact your administrator.",
+      retryable: false,
+      tenantSafe: true,
+      details: { correlationId },
+    });
+  }
+}
+
 /** A tenant-scoped resource was not found within the caller's own tenant. */
 export class NotFoundAppError extends AppError {
   constructor(objectRef: string, message = "The requested item could not be found.") {

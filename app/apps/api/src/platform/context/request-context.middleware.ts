@@ -8,11 +8,16 @@ import { PrismaService } from "../prisma/prisma.service";
 import { RequestContextService } from "./request-context.service";
 
 /**
- * Resolves the correlation id and tenant context for every request, per the
- * shared header requirements in docs/07-appendices/28 §5. Runs before all
- * route handlers via AppModule.configure(). Tenant resolution queries the
- * platform-plane `tenants` table directly (no RLS there — see migration
- * comment), so this is the one sanctioned place tenant identity is decided.
+ * Resolves the correlation id and a "claimed" tenant context for every
+ * request, per the shared header requirements in docs/07-appendices/28 §5.
+ * Runs before all route handlers via AppModule.configure().
+ *
+ * Since AuthGuard was added (Phase 3), this middleware's X-Tenant-Code
+ * resolution is authoritative only for pre-auth routes like /auth/login,
+ * which needs to know which tenant's user table to check credentials
+ * against. For every authenticated route, AuthGuard overwrites tenantId
+ * with the verified value from the caller's session — a client-supplied
+ * header can no longer widen a request's real tenant scope.
  *
  * Errors are rendered directly here rather than thrown: this middleware runs
  * as raw Express middleware, outside the boundary Nest's exception filters
