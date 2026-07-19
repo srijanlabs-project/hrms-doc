@@ -261,10 +261,10 @@ export function MyStaffsyPage() {
         <Card>
           <div className="mb-3 flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="font-semibold">AI Assistant</span>
+            <span className="font-semibold">Ridz</span>
             <Badge tone="primary">BETA</Badge>
           </div>
-          <p className="mb-3 text-ink-muted">Hi Rahul! How can I help you today?</p>
+          <p className="mb-3 text-ink-muted">Hi Rahul! I'm Ridz — how can I help you today?</p>
           <div className="space-y-2">
             {aiSuggestions.map((suggestion) => (
               <button
@@ -279,7 +279,7 @@ export function MyStaffsyPage() {
           <div className="mt-3 flex items-center gap-2 rounded-lg border border-border px-3 py-2">
             <input
               className="w-full bg-transparent outline-none placeholder:text-ink-faint"
-              placeholder="Ask anything about HR…"
+              placeholder="Ask Ridz anything about HR…"
             />
             <Send className="h-4 w-4 shrink-0 text-primary" />
           </div>

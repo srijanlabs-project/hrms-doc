@@ -1,4 +1,5 @@
 import { Outlet } from "react-router-dom";
+import { FooterBar } from "./FooterBar";
 import { SideNav } from "./SideNav";
 import { TopBar } from "./TopBar";
 
@@ -15,6 +16,7 @@ export function AppShell() {
         <SideNav />
         <main className="min-w-0 flex-1 p-6">
           <Outlet />
+          <FooterBar />
         </main>
       </div>
     </div>

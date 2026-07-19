@@ -110,11 +110,11 @@ export function SideNav() {
         </div>
       ))}
 
-      {/* Ask Staffsy AI card, per board T-001 */}
+      {/* Ask Ridz card (Staffsy AI assistant), per board T-001 */}
       <div className="mt-auto rounded-(--radius-card) bg-primary-soft p-4">
         <div className="flex items-center gap-2 font-semibold text-primary">
           <Bot className="h-5 w-5" />
-          Ask Staffsy AI
+          Ask Ridz
         </div>
         <p className="mt-1 text-xs text-ink-muted">Your smart HR assistant</p>
         <button
