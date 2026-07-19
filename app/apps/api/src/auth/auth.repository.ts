@@ -42,6 +42,13 @@ export class AuthRepository {
     );
   }
 
+  /** Resolves the User account for an Employee (e.g. a manager) so other modules can notify or authorize by employee id. */
+  findUserByEmployeeId(tenantId: string, employeeId: string): Promise<User | null> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.user.findFirst({ where: { tenantId, employeeId, deletedAt: null } }),
+    );
+  }
+
   createSession(tenantId: string, userId: string, expiresAt: Date): Promise<Session> {
     return this.prisma.withTenant(tenantId, (tx) => tx.session.create({ data: { tenantId, userId, expiresAt } }));
   }

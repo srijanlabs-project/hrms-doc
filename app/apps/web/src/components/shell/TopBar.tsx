@@ -1,5 +1,6 @@
-import { Bell, ChevronDown, HelpCircle, LayoutGrid, Mail, Menu, Plus, Search } from "lucide-react";
+import { ChevronDown, HelpCircle, LayoutGrid, Mail, Menu, Plus, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { NotificationBell } from "./NotificationBell";
 import { UserMenu } from "./UserMenu";
 
 function IconButton({ icon: Icon, badge, label }: { icon: LucideIcon; badge?: number; label: string }) {
@@ -59,8 +60,8 @@ export function TopBar() {
           <ChevronDown className="h-4 w-4" />
         </button>
 
-        <div className="flex items-center">
-          <IconButton icon={Bell} badge={3} label="Notifications" />
+        <div className="flex items-center gap-1">
+          <NotificationBell />
           <IconButton icon={Mail} badge={2} label="Messages" />
           <IconButton icon={HelpCircle} label="Help" />
           <IconButton icon={LayoutGrid} label="Apps" />

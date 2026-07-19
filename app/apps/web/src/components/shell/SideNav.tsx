@@ -4,6 +4,7 @@ import {
   CalendarCheck,
   CalendarDays,
   CalendarRange,
+  CheckSquare,
   FileText,
   FolderOpen,
   GraduationCap,
@@ -19,57 +20,79 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../features/auth/AuthProvider";
 import { RidzAvatar } from "../ui/RidzAvatar";
 
 type NavItem = { label: string; to: string; icon: LucideIcon; disabled?: boolean };
 type NavSection = { title: string; items: NavItem[] };
 
+const APPROVER_ROLES = ["manager", "hr_ops", "org_admin"];
+
 /**
  * Navigation per board T-001: MY WORK / GROWTH / RESOURCES / MORE sections
  * plus the Ask Staffsy AI card. Disabled entries are registered destinations
- * whose modules are not built yet.
+ * whose modules are not built yet. The Team section is role-aware — a first,
+ * partial step on the Phase 3 "permission-aware nav" deferral (still only
+ * this one item; most of the nav remains role-blind).
  */
-const sections: NavSection[] = [
-  {
-    title: "My Work",
-    items: [
-      { label: "Home", to: "/home", icon: Home },
-      { label: "My Profile", to: "/profile", icon: User, disabled: true },
-      { label: "Attendance", to: "/attendance", icon: CalendarCheck, disabled: true },
-      { label: "Leave", to: "/leave", icon: CalendarDays, disabled: true },
-      { label: "Pay & Benefits", to: "/pay", icon: Wallet, disabled: true },
-      { label: "My Requests", to: "/requests", icon: FileText, disabled: true },
-      { label: "Time Off Calendar", to: "/time-off", icon: CalendarRange, disabled: true },
-    ],
-  },
-  {
-    title: "Growth",
-    items: [
-      { label: "Learning", to: "/learning", icon: GraduationCap, disabled: true },
-      { label: "My Goals", to: "/goals", icon: Target, disabled: true },
-      { label: "Performance", to: "/performance", icon: TrendingUp, disabled: true },
-    ],
-  },
-  {
-    title: "Resources",
-    items: [
-      { label: "Documents", to: "/documents", icon: FolderOpen, disabled: true },
-      { label: "Policies", to: "/policies", icon: ShieldCheck, disabled: true },
-      { label: "Employees", to: "/people/employees", icon: Users },
-      { label: "Reports", to: "/reports", icon: BarChart3, disabled: true },
-    ],
-  },
-  {
-    title: "More",
-    items: [
-      { label: "Company", to: "/company", icon: Building2, disabled: true },
-      { label: "Settings", to: "/settings", icon: Settings, disabled: true },
-      { label: "Help & Support", to: "/help", icon: HelpCircle, disabled: true },
-    ],
-  },
-];
+function buildSections(roles: string[]): NavSection[] {
+  const sections: NavSection[] = [
+    {
+      title: "My Work",
+      items: [
+        { label: "Home", to: "/home", icon: Home },
+        { label: "My Profile", to: "/profile", icon: User, disabled: true },
+        { label: "Attendance", to: "/attendance", icon: CalendarCheck, disabled: true },
+        { label: "Leave", to: "/leave", icon: CalendarDays },
+        { label: "Pay & Benefits", to: "/pay", icon: Wallet, disabled: true },
+        { label: "My Requests", to: "/requests", icon: FileText, disabled: true },
+        { label: "Time Off Calendar", to: "/leave/calendar", icon: CalendarRange },
+      ],
+    },
+  ];
+
+  if (roles.some((role) => APPROVER_ROLES.includes(role))) {
+    sections.push({
+      title: "Team",
+      items: [{ label: "Approvals", to: "/approvals", icon: CheckSquare }],
+    });
+  }
+
+  sections.push(
+    {
+      title: "Growth",
+      items: [
+        { label: "Learning", to: "/learning", icon: GraduationCap, disabled: true },
+        { label: "My Goals", to: "/goals", icon: Target, disabled: true },
+        { label: "Performance", to: "/performance", icon: TrendingUp, disabled: true },
+      ],
+    },
+    {
+      title: "Resources",
+      items: [
+        { label: "Documents", to: "/documents", icon: FolderOpen, disabled: true },
+        { label: "Policies", to: "/policies", icon: ShieldCheck, disabled: true },
+        { label: "Employees", to: "/people/employees", icon: Users },
+        { label: "Reports", to: "/reports", icon: BarChart3, disabled: true },
+      ],
+    },
+    {
+      title: "More",
+      items: [
+        { label: "Company", to: "/company", icon: Building2, disabled: true },
+        { label: "Settings", to: "/settings", icon: Settings, disabled: true },
+        { label: "Help & Support", to: "/help", icon: HelpCircle, disabled: true },
+      ],
+    },
+  );
+
+  return sections;
+}
 
 export function SideNav() {
+  const { user } = useAuth();
+  const sections = buildSections(user?.roles ?? []);
+
   return (
     <nav className="flex w-(--spacing-sidebar) shrink-0 flex-col border-r border-border bg-surface px-3 py-4">
       {sections.map((section) => (

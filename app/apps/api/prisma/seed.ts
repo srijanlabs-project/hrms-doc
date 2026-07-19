@@ -1,4 +1,22 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+
+const LEAVE_POLICIES: { leaveType: string; name: string; annualDays: number }[] = [
+  { leaveType: "Annual", name: "Annual Leave", annualDays: 24 },
+  { leaveType: "Casual", name: "Casual Leave", annualDays: 12 },
+  { leaveType: "Sick", name: "Sick Leave", annualDays: 10 },
+];
+
+function seedLeavePolicies(tx: Prisma.TransactionClient, tenantId: string) {
+  return Promise.all(
+    LEAVE_POLICIES.map((policy) =>
+      tx.leavePolicy.upsert({
+        where: { tenantId_leaveType: { tenantId, leaveType: policy.leaveType } },
+        update: {},
+        create: { tenantId, ...policy },
+      }),
+    ),
+  );
+}
 
 /**
  * Local dev seed: two tenants, each with a legal entity, departments,
@@ -36,6 +54,8 @@ async function main() {
       update: {},
       create: { tenantId: acme.id, code: "ACME-IN", name: "Acme India", country: "IN" },
     });
+
+    await seedLeavePolicies(tx, acme.id);
 
     const engineering = await tx.department.upsert({
       where: { tenantId_code: { tenantId: acme.id, code: "ENG" } },
@@ -139,6 +159,8 @@ async function main() {
       update: {},
       create: { tenantId: globex.id, code: "GLOBEX-US", name: "Globex USA", country: "US" },
     });
+
+    await seedLeavePolicies(tx, globex.id);
 
     const ops = await tx.department.upsert({
       where: { tenantId_code: { tenantId: globex.id, code: "OPS" } },

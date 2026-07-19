@@ -41,3 +41,59 @@ export interface CreateEmployeeInput {
   managerId?: string;
   joiningDate?: string;
 }
+
+export interface LeavePolicy {
+  id: string;
+  leaveType: string;
+  name: string;
+  annualDays: number;
+  status: string;
+}
+
+export interface LeaveBalance {
+  leaveType: string;
+  name: string;
+  entitlement: number;
+  prorated: number;
+  consumed: number;
+  available: number;
+}
+
+export interface LeaveRequestEmployeeRef {
+  id: string;
+  legalName: string;
+  employeeCode: string;
+}
+
+export interface LeaveRequest {
+  id: string;
+  employeeId: string;
+  employee: LeaveRequestEmployeeRef;
+  leaveType: string;
+  startDate: string;
+  endDate: string;
+  days: number;
+  reason: string | null;
+  status: string;
+  approverId: string | null;
+  decisionNote: string | null;
+  decidedAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateLeaveRequestInput {
+  leaveType: string;
+  startDate: string;
+  endDate: string;
+  reason?: string;
+}
+
+export interface NotificationItem {
+  id: string;
+  type: string;
+  title: string;
+  body: string;
+  linkPath: string | null;
+  readAt: string | null;
+  createdAt: string;
+}

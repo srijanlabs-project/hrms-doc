@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   CalendarCheck,
@@ -12,11 +13,14 @@ import {
   Upload,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { Avatar } from "../components/ui/Avatar";
 import { Badge, type BadgeTone } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { ProgressBar } from "../components/ui/ProgressBar";
 import { RidzAvatar } from "../components/ui/RidzAvatar";
+import { useAuth } from "../features/auth/AuthProvider";
+import { listLeaveBalances } from "../lib/api/leave";
 
 /**
  * T-001 My Staffsy Workspace — employee landing page.
@@ -26,16 +30,8 @@ import { RidzAvatar } from "../components/ui/RidzAvatar";
  * Leave, and Workflow services land.
  */
 
-const kpis = [
-  { label: "Leave Balance", value: "18.5", caption: "Days Available", link: "View Details" },
-  { label: "Attendance", value: "100%", caption: "This Month", link: "View Details" },
-  { label: "Pending Tasks", value: "6", caption: "Tasks", link: "View All" },
-  { label: "Requests", value: "4", caption: "Open Requests", link: "View All" },
-  { label: "Payslip", value: "₹78,500", caption: "June 2026", link: "View Payslip" },
-];
-
 const actions = [
-  { label: "Apply Leave", icon: CalendarDays },
+  { label: "Apply Leave", icon: CalendarDays, to: "/leave/apply" },
   { label: "Mark Attendance", icon: CalendarCheck },
   { label: "My Requests", icon: FileText },
   { label: "View Payslip", icon: IndianRupee },
@@ -96,15 +92,46 @@ const whosOut = [
   { name: "Ananya Kapoor", range: "17 – 19 Jul" },
 ];
 
-function SectionLink({ children = "View All" }: { children?: ReactNode }) {
+function SectionLink({ children = "View All", to }: { children?: ReactNode; to?: string }) {
+  const content = (
+    <>
+      {children} <ArrowRight className="h-3 w-3" />
+    </>
+  );
+  if (to) {
+    return (
+      <Link to={to} className="flex items-center gap-1 text-xs font-medium text-primary">
+        {content}
+      </Link>
+    );
+  }
   return (
     <button type="button" className="flex items-center gap-1 text-xs font-medium text-primary">
-      {children} <ArrowRight className="h-3 w-3" />
+      {content}
     </button>
   );
 }
 
 export function MyStaffsyPage() {
+  const { user } = useAuth();
+  const balances = useQuery({ queryKey: ["leave-balances"], queryFn: listLeaveBalances });
+  const totalAvailable = balances.data?.reduce((sum, b) => sum + b.available, 0);
+
+  const kpis = [
+    {
+      label: "Leave Balance",
+      value: totalAvailable === undefined ? "—" : String(Math.round(totalAvailable * 100) / 100),
+      caption: "Days Available",
+      link: "View Details",
+      to: "/leave",
+    },
+    { label: "Attendance", value: "—", caption: "Requires Attendance module" },
+    { label: "Pending Tasks", value: "—", caption: "Requires Workflow module" },
+    { label: "Requests", value: "—", caption: "Requires Workflow module" },
+    { label: "Payslip", value: "—", caption: "Requires Payroll module" },
+  ];
+
+  const firstName = (user?.displayName ?? "there").split(" ")[0];
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",
@@ -118,7 +145,7 @@ export function MyStaffsyPage() {
       <div className="min-w-0 flex-1 space-y-6">
         <header className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Good morning, Rahul! 👋</h1>
+            <h1 className="text-2xl font-bold">Good morning, {firstName}! 👋</h1>
             <p className="mt-1 text-ink-muted">{today} · Pune Office</p>
           </div>
           <button
@@ -139,9 +166,11 @@ export function MyStaffsyPage() {
               <div className="text-ink-muted">{kpi.label}</div>
               <div className="mt-1 text-2xl font-bold">{kpi.value}</div>
               <div className="text-xs text-ink-faint">{kpi.caption}</div>
-              <div className="mt-3 border-t border-border pt-2">
-                <SectionLink>{kpi.link}</SectionLink>
-              </div>
+              {kpi.link && (
+                <div className="mt-3 border-t border-border pt-2">
+                  <SectionLink to={kpi.to}>{kpi.link}</SectionLink>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -149,16 +178,27 @@ export function MyStaffsyPage() {
         {/* My Actions */}
         <Card title="My Actions" action={<SectionLink>View All Actions</SectionLink>}>
           <div className="grid grid-cols-4 gap-3 xl:grid-cols-8">
-            {actions.map((action) => (
-              <button
-                key={action.label}
-                type="button"
-                className="flex flex-col items-center gap-2 rounded-(--radius-card) border border-border p-3 text-center text-xs font-medium hover:border-primary hover:bg-primary-soft"
-              >
-                <action.icon className="h-5 w-5 text-primary" />
-                {action.label}
-              </button>
-            ))}
+            {actions.map((action) =>
+              action.to ? (
+                <Link
+                  key={action.label}
+                  to={action.to}
+                  className="flex flex-col items-center gap-2 rounded-(--radius-card) border border-border p-3 text-center text-xs font-medium hover:border-primary hover:bg-primary-soft"
+                >
+                  <action.icon className="h-5 w-5 text-primary" />
+                  {action.label}
+                </Link>
+              ) : (
+                <button
+                  key={action.label}
+                  type="button"
+                  className="flex flex-col items-center gap-2 rounded-(--radius-card) border border-border p-3 text-center text-xs font-medium hover:border-primary hover:bg-primary-soft"
+                >
+                  <action.icon className="h-5 w-5 text-primary" />
+                  {action.label}
+                </button>
+              ),
+            )}
           </div>
         </Card>
 
@@ -264,7 +304,7 @@ export function MyStaffsyPage() {
             <span className="font-semibold">Ridz</span>
             <Badge tone="primary">BETA</Badge>
           </div>
-          <p className="mb-3 text-ink-muted">Hi Rahul! I'm Ridz — how can I help you today?</p>
+          <p className="mb-3 text-ink-muted">Hi {firstName}! I'm Ridz — how can I help you today?</p>
           <div className="space-y-2">
             {aiSuggestions.map((suggestion) => (
               <button

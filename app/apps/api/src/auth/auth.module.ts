@@ -17,6 +17,13 @@ import { OTP_PROVIDER, StaticDevOtpProvider } from "./otp/otp-provider";
  * keeps the guards' dependencies resolvable without re-exporting JwtModule.
  * Guard order matters: AuthGuard runs before RolesGuard (roles aren't known
  * until the session is verified) — array order is registration order.
+ *
+ * AuthGuard/RolesGuard are registered as plain class providers AND as
+ * APP_GUARD via useExisting (one shared instance, not two): a provider can
+ * only be exported if it's directly registered under its own class token in
+ * this module, and other modules (e.g. LeaveModule) need AuthRepository
+ * exported too, for cross-module "resolve this employee's user account"
+ * lookups.
  */
 @Module({
   imports: [
@@ -34,8 +41,11 @@ import { OTP_PROVIDER, StaticDevOtpProvider } from "./otp/otp-provider";
     // BEFORE UAT: replace with a real SMS/email gateway provider. See
     // otp/otp-provider.ts for the swap-in contract.
     { provide: OTP_PROVIDER, useClass: StaticDevOtpProvider },
-    { provide: APP_GUARD, useClass: AuthGuard },
-    { provide: APP_GUARD, useClass: RolesGuard },
+    AuthGuard,
+    RolesGuard,
+    { provide: APP_GUARD, useExisting: AuthGuard },
+    { provide: APP_GUARD, useExisting: RolesGuard },
   ],
+  exports: [AuthGuard, RolesGuard, AuthRepository],
 })
 export class AuthModule {}

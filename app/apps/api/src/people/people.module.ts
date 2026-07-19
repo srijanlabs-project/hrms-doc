@@ -9,5 +9,6 @@ import { EmployeeService } from "./employee/employee.service";
   imports: [OrgModule],
   controllers: [EmployeeController],
   providers: [EmployeeService, EmployeeRepository],
+  exports: [EmployeeRepository],
 })
 export class PeopleModule {}

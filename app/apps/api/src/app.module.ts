@@ -1,6 +1,8 @@
 import { type MiddlewareConsumer, Module, type NestModule } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { AuthModule } from "./auth/auth.module";
+import { LeaveModule } from "./leave/leave.module";
+import { NotificationsModule } from "./notifications/notifications.module";
 import { OrgModule } from "./org/org.module";
 import { PeopleModule } from "./people/people.module";
 import { ContextModule } from "./platform/context/context.module";
@@ -18,7 +20,16 @@ import { PrismaModule } from "./platform/prisma/prisma.module";
  * their dependencies resolve in the module that actually provides them.
  */
 @Module({
-  imports: [PrismaModule, ContextModule, AuthModule, PlatformModule, OrgModule, PeopleModule],
+  imports: [
+    PrismaModule,
+    ContextModule,
+    AuthModule,
+    PlatformModule,
+    OrgModule,
+    PeopleModule,
+    NotificationsModule,
+    LeaveModule,
+  ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
 export class AppModule implements NestModule {

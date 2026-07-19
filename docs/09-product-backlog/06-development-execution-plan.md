@@ -12,7 +12,7 @@ This is the working development plan for building the Staffsy Enterprise HRMS fr
 
 Strategy: desktop-first UI from the template boards; mobile follows with dedicated boards. Modular monolith per the tech-stack ADR (`06-cross-cutting-specs/19`). Every screen is built from its template board — never invented.
 
-# 2. Current State (updated 2026-07-19)
+# 2. Current State (updated 2026-07-20)
 
 Done:
 
@@ -24,6 +24,7 @@ Done:
 - **Phase 1 complete**: Postgres RLS tenancy (tenants + legal_entities), PrismaService.withTenant(), request-context middleware, canonical error envelope, first tenant-scoped API (org/legal-entity, controller/service/repository split), seed + rls-check scripts, ESLint max-lines enforcement. RLS isolation proven both at the DB layer (rls-check script) and over real HTTP (403 tenant-boundary, 422 validation, 201 create, 409 conflict, tenant-scoped 200s all verified against the running API)
 - **Phase 2 complete (proving slice)**: Department (org module) and Employee (people module) built against their sub-module specs, both RLS-protected. T-003 Enterprise Workbench (directory: filters, table, quick-preview drawer, add-employee form) and T-004 360° Workspace (profile: header, tabs, About, honestly-placeholder KPIs for modules that don't exist yet) built from the boards and wired to live data end to end — create, list, filter, duplicate-conflict, and cross-tenant isolation all verified via curl and in the browser. Two documented simplifications: the create form is single-step (T-005's full stepper deferred) and the pages run inside the existing employee-facing shell rather than a dedicated WS-03 HR Workspace shell (T-003's own Data Management nav deferred to when that template is built)
 - **Phase 3 complete (RBAC v1)**: OTP-only login (no passwords) — `OtpChallenge` table behind an `OtpProvider` interface, `StaticDevOtpProvider` returning a fixed dev code so the full flow is testable with no email/SMS gateway; DB-backed revocable sessions + JWT cookie; User/Session/OtpChallenge models under RLS; AuthGuard + RolesGuard wired globally; four seeded roles (org_admin, hr_ops, manager, employee — via seeded users, not yet a self-serve admin UI). Closed a real security gap in the process: Phase 1/2 trusted a client-supplied `X-Tenant-Code` header for every request; AuthGuard now overrides tenant scope with the verified session's tenantId, so a spoofed header can no longer widen access (proven with a live test: a valid acme session sending `X-Tenant-Code: globex` still only sees acme data). Verified end to end: OTP request for real vs. nonexistent accounts returns an identical response (no enumeration), wrong code → generic 401, correct code → 200 + working cookie, wrong role → 403, logout → session revoked and subsequent reuse → 401. Login page has no template board (checked the full registry, genuinely not there) — built from tokens.
+- **Phase 4 complete (Leave, first workflow vertical)**: LeavePolicy/LeaveRequest/Notification models under RLS. Balance is deliberately live-computed (pro-rata by months elapsed since joining, minus approved-request days for the current calendar year) rather than a persisted ledger updated by a BullMQ job — no queue infrastructure exists yet (same Docker gap noted in the ADR), and the live calculation is real math against real data, just not queue-backed. Single-level approval only (requestor's direct manager, resolved via Employee.managerId), with org_admin/hr_ops override. Built from three boards: Apply Leave (T-005, single-step, real balance rail), Approvals (T-007, queue + decision panel, real KPI counts), Time Off Calendar (T-008, month grid of own leave). In-app notifications on submit and decision, wired to a real bell dropdown with unread count. T-001's Leave Balance KPI and greeting name are now live. Role-aware nav: the Team/Approvals section only renders for manager/hr_ops/org_admin — a first, partial close of the Phase 3 permission-aware-nav deferral (still only this one item). Caught and fixed a real regression during this phase: the OTP refactor had silently dropped `AuthModule`'s `exports` array, which nothing caught until `LeaveModule` became the first cross-module consumer of `AuthRepository` — surfaced immediately by the "always start the server and verify" discipline, not by typecheck. Verified end to end through the actual browser UI, not just curl: employee applies (T-005) → manager sees it in the approval queue with correct KPI counts (T-007) → approves → balance decrements live → notification bell shows both the submission and decision events → employee's hub and T-001 KPI reflect the new balance. RLS re-verified (18/18) after the new tables.
 
 # 3. Phase 1 — Data Platform Foundation ✅ Done
 
@@ -82,17 +83,20 @@ This becomes its own People Core pass once Phase 3 (Identity & Access) lands, si
 
 Done when: role-scoped users see role-scoped API access — met. UI-level nav gating and audit trail are explicitly carried forward, not silently dropped.
 
-# 6. Phase 4 — Leave (first workflow vertical)
+# 6. Phase 4 — Leave (first workflow vertical) ✅ Done
 
-| Deliverable | Spec | Template board |
-|---|---|---|
-| Leave policy + balance model, accrual job (BullMQ) | `08-.../08-leave-management` | — |
-| Apply-leave flow (stepper form with validation) | Appendix 18, 22 | Smart Form (T-005) |
-| Workflow engine v1: single-level approval, task inbox | Doc 12 | Approval Workspace (T-007) |
-| Leave calendar view | — | Calendar & Attendance (T-008) |
-| Notifications v1 (in-app) | Appendix 3, 16 | — |
+| Deliverable | Spec | Template board | Status |
+|---|---|---|---|
+| Leave policy + live balance model | `08-.../08-leave-management/01-leave-policies` | — | Done — 3 fixed leave types (Annual/Casual/Sick), no versioning/applicability matrix |
+| Apply-leave flow | Appendix 18, 22 | Smart Form (T-005) | Done — single-step, not the board's 3-step stepper |
+| Single-level approval + task inbox | `08-.../08-leave-management/03-leave-approval` | Approval Workspace (T-007) | Done — direct-manager-only routing, org_admin/hr_ops override |
+| Leave calendar view | — | Calendar & Attendance (T-008) | Done — leave-only month grid |
+| Notifications v1 (in-app) | Appendix 3, 16 | — | Done — submit + decision events, bell dropdown with unread count |
+| Accrual as a persisted ledger + BullMQ job | `08-.../08-leave-management/02-leave-accrual` | — | **Deferred** — balance is live-computed instead (see current-state note); revisit once queue infrastructure exists |
+| Multi-level/conditional approval chains, delegation, escalation, team-overlap visibility | `03-leave-approval` §3 | — | **Deferred** — single-level only |
+| Policy versioning, publish/simulation, carry-forward, encashment | `01-leave-policies` | — | **Deferred** — fixed flat entitlement only |
 
-Done when: employee applies → manager approves → balance decrements → both see status; T-001 leave KPI is live.
+Done when: employee applies → manager approves → balance decrements → both see status; T-001 leave KPI is live. **Met — verified through the actual browser UI**, not just curl.
 
 # 7. Phase 5 — Attendance & Payroll Control
 

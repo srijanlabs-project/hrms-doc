@@ -21,12 +21,15 @@ model Tenant {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  legalEntities LegalEntity[]
-  departments   Department[]
-  employees     Employee[]
-  users         User[]
-  sessions      Session[]
-  otpChallenges OtpChallenge[]
+  legalEntities  LegalEntity[]
+  departments    Department[]
+  employees      Employee[]
+  users          User[]
+  sessions       Session[]
+  otpChallenges  OtpChallenge[]
+  leavePolicies  LeavePolicy[]
+  leaveRequests  LeaveRequest[]
+  notifications  Notification[]
 
   @@map("tenants")
 }
@@ -114,6 +117,9 @@ model Employee {
   tenant Tenant @relation(fields: [tenantId], references: [id])
   users  User[]
 
+  leaveRequests         LeaveRequest[] @relation("LeaveRequestEmployee")
+  approvedLeaveRequests LeaveRequest[] @relation("LeaveRequestApprover")
+
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
   @@index([tenantId, departmentId])
@@ -150,6 +156,7 @@ model User {
   tenant        Tenant         @relation(fields: [tenantId], references: [id])
   sessions      Session[]
   otpChallenges OtpChallenge[]
+  notifications Notification[]
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -201,4 +208,98 @@ model OtpChallenge {
   @@index([tenantId])
   @@index([userId])
   @@map("otp_challenges")
+}
+
+/// Leave module, Phase 4 slice. Spec: docs/08-submodule-specifications/08-leave-management/01-leave-policies.md
+/// Deliberately a fixed leave-type + flat annual entitlement, not the full
+/// applicability-matrix/versioning/publish/simulation model the spec
+/// describes — that governance layer is a later leave-management pass.
+model LeavePolicy {
+  id         String  @id @default(uuid()) @db.Uuid
+  tenantId   String  @map("tenant_id") @db.Uuid
+  /// Annual | Casual | Sick for this slice; spec section 3 lists many more types.
+  leaveType  String  @map("leave_type")
+  name       String
+  annualDays Float   @map("annual_days")
+  status     String  @default("Active")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, leaveType])
+  @@index([tenantId])
+  @@map("leave_policies")
+}
+
+/// Spec: docs/08-submodule-specifications/08-leave-management/03-leave-approval.md
+/// Phase 4 slice: single-level approval (requestor's direct manager only),
+/// simplified state machine (Pending/Approved/Rejected/Cancelled — the
+/// spec's Draft/Submitted/Sent-Back/Partially-Cancelled states are
+/// deferred), and no delegation/escalation/team-overlap visibility.
+/// Balance is NOT a stored ledger here — LeaveBalanceService computes it
+/// live from Employee.joiningDate + this table's Approved rows, deferring
+/// the persisted-ledger + BullMQ-accrual-job model in 02-leave-accrual.md
+/// (no queue infrastructure exists yet — see tech-stack ADR).
+model LeaveRequest {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("LeaveRequestEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  leaveType String   @map("leave_type")
+  startDate DateTime @map("start_date") @db.Date
+  endDate   DateTime @map("end_date") @db.Date
+  /// Inclusive calendar-day count computed at submission. Half-days,
+  /// weekend/holiday exclusion, and sandwich rules are deferred.
+  days      Float
+  reason    String?
+
+  /// Pending, Approved, Rejected, Cancelled.
+  status String @default("Pending")
+
+  approverId String?   @map("approver_id") @db.Uuid
+  approver   Employee? @relation("LeaveRequestApprover", fields: [approverId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, approverId])
+  @@map("leave_requests")
+}
+
+/// In-app notification inbox, Phase 4 slice. Only leave-request lifecycle
+/// events publish here for now; the full notification-catalog/channel model
+/// (appendix 3, 16) is deferred.
+model Notification {
+  id       String  @id @default(uuid()) @db.Uuid
+  tenantId String  @map("tenant_id") @db.Uuid
+  userId   String  @map("user_id") @db.Uuid
+
+  type     String
+  title    String
+  body     String
+  linkPath String? @map("link_path")
+
+  readAt    DateTime? @map("read_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, userId])
+  @@map("notifications")
 }
