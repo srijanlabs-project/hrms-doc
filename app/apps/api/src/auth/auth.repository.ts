@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Session, Tenant, User } from "@prisma/client";
+import type { OtpChallenge, Session, Tenant, User } from "@prisma/client";
 import { PrismaService } from "../platform/prisma/prisma.service";
 
 export type UserWithEmployeeName = User & { employee: { legalName: string } | null };
@@ -55,6 +55,49 @@ export class AuthRepository {
   async revokeSession(tenantId: string, sessionId: string): Promise<void> {
     await this.prisma.withTenant(tenantId, (tx) =>
       tx.session.updateMany({ where: { id: sessionId, tenantId }, data: { revokedAt: new Date() } }),
+    );
+  }
+
+  /** Consumes any still-usable challenges for this user so only the newest request-otp call stays valid. */
+  async invalidateOutstandingOtpChallenges(tenantId: string, userId: string): Promise<void> {
+    await this.prisma.withTenant(tenantId, (tx) =>
+      tx.otpChallenge.updateMany({
+        where: { tenantId, userId, consumedAt: null },
+        data: { consumedAt: new Date() },
+      }),
+    );
+  }
+
+  createOtpChallenge(tenantId: string, userId: string, codeHash: string, expiresAt: Date): Promise<OtpChallenge> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.otpChallenge.create({ data: { tenantId, userId, codeHash, expiresAt } }),
+    );
+  }
+
+  findLatestOtpChallenge(tenantId: string, userId: string): Promise<OtpChallenge | null> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.otpChallenge.findFirst({
+        where: { tenantId, userId, consumedAt: null },
+        orderBy: { issuedAt: "desc" },
+      }),
+    );
+  }
+
+  async incrementOtpAttempt(tenantId: string, challengeId: string): Promise<void> {
+    await this.prisma.withTenant(tenantId, (tx) =>
+      tx.otpChallenge.updateMany({
+        where: { id: challengeId, tenantId },
+        data: { attemptCount: { increment: 1 } },
+      }),
+    );
+  }
+
+  async consumeOtpChallenge(tenantId: string, challengeId: string): Promise<void> {
+    await this.prisma.withTenant(tenantId, (tx) =>
+      tx.otpChallenge.updateMany({
+        where: { id: challengeId, tenantId },
+        data: { consumedAt: new Date() },
+      }),
     );
   }
 }

@@ -8,14 +8,24 @@ export interface SessionUser {
   displayName: string;
 }
 
-export interface LoginInput {
+export interface RequestOtpInput {
   tenantCode: string;
   email: string;
-  password: string;
 }
 
-export function login(input: LoginInput): Promise<{ user: SessionUser; expiresAt: string }> {
-  return apiRequest("/auth/login", { method: "POST", body: JSON.stringify(input) });
+export interface VerifyOtpInput {
+  tenantCode: string;
+  email: string;
+  otp: string;
+}
+
+/** `devOtp` is only present outside production — see AuthService.requestOtp. */
+export function requestOtp(input: RequestOtpInput): Promise<{ sent: true; devOtp?: string }> {
+  return apiRequest("/auth/otp/request", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function verifyOtp(input: VerifyOtpInput): Promise<{ user: SessionUser; expiresAt: string }> {
+  return apiRequest("/auth/otp/verify", { method: "POST", body: JSON.stringify(input) });
 }
 
 export function logout(): Promise<{ loggedOut: boolean }> {

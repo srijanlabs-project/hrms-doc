@@ -3,17 +3,26 @@ import type { Response } from "express";
 import { AuthService } from "./auth.service";
 import { SESSION_COOKIE_NAME, SESSION_TTL_MS } from "./constants";
 import { Public } from "./decorators/public.decorator";
-import { LoginDto } from "./dto/login.dto";
+import { RequestOtpDto } from "./dto/request-otp.dto";
+import { VerifyOtpDto } from "./dto/verify-otp.dto";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
   @Public()
-  @Post("login")
+  @Post("otp/request")
   @HttpCode(200)
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const result = await this.service.login(dto);
+  async requestOtp(@Body() dto: RequestOtpDto) {
+    const data = await this.service.requestOtp(dto);
+    return { data };
+  }
+
+  @Public()
+  @Post("otp/verify")
+  @HttpCode(200)
+  async verifyOtp(@Body() dto: VerifyOtpDto, @Res({ passthrough: true }) res: Response) {
+    const result = await this.service.verifyOtp(dto);
     res.cookie(SESSION_COOKIE_NAME, result.token, {
       httpOnly: true,
       sameSite: "lax",

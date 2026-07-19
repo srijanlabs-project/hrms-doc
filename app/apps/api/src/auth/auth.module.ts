@@ -6,6 +6,7 @@ import { AuthRepository } from "./auth.repository";
 import { AuthService } from "./auth.service";
 import { AuthGuard } from "./guards/auth.guard";
 import { RolesGuard } from "./guards/roles.guard";
+import { OTP_PROVIDER, StaticDevOtpProvider } from "./otp/otp-provider";
 
 /**
  * AuthGuard and RolesGuard are registered here as global APP_GUARD providers
@@ -30,6 +31,9 @@ import { RolesGuard } from "./guards/roles.guard";
   providers: [
     AuthService,
     AuthRepository,
+    // BEFORE UAT: replace with a real SMS/email gateway provider. See
+    // otp/otp-provider.ts for the swap-in contract.
+    { provide: OTP_PROVIDER, useClass: StaticDevOtpProvider },
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],

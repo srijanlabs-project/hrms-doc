@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 
 /**
  * Local dev seed: two tenants, each with a legal entity, departments,
@@ -7,14 +6,14 @@ import bcrypt from "bcryptjs";
  * RLS isolation and the People/Org/Auth UI can all be demonstrated with
  * realistic data. Run with `npm run db:seed`.
  *
- * Dev-only credentials (never used outside local seed data):
- *   workspace "acme"   priya.sharma@acme.example   Passw0rd!123   (org_admin)
- *   workspace "acme"   rohit.singh@acme.example    Passw0rd!123   (manager)
- *   workspace "acme"   sneha.reddy@acme.example    Passw0rd!123   (hr_ops)
- *   workspace "globex" alex.carter@globex.example  Passw0rd!123   (org_admin)
+ * Login is OTP-only (no passwords) — see apps/api/src/auth/otp/otp-provider.ts.
+ * In dev, sign in to any seeded email below with verification code 123456:
+ *   workspace "acme"   priya.sharma@acme.example   (org_admin)
+ *   workspace "acme"   rohit.singh@acme.example    (manager)
+ *   workspace "acme"   sneha.reddy@acme.example    (hr_ops)
+ *   workspace "globex" alex.carter@globex.example  (org_admin)
  */
 const prisma = new PrismaClient();
-const DEV_PASSWORD_HASH = bcrypt.hashSync("Passw0rd!123", 10);
 
 async function main() {
   const acme = await prisma.tenant.upsert({
@@ -104,7 +103,6 @@ async function main() {
       create: {
         tenantId: acme.id,
         email: "priya.sharma@acme.example",
-        passwordHash: DEV_PASSWORD_HASH,
         roles: ["org_admin"],
         employeeId: priya.id,
       },
@@ -116,7 +114,6 @@ async function main() {
       create: {
         tenantId: acme.id,
         email: "rohit.singh@acme.example",
-        passwordHash: DEV_PASSWORD_HASH,
         roles: ["manager"],
         employeeId: rohit.id,
       },
@@ -128,7 +125,6 @@ async function main() {
       create: {
         tenantId: acme.id,
         email: "sneha.reddy@acme.example",
-        passwordHash: DEV_PASSWORD_HASH,
         roles: ["hr_ops"],
         employeeId: sneha.id,
       },
@@ -170,7 +166,6 @@ async function main() {
       create: {
         tenantId: globex.id,
         email: "alex.carter@globex.example",
-        passwordHash: DEV_PASSWORD_HASH,
         roles: ["org_admin"],
         employeeId: alex.id,
       },
