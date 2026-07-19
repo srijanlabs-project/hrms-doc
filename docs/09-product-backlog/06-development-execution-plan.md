@@ -21,8 +21,9 @@ Done:
 - Design tokens from the boards; app shell (top bar, sidebar, footer) matching board T-001
 - T-001 My Staffsy page faithful to the board (placeholder data)
 - AI brand: Ridz across all touchpoints
+- **Phase 1 complete**: Postgres RLS tenancy (tenants + legal_entities), PrismaService.withTenant(), request-context middleware, canonical error envelope, first tenant-scoped API (org/legal-entity, controller/service/repository split), seed + rls-check scripts, ESLint max-lines enforcement. RLS isolation proven both at the DB layer (rls-check script) and over real HTTP (403 tenant-boundary, 422 validation, 201 create, 409 conflict, tenant-scoped 200s all verified against the running API)
 
-# 3. Phase 1 — Data Platform Foundation
+# 3. Phase 1 — Data Platform Foundation ✅ Done
 
 Goal: the unretrofittable parts.
 
