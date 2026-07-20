@@ -26,18 +26,18 @@ function seedLeavePolicies(tx: Prisma.TransactionClient, tenantId: string) {
  *
  * Login is OTP-only (no passwords) — see apps/api/src/auth/otp/otp-provider.ts.
  * In dev, sign in to any seeded email below with verification code 123456:
- *   workspace "acme"   priya.sharma@acme.example   (org_admin)
- *   workspace "acme"   rohit.singh@acme.example    (manager)
- *   workspace "acme"   sneha.reddy@acme.example    (hr_ops)
- *   workspace "globex" alex.carter@globex.example  (org_admin)
+ *   workspace "srijanlabs"   priya.sharma@srijanlabs.example   (org_admin)
+ *   workspace "srijanlabs"   rohit.singh@srijanlabs.example    (manager)
+ *   workspace "srijanlabs"   sneha.reddy@srijanlabs.example    (hr_ops)
+ *   workspace "globex"       alex.carter@globex.example        (org_admin)
  */
 const prisma = new PrismaClient();
 
 async function main() {
-  const acme = await prisma.tenant.upsert({
-    where: { code: "acme" },
+  const srijanLabs = await prisma.tenant.upsert({
+    where: { code: "srijanlabs" },
     update: {},
-    create: { code: "acme", name: "Acme Manufacturing Pvt Ltd" },
+    create: { code: "srijanlabs", name: "Srijan Labs" },
   });
 
   const globex = await prisma.tenant.upsert({
@@ -47,38 +47,38 @@ async function main() {
   });
 
   await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${acme.id}, true)`;
+    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${srijanLabs.id}, true)`;
 
     await tx.legalEntity.upsert({
-      where: { tenantId_code: { tenantId: acme.id, code: "ACME-IN" } },
+      where: { tenantId_code: { tenantId: srijanLabs.id, code: "SRIJAN-IN" } },
       update: {},
-      create: { tenantId: acme.id, code: "ACME-IN", name: "Acme India", country: "IN" },
+      create: { tenantId: srijanLabs.id, code: "SRIJAN-IN", name: "Srijan Labs India", country: "IN" },
     });
 
-    await seedLeavePolicies(tx, acme.id);
+    await seedLeavePolicies(tx, srijanLabs.id);
 
     const engineering = await tx.department.upsert({
-      where: { tenantId_code: { tenantId: acme.id, code: "ENG" } },
+      where: { tenantId_code: { tenantId: srijanLabs.id, code: "ENG" } },
       update: {},
-      create: { tenantId: acme.id, code: "ENG", name: "Engineering" },
+      create: { tenantId: srijanLabs.id, code: "ENG", name: "Engineering" },
     });
 
     const peopleOps = await tx.department.upsert({
-      where: { tenantId_code: { tenantId: acme.id, code: "PEOPLE" } },
+      where: { tenantId_code: { tenantId: srijanLabs.id, code: "PEOPLE" } },
       update: {},
-      create: { tenantId: acme.id, code: "PEOPLE", name: "People Operations" },
+      create: { tenantId: srijanLabs.id, code: "PEOPLE", name: "People Operations" },
     });
 
     const priya = await tx.employee.upsert({
-      where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0001" } },
+      where: { tenantId_employeeCode: { tenantId: srijanLabs.id, employeeCode: "SRIJAN-0001" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        employeeCode: "ACME-0001",
+        tenantId: srijanLabs.id,
+        employeeCode: "SRIJAN-0001",
         legalName: "Priya Sharma",
         preferredName: "Priya",
         dateOfBirth: new Date("1988-04-12"),
-        personalEmail: "priya.sharma@acme.example",
+        personalEmail: "priya.sharma@srijanlabs.example",
         mobileNumber: "+919812345001",
         departmentId: engineering.id,
         status: "Active",
@@ -87,15 +87,15 @@ async function main() {
     });
 
     const rohit = await tx.employee.upsert({
-      where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0002" } },
+      where: { tenantId_employeeCode: { tenantId: srijanLabs.id, employeeCode: "SRIJAN-0002" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        employeeCode: "ACME-0002",
+        tenantId: srijanLabs.id,
+        employeeCode: "SRIJAN-0002",
         legalName: "Rohit Singh",
         preferredName: "Rohit",
         dateOfBirth: new Date("1994-08-02"),
-        personalEmail: "rohit.singh@acme.example",
+        personalEmail: "rohit.singh@srijanlabs.example",
         mobileNumber: "+919812345002",
         departmentId: engineering.id,
         managerId: priya.id,
@@ -105,46 +105,46 @@ async function main() {
     });
 
     const sneha = await tx.employee.upsert({
-      where: { tenantId_employeeCode: { tenantId: acme.id, employeeCode: "ACME-0003" } },
+      where: { tenantId_employeeCode: { tenantId: srijanLabs.id, employeeCode: "SRIJAN-0003" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        employeeCode: "ACME-0003",
+        tenantId: srijanLabs.id,
+        employeeCode: "SRIJAN-0003",
         legalName: "Sneha Reddy",
-        personalEmail: "sneha.reddy@acme.example",
+        personalEmail: "sneha.reddy@srijanlabs.example",
         departmentId: peopleOps.id,
         status: "Draft",
       },
     });
 
     await tx.user.upsert({
-      where: { tenantId_email: { tenantId: acme.id, email: "priya.sharma@acme.example" } },
+      where: { tenantId_email: { tenantId: srijanLabs.id, email: "priya.sharma@srijanlabs.example" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        email: "priya.sharma@acme.example",
+        tenantId: srijanLabs.id,
+        email: "priya.sharma@srijanlabs.example",
         roles: ["org_admin"],
         employeeId: priya.id,
       },
     });
 
     await tx.user.upsert({
-      where: { tenantId_email: { tenantId: acme.id, email: "rohit.singh@acme.example" } },
+      where: { tenantId_email: { tenantId: srijanLabs.id, email: "rohit.singh@srijanlabs.example" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        email: "rohit.singh@acme.example",
+        tenantId: srijanLabs.id,
+        email: "rohit.singh@srijanlabs.example",
         roles: ["manager"],
         employeeId: rohit.id,
       },
     });
 
     await tx.user.upsert({
-      where: { tenantId_email: { tenantId: acme.id, email: "sneha.reddy@acme.example" } },
+      where: { tenantId_email: { tenantId: srijanLabs.id, email: "sneha.reddy@srijanlabs.example" } },
       update: {},
       create: {
-        tenantId: acme.id,
-        email: "sneha.reddy@acme.example",
+        tenantId: srijanLabs.id,
+        email: "sneha.reddy@srijanlabs.example",
         roles: ["hr_ops"],
         employeeId: sneha.id,
       },
@@ -194,7 +194,7 @@ async function main() {
     });
   });
 
-  console.log("Seeded tenants:", { acme: acme.code, globex: globex.code });
+  console.log("Seeded tenants:", { srijanLabs: srijanLabs.code, globex: globex.code });
 }
 
 main()

@@ -20,21 +20,21 @@ function assert(condition: boolean, message: string) {
 }
 
 async function main() {
-  const acme = await prisma.tenant.findUniqueOrThrow({ where: { code: "acme" } });
+  const srijanLabs = await prisma.tenant.findUniqueOrThrow({ where: { code: "srijanlabs" } });
   const globex = await prisma.tenant.findUniqueOrThrow({ where: { code: "globex" } });
 
-  console.log("1. Tenant A (acme) sees only its own rows");
+  console.log("1. Tenant A (srijanlabs) sees only its own rows");
   // Asserts on presence/absence of known codes rather than an exact count:
   // this script is re-run across a live dev database, and rows created
   // through the API between runs (e.g. manual endpoint testing) are expected
   // to accumulate. Isolation is what's being proven, not row counts.
   await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${acme.id}, true)`;
+    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${srijanLabs.id}, true)`;
     const rows = await tx.legalEntity.findMany();
     assert(rows.length >= 1, `expected at least 1 row, got ${rows.length}`);
-    assert(rows.every((r) => r.tenantId === acme.id), "all rows belong to acme");
-    assert(rows.some((r) => r.code === "ACME-IN"), "seeded ACME-IN row is visible");
-    assert(rows.every((r) => r.code !== "GLOBEX-US"), "no globex row leaked into acme's result set");
+    assert(rows.every((r) => r.tenantId === srijanLabs.id), "all rows belong to srijanlabs");
+    assert(rows.some((r) => r.code === "SRIJAN-IN"), "seeded SRIJAN-IN row is visible");
+    assert(rows.every((r) => r.code !== "GLOBEX-US"), "no globex row leaked into srijanlabs's result set");
   });
 
   console.log("2. Tenant B (globex) sees only its own rows");
@@ -58,7 +58,7 @@ async function main() {
   // as an implicit ROLLBACK rather than raising a client-visible error, so
   // no explicit rollback call is needed here.
   await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${acme.id}, true)`;
+    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${srijanLabs.id}, true)`;
     let rejected = false;
     try {
       await tx.legalEntity.create({
@@ -67,17 +67,17 @@ async function main() {
     } catch {
       rejected = true;
     }
-    assert(rejected, "insert of a globex-owned row while scoped to acme was rejected");
+    assert(rejected, "insert of a globex-owned row while scoped to srijanlabs was rejected");
   });
 
   console.log("5. employees table: tenant A sees only its own employees");
   await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${acme.id}, true)`;
+    await tx.$executeRaw`SELECT set_config('app.tenant_id', ${srijanLabs.id}, true)`;
     const rows = await tx.employee.findMany();
-    assert(rows.length >= 3, `expected at least 3 acme employees, got ${rows.length}`);
-    assert(rows.every((r) => r.tenantId === acme.id), "all rows belong to acme");
-    assert(rows.some((r) => r.employeeCode === "ACME-0001"), "seeded ACME-0001 row is visible");
-    assert(rows.every((r) => r.employeeCode !== "GLX-0001"), "no globex employee leaked into acme's result set");
+    assert(rows.length >= 3, `expected at least 3 srijanlabs employees, got ${rows.length}`);
+    assert(rows.every((r) => r.tenantId === srijanLabs.id), "all rows belong to srijanlabs");
+    assert(rows.some((r) => r.employeeCode === "SRIJAN-0001"), "seeded SRIJAN-0001 row is visible");
+    assert(rows.every((r) => r.employeeCode !== "GLX-0001"), "no globex employee leaked into srijanlabs's result set");
   });
 
   console.log("6. employees table: no tenant context set -> zero rows");

@@ -77,7 +77,7 @@ export function LoginPage() {
                   required
                   value={tenantCode}
                   onChange={(e) => setTenantCode(e.target.value)}
-                  placeholder="acme"
+                  placeholder="srijanlabs"
                   className="input"
                   autoComplete="organization"
                 />
