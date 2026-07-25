@@ -1,5 +1,13 @@
 import { apiRequest } from "./http";
-import type { CreateLeaveRequestInput, LeaveBalance, LeavePolicy, LeaveRequest } from "./types";
+import type {
+  CarryForwardRunResult,
+  CreateLeaveAdjustmentInput,
+  CreateLeaveRequestInput,
+  LeaveBalance,
+  LeaveLedgerEntry,
+  LeavePolicy,
+  LeaveRequest,
+} from "./types";
 
 export function listLeavePolicies(): Promise<LeavePolicy[]> {
   return apiRequest<LeavePolicy[]>("/leave/policies");
@@ -32,4 +40,19 @@ export function rejectLeaveRequest(id: string, note?: string): Promise<LeaveRequ
 
 export function cancelLeaveRequest(id: string): Promise<{ cancelled: true }> {
   return apiRequest(`/leave/requests/${id}/cancel`, { method: "POST" });
+}
+
+export function getLeaveLedger(employeeId: string): Promise<LeaveLedgerEntry[]> {
+  return apiRequest<LeaveLedgerEntry[]>(`/leave/ledger/${employeeId}`);
+}
+
+export function postLeaveAdjustment(input: CreateLeaveAdjustmentInput): Promise<LeaveLedgerEntry> {
+  return apiRequest<LeaveLedgerEntry>("/leave/ledger/adjustments", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function runLeaveCarryForward(fromYear: number): Promise<CarryForwardRunResult> {
+  return apiRequest<CarryForwardRunResult>("/leave/ledger/carry-forward/run", {
+    method: "POST",
+    body: JSON.stringify({ fromYear }),
+  });
 }

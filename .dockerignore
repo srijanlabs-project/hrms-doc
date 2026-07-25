@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/.git
+docs/
+ui-studio/
+*.md
+.env
+**/.env
+app/apps/api/uploads

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { OtpChallenge, Session, Tenant, User } from "@prisma/client";
 import { PrismaService } from "../platform/prisma/prisma.service";
 
-export type UserWithEmployeeName = User & { employee: { legalName: string } | null };
+export type UserWithEmployeeName = User & { employee: { legalName: string; status: string } | null };
 
 /**
  * Data access only. `findTenantByCode` and reads it feeds (findUserByEmail
@@ -32,14 +32,32 @@ export class AuthRepository {
     );
   }
 
-  /** Includes the linked employee's name for display purposes (e.g. the app shell's user menu). */
+  /** Used by ComplianceCalendarService to notify all admins of a tenant, not one specific employee. */
+  findUsersWithAnyRole(tenantId: string, roles: string[]): Promise<User[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.user.findMany({ where: { tenantId, deletedAt: null, roles: { hasSome: roles } } }),
+    );
+  }
+
+  /** Includes the linked employee's name + status (app shell user menu, and the exit-portal branch on the frontend). */
   findUserByIdWithEmployeeName(tenantId: string, id: string): Promise<UserWithEmployeeName | null> {
     return this.prisma.withTenant(tenantId, (tx) =>
       tx.user.findFirst({
         where: { id, tenantId, deletedAt: null },
-        include: { employee: { select: { legalName: true } } },
+        include: { employee: { select: { legalName: true, status: true } } },
       }),
     );
+  }
+
+  /** Used by ExitStatusGuard on every non-exempt request; null if the user has no linked employee. */
+  async findEmployeeStatusForUser(tenantId: string, userId: string): Promise<string | null> {
+    const user = await this.prisma.withTenant(tenantId, (tx) =>
+      tx.user.findFirst({
+        where: { id: userId, tenantId, deletedAt: null },
+        select: { employee: { select: { status: true } } },
+      }),
+    );
+    return user?.employee?.status ?? null;
   }
 
   /** Resolves the User account for an Employee (e.g. a manager) so other modules can notify or authorize by employee id. */
@@ -47,6 +65,10 @@ export class AuthRepository {
     return this.prisma.withTenant(tenantId, (tx) =>
       tx.user.findFirst({ where: { tenantId, employeeId, deletedAt: null } }),
     );
+  }
+
+  createUser(tenantId: string, data: { email: string; roles: string[]; employeeId: string }): Promise<User> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.user.create({ data: { ...data, tenantId } }));
   }
 
   createSession(tenantId: string, userId: string, expiresAt: Date): Promise<Session> {
@@ -62,6 +84,22 @@ export class AuthRepository {
   async revokeSession(tenantId: string, sessionId: string): Promise<void> {
     await this.prisma.withTenant(tenantId, (tx) =>
       tx.session.updateMany({ where: { id: sessionId, tenantId }, data: { revokedAt: new Date() } }),
+    );
+  }
+
+  /** Device management: a session IS the device record for this v1 slice. */
+  findActiveSessionsForUser(tenantId: string, userId: string): Promise<Session[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.session.findMany({
+        where: { tenantId, userId, revokedAt: null, expiresAt: { gt: new Date() } },
+        orderBy: { issuedAt: "desc" },
+      }),
+    );
+  }
+
+  async revokeSessionForUser(tenantId: string, userId: string, sessionId: string): Promise<void> {
+    await this.prisma.withTenant(tenantId, (tx) =>
+      tx.session.updateMany({ where: { id: sessionId, tenantId, userId }, data: { revokedAt: new Date() } }),
     );
   }
 

@@ -2,14 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { AuthRepository } from "../auth/auth.repository";
 import { RequestContextService } from "../platform/context/request-context.service";
 import { AuthenticationAppError, NotFoundAppError } from "../platform/errors/errors";
-import type { EmployeeWithDepartment } from "../people/employee/employee.repository";
-import { EmployeeRepository } from "../people/employee/employee.repository";
+import type { EmployeeWithDepartment } from "./employee/employee.repository";
+import { EmployeeRepository } from "./employee/employee.repository";
 
 /**
  * Resolves the Employee record linked to the currently authenticated User.
- * Shared by leave balance and leave request services rather than duplicated
- * — every self-service leave action needs "who am I as an employee", not
- * just "who am I as a user".
+ * Shared across every module that needs "who am I as an employee" (leave,
+ * attendance, payroll self-service), not just one — lives in PeopleModule
+ * since that's the module that already owns EmployeeRepository.
  */
 @Injectable()
 export class CurrentEmployeeService {

@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../features/auth/AuthProvider";
@@ -70,8 +70,18 @@ export function UserMenu() {
             </div>
             <button
               type="button"
+              onClick={() => {
+                setOpen(false);
+                navigate("/security");
+              }}
+              className="mt-2 flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left hover:bg-canvas"
+            >
+              <ShieldCheck className="h-4 w-4" /> Security
+            </button>
+            <button
+              type="button"
               onClick={handleLogout}
-              className="mt-2 flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-negative hover:bg-negative-soft"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-negative hover:bg-negative-soft"
             >
               <LogOut className="h-4 w-4" /> Log Out
             </button>

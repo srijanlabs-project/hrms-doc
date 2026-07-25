@@ -31,6 +31,8 @@ export class DepartmentRepository {
           code: dto.code,
           name: dto.name,
           parentDepartmentId: dto.parentDepartmentId,
+          orgUnitId: dto.orgUnitId,
+          financialCenterId: dto.financialCenterId,
         },
       }),
     );

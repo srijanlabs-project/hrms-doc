@@ -15,4 +15,12 @@ export class CreateDepartmentDto {
   @IsOptional()
   @IsUUID()
   parentDepartmentId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  orgUnitId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  financialCenterId?: string;
 }

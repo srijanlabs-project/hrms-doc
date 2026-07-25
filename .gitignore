@@ -17,6 +17,9 @@ __pycache__/
 # Archives and working exports (keep source folders, not zips)
 *.zip
 
+# File Storage engine's local-disk adapter (dev only — see platform/files)
+app/apps/api/uploads/
+
 # Local tool state
 .codex/
 .DS_Store

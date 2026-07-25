@@ -1,6 +1,6 @@
-import { IsIn, IsNumber, IsPositive, IsString, Length } from "class-validator";
+import { IsBoolean, IsIn, IsNumber, IsOptional, IsPositive, IsString, Length, Min } from "class-validator";
 
-const LEAVE_TYPES = ["Annual", "Casual", "Sick"] as const;
+const LEAVE_TYPES = ["Annual", "Casual", "Sick", "Comp Off"] as const;
 
 export class CreateLeavePolicyDto {
   @IsIn(LEAVE_TYPES)
@@ -13,4 +13,13 @@ export class CreateLeavePolicyDto {
   @IsNumber()
   @IsPositive()
   annualDays!: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  carryForwardCapDays?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  sandwichRuleEnabled?: boolean;
 }

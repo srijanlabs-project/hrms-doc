@@ -20,10 +20,14 @@ This document tracks documentation completion status for the deep sub-module spe
 # 3. Current Summary
 
 - Tracked modules in this checklist: `32`
-- Fully completed modules: `32`
-- Tracked deep sub-modules in this checklist: `149`
+- Fully completed modules: `29`
+- Tracked deep sub-modules in this checklist: `152`
 - Completed deep sub-modules: `149`
-- Pending deep sub-modules: `0`
+- Pending deep sub-modules: `3`
+
+Three gaps were identified during a build-status audit (position management under Organization Management,
+employee referrals under Recruitment and ATS, employee relations and grievance management under Helpdesk
+and Case Management) and added to the catalog and this checklist as newly tracked, not-yet-written deep specs.
 
 # 4. Module and Sub-Module Checklist
 
@@ -44,7 +48,7 @@ This document tracks documentation completion status for the deep sub-module spe
 
 ## 01. Organization Management
 
-- [x] Module complete (`9/9`)
+- [ ] Module complete (`9/10`)
 - [x] 01-company
 - [x] 02-legal-entity
 - [x] 03-department
@@ -54,6 +58,7 @@ This document tracks documentation completion status for the deep sub-module spe
 - [x] 07-grade-and-band
 - [x] 08-employment-category-and-worker-type
 - [x] 09-work-calendar
+- [ ] 10-position-management
 
 ## 02. People Management
 
@@ -99,7 +104,7 @@ This document tracks documentation completion status for the deep sub-module spe
 
 ## 06. Recruitment and ATS
 
-- [x] Module complete (`8/8`)
+- [ ] Module complete (`8/9`)
 - [x] 01-manpower-planning
 - [x] 02-requisitions
 - [x] 03-career-portal
@@ -108,6 +113,7 @@ This document tracks documentation completion status for the deep sub-module spe
 - [x] 06-interview-scheduling
 - [x] 07-interview-feedback
 - [x] 08-offer-management
+- [ ] 09-employee-referrals
 
 ## 07. Workforce Management
 
@@ -202,9 +208,10 @@ This document tracks documentation completion status for the deep sub-module spe
 
 ## 19. Helpdesk and Case Management
 
-- [x] Module complete (`2/2`)
+- [ ] Module complete (`2/3`)
 - [x] 01-sla-management
 - [x] 02-escalations
+- [ ] 03-employee-relations-and-grievance-management
 
 ## 20. Contractor and External Workforce
 

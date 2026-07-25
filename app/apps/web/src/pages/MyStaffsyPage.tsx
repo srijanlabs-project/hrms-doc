@@ -8,7 +8,6 @@ import {
   IndianRupee,
   LayoutGrid,
   Receipt,
-  Send,
   Settings2,
   Upload,
 } from "lucide-react";
@@ -18,9 +17,14 @@ import { Avatar } from "../components/ui/Avatar";
 import { Badge, type BadgeTone } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { ProgressBar } from "../components/ui/ProgressBar";
-import { RidzAvatar } from "../components/ui/RidzAvatar";
 import { useAuth } from "../features/auth/AuthProvider";
+import { RidzAssistantCard } from "../features/ai/RidzAssistantCard";
+import { listMyAttendance } from "../lib/api/attendance";
+import { listPublishedAnnouncements } from "../lib/api/communication";
 import { listLeaveBalances } from "../lib/api/leave";
+import { listMyGoals } from "../lib/api/performance";
+import { listMyPayslips } from "../lib/api/payroll";
+import { getRequestsSummary } from "../lib/api/requests-hub";
 
 /**
  * T-001 My Staffsy Workspace — employee landing page.
@@ -32,10 +36,10 @@ import { listLeaveBalances } from "../lib/api/leave";
 
 const actions = [
   { label: "Apply Leave", icon: CalendarDays, to: "/leave/apply" },
-  { label: "Mark Attendance", icon: CalendarCheck },
-  { label: "My Requests", icon: FileText },
-  { label: "View Payslip", icon: IndianRupee },
-  { label: "Claim Expense", icon: Receipt },
+  { label: "Mark Attendance", icon: CalendarCheck, to: "/attendance" },
+  { label: "My Requests", icon: FileText, to: "/requests" },
+  { label: "View Payslip", icon: IndianRupee, to: "/payslips" },
+  { label: "Claim Expense", icon: Receipt, to: "/expenses" },
   { label: "Upload Document", icon: Upload },
   { label: "Request WFH", icon: Home },
   { label: "More Actions", icon: LayoutGrid },
@@ -48,24 +52,11 @@ const tasks: { title: string; due: string; tone: BadgeTone; chip: string }[] = [
   { title: "Update emergency contact", due: "Due in 7 days", tone: "neutral", chip: "Low" },
 ];
 
-const announcements = [
-  { title: "Flexible Work Policy Update", meta: "Effective from 1st Aug · 2 hours ago", chip: "New" },
-  { title: "Townhall with Leadership Team", meta: "5th Aug at 4:00 PM · 1 day ago", chip: null },
-  { title: "Independence Day Celebration", meta: "15th Aug · Office Holiday · 2 days ago", chip: null },
-];
-
 const myDay = [
   { time: "09:30 AM", title: "Team Standup", detail: "30 mins" },
   { time: "11:00 AM", title: "Product Roadmap Review", detail: "1 hr" },
   { time: "02:00 PM", title: "1:1 with Manager", detail: "30 mins" },
   { time: "04:00 PM", title: "Learning: Leadership 101", detail: "45 mins" },
-];
-
-const aiSuggestions = [
-  "Show my pending tasks",
-  "Apply for leave",
-  "When is my next holiday?",
-  "Show my team attendance",
 ];
 
 const team = [
@@ -78,12 +69,6 @@ const team = [
 const events = [
   { date: "AUG 15", title: "Independence Day", detail: "Office Holiday" },
   { date: "AUG 21", title: "Team Offsite", detail: "Bangalore" },
-];
-
-const goals = [
-  { label: "Improve Design System", value: 75, tone: "primary" as const },
-  { label: "Enhance User Research", value: 60, tone: "accent" as const },
-  { label: "Mentor Team Members", value: 40, tone: "info" as const },
 ];
 
 const whosOut = [
@@ -117,6 +102,22 @@ export function MyStaffsyPage() {
   const balances = useQuery({ queryKey: ["leave-balances"], queryFn: listLeaveBalances });
   const totalAvailable = balances.data?.reduce((sum, b) => sum + b.available, 0);
 
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const attendance = useQuery({
+    queryKey: ["attendance-my", todayIso],
+    queryFn: () => listMyAttendance(todayIso, todayIso),
+  });
+  const todayAttendanceStatus = attendance.data?.[0]?.status ?? "Not Marked";
+
+  const payslips = useQuery({ queryKey: ["payslips-my"], queryFn: listMyPayslips });
+  const latestPayslip = payslips.data?.[0];
+
+  const goals = useQuery({ queryKey: ["goals-my"], queryFn: listMyGoals });
+  const activeGoals = goals.data?.filter((g) => g.status === "Active") ?? [];
+
+  const requestsSummary = useQuery({ queryKey: ["requests-summary"], queryFn: getRequestsSummary });
+  const announcements = useQuery({ queryKey: ["announcements"], queryFn: listPublishedAnnouncements });
+
   const kpis = [
     {
       label: "Leave Balance",
@@ -125,10 +126,34 @@ export function MyStaffsyPage() {
       link: "View Details",
       to: "/leave",
     },
-    { label: "Attendance", value: "—", caption: "Requires Attendance module" },
-    { label: "Pending Tasks", value: "—", caption: "Requires Workflow module" },
-    { label: "Requests", value: "—", caption: "Requires Workflow module" },
-    { label: "Payslip", value: "—", caption: "Requires Payroll module" },
+    {
+      label: "Attendance",
+      value: todayAttendanceStatus,
+      caption: "Today",
+      link: "Mark / View",
+      to: "/attendance",
+    },
+    {
+      label: "Pending Tasks",
+      value: requestsSummary.data ? String(requestsSummary.data.pending) : "—",
+      caption: "Awaiting a decision",
+      link: "View Details",
+      to: "/requests",
+    },
+    {
+      label: "Requests",
+      value: requestsSummary.data ? String(requestsSummary.data.total) : "—",
+      caption: "Total submitted",
+      link: "View Details",
+      to: "/requests",
+    },
+    {
+      label: "Payslip",
+      value: latestPayslip ? `₹${latestPayslip.netPay?.toLocaleString("en-IN") ?? "—"}` : "—",
+      caption: latestPayslip ? "Latest net pay" : "No payslips yet",
+      link: "View Details",
+      to: "/payslips",
+    },
   ];
 
   const firstName = (user?.displayName ?? "there").split(" ")[0];
@@ -218,17 +243,20 @@ export function MyStaffsyPage() {
             </ul>
           </Card>
 
-          <Card title="Announcements" action={<SectionLink />}>
+          <Card title="Announcements" action={<SectionLink to="/communications" />}>
             <ul className="space-y-3">
-              {announcements.map((item) => (
-                <li key={item.title}>
+              {announcements.data?.slice(0, 5).map((item) => (
+                <li key={item.id}>
                   <div className="flex items-center gap-2">
-                    {item.chip && <Badge tone="primary">{item.chip}</Badge>}
+                    <Badge tone="primary">{item.category}</Badge>
                     <span className="font-medium">{item.title}</span>
                   </div>
-                  <div className="mt-0.5 text-xs text-ink-faint">{item.meta}</div>
+                  <div className="mt-0.5 text-xs text-ink-faint">
+                    {item.publishedAt && new Date(item.publishedAt).toLocaleDateString("en-IN")}
+                  </div>
                 </li>
               ))}
+              {announcements.data?.length === 0 && <p className="text-ink-muted">No announcements yet.</p>}
             </ul>
           </Card>
 
@@ -251,15 +279,16 @@ export function MyStaffsyPage() {
 
         {/* Bottom row */}
         <div className="grid gap-4 xl:grid-cols-3">
-          <Card title="My Goals" action={<SectionLink />}>
+          <Card title="My Goals" action={<SectionLink to="/goals" />}>
+            {activeGoals.length === 0 && <p className="text-ink-muted">No active goals — add one on the Goals page.</p>}
             <ul className="space-y-4">
-              {goals.map((goal) => (
-                <li key={goal.label}>
+              {activeGoals.map((goal) => (
+                <li key={goal.id}>
                   <div className="mb-1 flex justify-between text-xs">
-                    <span className="font-medium">{goal.label}</span>
-                    <span className="text-ink-faint">{goal.value}%</span>
+                    <span className="font-medium">{goal.title}</span>
+                    <span className="text-ink-faint">{goal.progress}%</span>
                   </div>
-                  <ProgressBar value={goal.value} tone={goal.tone} />
+                  <ProgressBar value={goal.progress} />
                 </li>
               ))}
             </ul>
@@ -298,32 +327,7 @@ export function MyStaffsyPage() {
 
       {/* Right rail — AI assistant + team, per board T-001 */}
       <aside className="hidden w-80 shrink-0 space-y-4 min-[1400px]:block">
-        <Card>
-          <div className="mb-3 flex items-center gap-2">
-            <RidzAvatar size={32} />
-            <span className="font-semibold">Ridz</span>
-            <Badge tone="primary">BETA</Badge>
-          </div>
-          <p className="mb-3 text-ink-muted">Hi {firstName}! I'm Ridz — how can I help you today?</p>
-          <div className="space-y-2">
-            {aiSuggestions.map((suggestion) => (
-              <button
-                key={suggestion}
-                type="button"
-                className="block w-full rounded-lg border border-border px-3 py-2 text-left hover:border-primary hover:bg-primary-soft"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-          <div className="mt-3 flex items-center gap-2 rounded-lg border border-border px-3 py-2">
-            <input
-              className="w-full bg-transparent outline-none placeholder:text-ink-faint"
-              placeholder="Ask Ridz anything about HR…"
-            />
-            <Send className="h-4 w-4 shrink-0 text-primary" />
-          </div>
-        </Card>
+        <RidzAssistantCard firstName={firstName} />
 
         <Card title="My Team (8)" action={<SectionLink />}>
           <ul className="space-y-3">
@@ -338,12 +342,12 @@ export function MyStaffsyPage() {
               </li>
             ))}
           </ul>
-          <button
-            type="button"
+          <Link
+            to="/team"
             className="mt-4 flex w-full items-center justify-between rounded-lg border border-border px-3 py-2 font-medium hover:border-primary"
           >
             Go to My Team <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </Card>
       </aside>
     </div>

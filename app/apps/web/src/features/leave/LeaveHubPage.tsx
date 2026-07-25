@@ -4,10 +4,18 @@ import { Link } from "react-router-dom";
 import { Card } from "../../components/ui/Card";
 import { KpiCard } from "../../components/ui/KpiCard";
 import { listLeaveBalances, listMyLeaveRequests } from "../../lib/api/leave";
+import { useAuth } from "../auth/AuthProvider";
+import { LeaveAdjustmentPanel } from "./LeaveAdjustmentPanel";
+import { LeaveCarryForwardPanel } from "./LeaveCarryForwardPanel";
+import { LeaveEncashmentPanel } from "./LeaveEncashmentPanel";
 import { LeaveRequestsTable } from "./LeaveRequestsTable";
+
+const ADMIN_ROLES = ["org_admin", "hr_ops"];
 
 /** Landing page for the "Leave" nav item: balances + apply action + my requests. */
 export function LeaveHubPage() {
+  const { user } = useAuth();
+  const isAdmin = ADMIN_ROLES.some((role) => user?.roles.includes(role));
   const balances = useQuery({ queryKey: ["leave-balances"], queryFn: listLeaveBalances });
   const requests = useQuery({ queryKey: ["leave-requests-my"], queryFn: listMyLeaveRequests });
 
@@ -36,7 +44,16 @@ export function LeaveHubPage() {
 
       <div className="grid grid-cols-3 gap-4">
         {balances.data?.map((b) => (
-          <KpiCard key={b.leaveType} label={b.name} value={String(b.available)} caption={`of ${b.prorated} days available`} />
+          <KpiCard
+            key={b.leaveType}
+            label={b.name}
+            value={String(b.available)}
+            caption={
+              b.ledgerNet !== 0
+                ? `of ${b.prorated} days · ${b.ledgerNet > 0 ? "+" : ""}${b.ledgerNet} adjustment/carry-forward`
+                : `of ${b.prorated} days available`
+            }
+          />
         ))}
       </div>
 
@@ -44,6 +61,15 @@ export function LeaveHubPage() {
         {requests.isLoading && <p className="text-ink-muted">Loading requests…</p>}
         {requests.data && <LeaveRequestsTable requests={requests.data} />}
       </Card>
+
+      <LeaveEncashmentPanel balances={balances.data} isAdmin={isAdmin} />
+
+      {isAdmin && (
+        <div className="space-y-4">
+          <LeaveAdjustmentPanel />
+          <LeaveCarryForwardPanel />
+        </div>
+      )}
     </div>
   );
 }

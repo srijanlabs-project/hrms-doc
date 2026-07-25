@@ -73,6 +73,11 @@ export class LeaveRequestRepository {
     return result.count;
   }
 
+  /** Org-wide count for a given status — used by the Reports module (e.g. "Pending Approvals"). */
+  countByStatus(tenantId: string, status: string): Promise<number> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.leaveRequest.count({ where: { tenantId, status } }));
+  }
+
   /** Sums approved days per leave type, for requests overlapping [yearStart, yearEnd]. Used by LeaveBalanceService. */
   async sumApprovedDaysByType(
     tenantId: string,

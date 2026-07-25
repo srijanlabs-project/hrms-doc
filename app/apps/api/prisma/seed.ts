@@ -18,6 +18,21 @@ function seedLeavePolicies(tx: Prisma.TransactionClient, tenantId: string) {
   );
 }
 
+/** Compensation is master data like LeavePolicy (unlike AttendanceDay/PayrollRun, which are user-generated transactional data — not seeded). */
+function seedCompensation(
+  tx: Prisma.TransactionClient,
+  tenantId: string,
+  employeeId: string,
+  monthlyBasic: number,
+  effectiveFrom: Date,
+) {
+  return tx.employeeCompensation.upsert({
+    where: { employeeId },
+    update: {},
+    create: { tenantId, employeeId, monthlyBasic, effectiveFrom },
+  });
+}
+
 /**
  * Local dev seed: two tenants, each with a legal entity, departments,
  * employees, and login-capable users covering the RBAC v1 role set, so
@@ -149,6 +164,12 @@ async function main() {
         employeeId: sneha.id,
       },
     });
+
+    // Sneha is Draft (not yet Active), so intentionally has no compensation
+    // record — payroll processing only runs Active employees, and this
+    // leaves one real "missing setup" exception visible in the demo data.
+    await seedCompensation(tx, srijanLabs.id, priya.id, 90_000, priya.joiningDate!);
+    await seedCompensation(tx, srijanLabs.id, rohit.id, 45_000, rohit.joiningDate!);
   });
 
   await prisma.$transaction(async (tx) => {
@@ -192,6 +213,8 @@ async function main() {
         employeeId: alex.id,
       },
     });
+
+    await seedCompensation(tx, globex.id, alex.id, 60_000, alex.joiningDate!);
   });
 
   console.log("Seeded tenants:", { srijanLabs: srijanLabs.code, globex: globex.code });

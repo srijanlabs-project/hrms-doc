@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { requestOtp, verifyOtp } from "../../lib/api/auth";
+import { completeMfaChallenge, requestOtp, verifyOtp } from "../../lib/api/auth";
 import { ApiError } from "../../lib/api/http";
 import { useAuth } from "./AuthProvider";
 
@@ -18,15 +18,22 @@ import { useAuth } from "./AuthProvider";
  * real email/SMS gateway. That gateway is a pre-UAT swap-in
  * (apps/api/src/auth/otp/otp-provider.ts); this screen doesn't change when
  * it lands, only the dev banner disappears (`devOtp` stops being sent).
+ *
+ * A third step (mfa) appears only for accounts with an Active MFA factor
+ * (Identity and Access deepening, 03-mfa.md v1 slice): verifyOtp() then
+ * returns a pendingToken instead of a session, redeemable only via the
+ * authenticator-app code.
  */
 export function LoginPage() {
   const navigate = useNavigate();
   const { refresh } = useAuth();
-  const [step, setStep] = useState<"request" | "verify">("request");
+  const [step, setStep] = useState<"request" | "verify" | "mfa">("request");
   const [tenantCode, setTenantCode] = useState("");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [devOtp, setDevOtp] = useState<string | null>(null);
+  const [pendingToken, setPendingToken] = useState("");
+  const [mfaCode, setMfaCode] = useState("");
 
   const requestMutation = useMutation({
     mutationFn: () => requestOtp({ tenantCode: tenantCode.trim().toLowerCase(), email }),
@@ -39,6 +46,19 @@ export function LoginPage() {
 
   const verifyMutation = useMutation({
     mutationFn: () => verifyOtp({ tenantCode: tenantCode.trim().toLowerCase(), email, otp }),
+    onSuccess: (result) => {
+      if ("mfaRequired" in result) {
+        setPendingToken(result.pendingToken);
+        setStep("mfa");
+        return;
+      }
+      refresh();
+      navigate("/home", { replace: true });
+    },
+  });
+
+  const mfaMutation = useMutation({
+    mutationFn: () => completeMfaChallenge(pendingToken, mfaCode),
     onSuccess: () => {
       refresh();
       navigate("/home", { replace: true });
@@ -48,12 +68,11 @@ export function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-canvas px-4">
       <div className="w-full max-w-sm rounded-(--radius-card) border border-border bg-surface p-8 shadow-(--shadow-raised)">
-        <div className="mb-6 flex items-center gap-2 text-xl font-bold text-primary">
-          <span aria-hidden className="inline-block h-7 w-7 rounded bg-primary" />
-          Staffsy
+        <div className="mb-6 flex items-center">
+          <img src="/staffsy-logo.png" alt="Staffsy" className="h-7 w-auto" />
         </div>
 
-        {step === "request" ? (
+        {step === "request" && (
           <>
             <h1 className="mb-1 text-lg font-semibold">Sign in to your workspace</h1>
             <p className="mb-6 text-ink-muted">We'll email you a one-time verification code.</p>
@@ -104,7 +123,9 @@ export function LoginPage() {
               </button>
             </form>
           </>
-        ) : (
+        )}
+
+        {step === "verify" && (
           <>
             <h1 className="mb-1 text-lg font-semibold">Enter verification code</h1>
             <p className="mb-4 text-ink-muted">
@@ -161,6 +182,48 @@ export function LoginPage() {
                 className="w-full text-center text-ink-muted hover:text-primary"
               >
                 Use a different email
+              </button>
+            </form>
+          </>
+        )}
+
+        {step === "mfa" && (
+          <>
+            <h1 className="mb-1 text-lg font-semibold">Enter authenticator code</h1>
+            <p className="mb-4 text-ink-muted">
+              This account has multi-factor authentication enabled — enter the 6-digit code from your authenticator app.
+            </p>
+
+            <form
+              className="space-y-3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                mfaMutation.mutate();
+              }}
+            >
+              {mfaMutation.error instanceof ApiError && (
+                <p className="rounded-lg bg-negative-soft px-3 py-2 text-negative">{mfaMutation.error.message}</p>
+              )}
+
+              <label className="block">
+                <span className="mb-1 block text-xs font-medium text-ink-muted">Authenticator Code</span>
+                <input
+                  required
+                  value={mfaCode}
+                  onChange={(e) => setMfaCode(e.target.value)}
+                  inputMode="numeric"
+                  className="input text-center text-lg tracking-[0.3em]"
+                  autoComplete="one-time-code"
+                  autoFocus
+                />
+              </label>
+
+              <button
+                type="submit"
+                disabled={mfaMutation.isPending}
+                className="w-full rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+              >
+                {mfaMutation.isPending ? "Verifying…" : "Verify & Sign In"}
               </button>
             </form>
           </>

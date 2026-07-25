@@ -1,15 +1,29 @@
 import {
   BarChart3,
+  Boxes,
+  Briefcase,
   Building2,
   CalendarCheck,
   CalendarDays,
   CalendarRange,
   CheckSquare,
+  ClipboardCheck,
+  Clock,
+  Plug,
+  UserCog,
   FileText,
+  FileUp,
   FolderOpen,
   GraduationCap,
-  HelpCircle,
+  Headset,
   Home,
+  ListChecks,
+  Megaphone,
+  Network,
+  Receipt,
+  Plane,
+  Sparkles,
+  UserPlus,
   Settings,
   ShieldCheck,
   Target,
@@ -27,6 +41,7 @@ type NavItem = { label: string; to: string; icon: LucideIcon; disabled?: boolean
 type NavSection = { title: string; items: NavItem[] };
 
 const APPROVER_ROLES = ["manager", "hr_ops", "org_admin"];
+const PAYROLL_ADMIN_ROLES = ["org_admin", "hr_ops"];
 
 /**
  * Navigation per board T-001: MY WORK / GROWTH / RESOURCES / MORE sections
@@ -41,12 +56,20 @@ function buildSections(roles: string[]): NavSection[] {
       title: "My Work",
       items: [
         { label: "Home", to: "/home", icon: Home },
-        { label: "My Profile", to: "/profile", icon: User, disabled: true },
-        { label: "Attendance", to: "/attendance", icon: CalendarCheck, disabled: true },
+        { label: "My Profile", to: "/profile", icon: User },
+        { label: "Attendance", to: "/attendance", icon: CalendarCheck },
+        { label: "Workforce", to: "/workforce", icon: Clock },
         { label: "Leave", to: "/leave", icon: CalendarDays },
-        { label: "Pay & Benefits", to: "/pay", icon: Wallet, disabled: true },
+        { label: "Pay & Benefits", to: "/payslips", icon: Wallet },
+        { label: "My Benefits", to: "/benefits", icon: Wallet },
+        { label: "Recognition & Surveys", to: "/experience", icon: Sparkles },
+        { label: "Expenses", to: "/expenses", icon: Receipt },
+        { label: "Travel", to: "/travel", icon: Plane },
+        { label: "Assets", to: "/assets", icon: Boxes },
+        { label: "Refer a Candidate", to: "/recruitment/refer", icon: UserPlus },
         { label: "My Requests", to: "/requests", icon: FileText, disabled: true },
         { label: "Time Off Calendar", to: "/leave/calendar", icon: CalendarRange },
+        { label: "My Onboarding", to: "/onboarding", icon: ListChecks },
       ],
     },
   ];
@@ -58,13 +81,36 @@ function buildSections(roles: string[]): NavSection[] {
     });
   }
 
+  if (roles.some((role) => PAYROLL_ADMIN_ROLES.includes(role))) {
+    sections.push({
+      title: "Admin",
+      items: [
+        { label: "Payroll", to: "/payroll", icon: Wallet },
+        { label: "Statutory Compliance", to: "/compliance", icon: ClipboardCheck },
+        { label: "Integrations", to: "/integrations", icon: Plug },
+        { label: "Recruitment", to: "/recruitment", icon: Briefcase },
+        { label: "Onboarding", to: "/onboarding/cases", icon: ListChecks },
+        { label: "Bulk Import", to: "/people/employees/bulk-import", icon: FileUp },
+        { label: "Talent 9-Box", to: "/talent", icon: Target },
+        { label: "Succession Planning", to: "/talent/succession", icon: ShieldCheck },
+        { label: "Compensation Planning", to: "/compensation-planning", icon: Wallet },
+        { label: "Contractors", to: "/contractors", icon: UserCog },
+        { label: "Calibration", to: "/performance/calibration", icon: TrendingUp },
+        { label: "Organization Settings", to: "/organization", icon: Network },
+      ],
+    });
+  }
+
   sections.push(
     {
       title: "Growth",
       items: [
-        { label: "Learning", to: "/learning", icon: GraduationCap, disabled: true },
-        { label: "My Goals", to: "/goals", icon: Target, disabled: true },
-        { label: "Performance", to: "/performance", icon: TrendingUp, disabled: true },
+        { label: "Learning Catalog", to: "/learning", icon: GraduationCap },
+        { label: "My Learning", to: "/learning/my", icon: ListChecks },
+        { label: "Certifications", to: "/learning/certifications", icon: ShieldCheck },
+        { label: "My Goals", to: "/goals", icon: Target },
+        { label: "Performance", to: "/performance", icon: TrendingUp },
+        { label: "360 Feedback", to: "/performance/360", icon: Users },
       ],
     },
     {
@@ -72,8 +118,9 @@ function buildSections(roles: string[]): NavSection[] {
       items: [
         { label: "Documents", to: "/documents", icon: FolderOpen, disabled: true },
         { label: "Policies", to: "/policies", icon: ShieldCheck, disabled: true },
+        { label: "Announcements", to: "/communications", icon: Megaphone },
         { label: "Employees", to: "/people/employees", icon: Users },
-        { label: "Reports", to: "/reports", icon: BarChart3, disabled: true },
+        { label: "Reports", to: "/reports", icon: BarChart3 },
       ],
     },
     {
@@ -81,7 +128,7 @@ function buildSections(roles: string[]): NavSection[] {
       items: [
         { label: "Company", to: "/company", icon: Building2, disabled: true },
         { label: "Settings", to: "/settings", icon: Settings, disabled: true },
-        { label: "Help & Support", to: "/help", icon: HelpCircle, disabled: true },
+        { label: "Help & Support", to: "/helpdesk", icon: Headset },
       ],
     },
   );

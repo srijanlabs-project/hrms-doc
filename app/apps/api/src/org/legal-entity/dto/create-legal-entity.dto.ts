@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Length, Matches } from "class-validator";
+import { IsOptional, IsString, IsUUID, Length, Matches } from "class-validator";
 
 /** Field rules per docs/07-appendices/18-field-validation-standards-and-rule-matrix.md. */
 export class CreateLegalEntityDto {
@@ -16,4 +16,8 @@ export class CreateLegalEntityDto {
   @IsString()
   @Matches(/^[A-Z]{2}$/, { message: "country must be a 2-letter ISO code" })
   country?: string;
+
+  @IsOptional()
+  @IsUUID()
+  companyId?: string;
 }

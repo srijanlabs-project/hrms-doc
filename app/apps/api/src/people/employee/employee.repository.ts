@@ -26,11 +26,32 @@ export class EmployeeRepository {
     );
   }
 
+  /** Active employees only — the mandatory-training assignment sweep's target population. */
+  findActive(tenantId: string): Promise<EmployeeWithDepartment[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.employee.findMany({
+        where: { tenantId, deletedAt: null, status: "Active" },
+        include: includeDepartment,
+        orderBy: { createdAt: "asc" },
+      }),
+    );
+  }
+
   findById(tenantId: string, id: string): Promise<EmployeeWithDepartment | null> {
     return this.prisma.withTenant(tenantId, (tx) =>
       tx.employee.findFirst({
         where: { id, tenantId, deletedAt: null },
         include: includeDepartment,
+      }),
+    );
+  }
+
+  findByManagerId(tenantId: string, managerId: string): Promise<EmployeeWithDepartment[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.employee.findMany({
+        where: { tenantId, managerId, deletedAt: null },
+        include: includeDepartment,
+        orderBy: { legalName: "asc" },
       }),
     );
   }
@@ -43,6 +64,43 @@ export class EmployeeRepository {
       tx.employee.create({
         data: { ...data, tenantId },
         include: includeDepartment,
+      }),
+    );
+  }
+
+  updateStatus(tenantId: string, id: string, status: string): Promise<Employee> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.employee.update({ where: { id }, data: { status } }));
+  }
+
+  applyAssignmentChange(
+    tenantId: string,
+    id: string,
+    data: { departmentId?: string; managerId?: string; designationId?: string; gradeId?: string },
+  ): Promise<EmployeeWithDepartment> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.employee.update({ where: { id }, data, include: includeDepartment }),
+    );
+  }
+
+  updateContractEndDate(tenantId: string, id: string, contractEndDate: Date): Promise<Employee> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.employee.update({ where: { id }, data: { contractEndDate } }));
+  }
+
+  updateOrgAssignment(
+    tenantId: string,
+    id: string,
+    data: { positionId?: string; gradeId?: string; financialCenterId?: string; workerType?: string },
+  ): Promise<EmployeeWithDepartment> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.employee.update({ where: { id }, data, include: includeDepartment }),
+    );
+  }
+
+  markSeparated(tenantId: string, id: string, lastWorkingDay: Date, exitReason?: string): Promise<Employee> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.employee.update({
+        where: { id },
+        data: { status: "Separated", lastWorkingDay, exitReason },
       }),
     );
   }

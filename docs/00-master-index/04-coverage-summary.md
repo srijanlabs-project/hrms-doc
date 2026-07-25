@@ -15,7 +15,7 @@ This document summarizes the current structure and coverage of the Enterprise HR
 As of the current expansion wave, the library contains:
 
 - `33` top-level parent module specifications
-- `149` dedicated deep sub-module specifications for `L3` complexity areas
+- `149` dedicated deep sub-module specifications for `L3` complexity areas, plus `3` newly identified `L3` gaps (position management, employee referrals, employee relations and grievance management) awaiting their own deep-spec documents
 - `11` stakeholder journey documents
 - `18` cross-cutting specification documents
 - `44` appendix documents including indexed master references and populated engineering reference tables
@@ -29,7 +29,7 @@ Current deep-spec maturity indicators:
 - The shortest deep specification is approximately `114` lines
 - The longest deep specification is approximately `229` lines
 - All `149` deep specifications have been rewritten beyond the older generic placeholder pattern
-- The current `L3` deep-spec backlog is `0`
+- The current `L3` deep-spec backlog is `3` (see `00-master-index/05-module-submodule-progress-checklist.md` section 3)
 
 # 3. Coverage Meaning
 

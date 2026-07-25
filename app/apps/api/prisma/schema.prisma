@@ -21,27 +21,139 @@ model Tenant {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  legalEntities  LegalEntity[]
-  departments    Department[]
-  employees      Employee[]
-  users          User[]
-  sessions       Session[]
-  otpChallenges  OtpChallenge[]
-  leavePolicies  LeavePolicy[]
-  leaveRequests  LeaveRequest[]
-  notifications  Notification[]
+  legalEntities               LegalEntity[]
+  departments                 Department[]
+  employees                   Employee[]
+  users                       User[]
+  sessions                    Session[]
+  otpChallenges               OtpChallenge[]
+  leavePolicies               LeavePolicy[]
+  leaveRequests               LeaveRequest[]
+  notifications               Notification[]
+  attendanceDays              AttendanceDay[]
+  employeeCompensations       EmployeeCompensation[]
+  payrollRuns                 PayrollRun[]
+  payrollRunResults           PayrollRunResult[]
+  requisitions                Requisition[]
+  candidates                  Candidate[]
+  applications                Application[]
+  offers                      Offer[]
+  onboardingCases             OnboardingCase[]
+  onboardingTasks             OnboardingTask[]
+  goals                       Goal[]
+  appraisals                  Appraisal[]
+  learningCourses             LearningCourse[]
+  learningEnrollments         LearningEnrollment[]
+  talentAssessments           TalentAssessment[]
+  compensationReviewCycles    CompensationReviewCycle[]
+  compensationReviewItems     CompensationReviewItem[]
+  expenseClaims               ExpenseClaim[]
+  travelRequests              TravelRequest[]
+  assets                      Asset[]
+  assetAssignments            AssetAssignment[]
+  companies                   Company[]
+  orgUnits                    OrgUnit[]
+  financialCenters            FinancialCenter[]
+  reportingLines              ReportingLine[]
+  jobFamilies                 JobFamily[]
+  jobFunctions                JobFunction[]
+  designations                Designation[]
+  grades                      Grade[]
+  positions                   Position[]
+  workCalendars               WorkCalendar[]
+  workCalendarDays            WorkCalendarDay[]
+  workCalendarAssignments     WorkCalendarAssignment[]
+  orgPolicies                 OrgPolicy[]
+  personalDetails             PersonalDetail[]
+  emergencyContacts           EmergencyContact[]
+  identityDocuments           IdentityDocument[]
+  bankAccounts                BankAccount[]
+  taxProfiles                 TaxProfile[]
+  employeeDocuments           EmployeeDocument[]
+  employeeCertifications      EmployeeCertification[]
+  employeeSkills              EmployeeSkill[]
+  educationRecords            EducationRecord[]
+  priorExperiences            PriorExperience[]
+  assignmentHistories         EmployeeAssignmentHistory[]
+  probationRecords            ProbationRecord[]
+  salaryRevisions             SalaryRevision[]
+  contractRenewals            ContractRenewal[]
+  storedFiles                 StoredFile[]
+  auditLogs                   AuditLog[]
+  documentTemplates           DocumentTemplate[]
+  generatedDocuments          GeneratedDocument[]
+  numberSeries                NumberSeries[]
+  mfaFactors                  MfaFactor[]
+  delegations                 Delegation[]
+  shiftDefinitions            ShiftDefinition[]
+  shiftAssignments            ShiftAssignment[]
+  rosterEntries               RosterEntry[]
+  rosterSwapRequests          RosterSwapRequest[]
+  timesheetEntries            TimesheetEntry[]
+  overtimeRequests            OvertimeRequest[]
+  leaveLedgerEntries          LeaveLedgerEntry[]
+  payComponents               PayComponent[]
+  employeePayComponents       EmployeePayComponent[]
+  arrearEntries               ArrearEntry[]
+  fnfCases                    FnfCase[]
+  complianceObligations       ComplianceObligation[]
+  complianceTasks             ComplianceTask[]
+  statutoryComplianceSetting  StatutoryComplianceSetting?
+  webhookSubscriptions        WebhookSubscription[]
+  webhookDeliveries           WebhookDelivery[]
+  interviewRounds             InterviewRound[]
+  interviewFeedback           InterviewFeedback[]
+  backgroundChecks            BackgroundCheck[]
+  feedbackCampaigns           FeedbackCampaign[]
+  feedbackRaters              FeedbackRater[]
+  calibrationSessions         CalibrationSession[]
+  calibrationCases            CalibrationCase[]
+  certificationCatalogs       CertificationCatalog[]
+  certificationRecords        CertificationRecord[]
+  criticalRoles               CriticalRole[]
+  successionSuccessors        SuccessionSuccessor[]
+  benefitPlans                BenefitPlan[]
+  benefitEnrollments          BenefitEnrollment[]
+  flexBasketPolicy            FlexBasketPolicy?
+  surveys                     Survey[]
+  surveyQuestions             SurveyQuestion[]
+  surveyResponses             SurveyResponse[]
+  surveyAnswers               SurveyAnswer[]
+  recognitions                Recognition[]
+  tickets                     Ticket[]
+  ticketComments              TicketComment[]
+  slaPolicies                 SlaPolicy[]
+  knowledgeArticles           KnowledgeArticle[]
+  vendors                     Vendor[]
+  externalWorkers             ExternalWorker[]
+  externalWorkerDocuments     ExternalWorkerDocument[]
+  announcements               Announcement[]
+  transferPromotionRequests   TransferPromotionRequest[]
+  flexibleHoursPolicies       FlexibleHoursPolicy[]
+  employeeFlexAssignments     EmployeeFlexAssignment[]
+  shiftRotationPatterns       ShiftRotationPattern[]
+  shiftRotationSteps          ShiftRotationStep[]
+  employeeRotationAssignments EmployeeRotationAssignment[]
+  leaveEncashmentRequests     LeaveEncashmentRequest[]
+  loanAdvances                LoanAdvance[]
+  incentiveBonuses            IncentiveBonus[]
 
   @@map("tenants")
 }
 
 /// Tenant-plane table (RLS enforced): first entity of the Org service.
 model LegalEntity {
-  id        String    @id @default(uuid()) @db.Uuid
-  tenantId  String    @map("tenant_id") @db.Uuid
-  code      String
-  name      String
-  country   String    @default("IN")
-  status    String    @default("active")
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  country  String @default("IN")
+  status   String @default("active")
+
+  /// Wave 1 deepening pass (docs/08-.../01-organization-management/01-company.md): optional link to the owning Company.
+  companyId String?  @map("company_id") @db.Uuid
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
@@ -53,32 +165,156 @@ model LegalEntity {
   @@map("legal_entities")
 }
 
+/// Wave 1 deepening pass of docs/08-submodule-specifications/01-organization-management/01-company.md.
+/// Collapses company_profile/company_status_history/company_dependency_snapshot
+/// into direct fields and a simple Active/Inactive status (no Draft/Retiring
+/// state machine, no dependency-snapshot-before-retire check). Branding
+/// (company_branding entity) and fiscal calendar are collapsed to flat fields
+/// rather than separate versioned entities. Holding/group company is this
+/// model's own self-relation, not a distinct concept.
+model Company {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  status   String @default("Active")
+
+  parentCompanyId String?   @map("parent_company_id") @db.Uuid
+  parentCompany   Company?  @relation("CompanyHierarchy", fields: [parentCompanyId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subsidiaries    Company[] @relation("CompanyHierarchy")
+
+  /// Organization branding (L1) — collapsed to flat fields, no versioned asset history.
+  logoUrl      String? @map("logo_url")
+  primaryColor String? @map("primary_color")
+  tagline      String?
+
+  /// Fiscal calendar (L2) — collapsed to a single start-month field (e.g. 4 = April), not a full fiscal-period ledger.
+  fiscalYearStartMonth Int @default(4) @map("fiscal_year_start_month")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  legalEntities LegalEntity[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("companies")
+}
+
 /// Org service, second sub-module. Spec: docs/08-submodule-specifications/01-organization-management/03-department.md
 /// Phase 2 slice: code, name, single-level-or-deeper parent hierarchy, and a
 /// simplified Active/Inactive status. The full spec's Draft/Restructuring/
 /// Retired states, ownership assignments, and merge/split workflows are
 /// deferred to a later organization-management pass.
 model Department {
-  id       String  @id @default(uuid()) @db.Uuid
-  tenantId String  @map("tenant_id") @db.Uuid
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
   code     String
   name     String
-  status   String  @default("Active")
+  status   String @default("Active")
 
-  parentDepartmentId String?     @map("parent_department_id") @db.Uuid
-  parentDepartment   Department? @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  parentDepartmentId String?      @map("parent_department_id") @db.Uuid
+  parentDepartment   Department?  @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   childDepartments   Department[] @relation("DepartmentHierarchy")
+
+  /// Wave 1 deepening pass: optional links into the broader org structure.
+  orgUnitId         String?          @map("org_unit_id") @db.Uuid
+  orgUnit           OrgUnit?         @relation(fields: [orgUnitId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  financialCenterId String?          @map("financial_center_id") @db.Uuid
+  financialCenter   FinancialCenter? @relation(fields: [financialCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
-  tenant    Tenant     @relation(fields: [tenantId], references: [id])
-  employees Employee[]
+  tenant                    Tenant                     @relation(fields: [tenantId], references: [id])
+  employees                 Employee[]
+  requisitions              Requisition[]
+  positions                 Position[]
+  criticalRoles             CriticalRole[]
+  externalWorkers           ExternalWorker[]
+  transferPromotionRequests TransferPromotionRequest[]
 
   @@unique([tenantId, code])
   @@index([tenantId])
   @@map("departments")
+}
+
+/// Wave 1 deepening pass, consolidating 8 catalog sub-capabilities
+/// (business unit, division, section and team, branch and office, region,
+/// zone, territory, campus/building/floor/work area, and location) into one
+/// type-tagged hierarchy table — the org-tree spec itself treats these as
+/// generic `org_node_type` values in a shared tree, not distinct entities, so
+/// this collapses that generic engine (with its snapshot/reorg-event
+/// machinery) into a flat self-relational table with a `unitType` tag,
+/// mirroring the same category-field pattern used for ExpenseClaim/Asset.
+model OrgUnit {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// BusinessUnit | Division | SectionTeam | BranchOffice | Region | Zone | Territory | Campus | Building | Floor | WorkArea | Location
+  unitType String @map("unit_type")
+  code     String
+  name     String
+  status   String @default("Active")
+
+  parentUnitId String?   @map("parent_unit_id") @db.Uuid
+  parentUnit   OrgUnit?  @relation("OrgUnitHierarchy", fields: [parentUnitId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  childUnits   OrgUnit[] @relation("OrgUnitHierarchy")
+
+  /// Populated when unitType is a physical/geographic node (Location, Branch, Campus, Region, etc.) — deepens the previously-partial country/state/district/city/location coverage.
+  addressLine String? @map("address_line")
+  city        String?
+  state       String?
+  country     String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  departments Department[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, unitType])
+  @@map("org_units")
+}
+
+/// Wave 1 deepening pass, consolidating 3 catalog sub-capabilities (cost
+/// center hierarchy, profit center hierarchy, project hierarchy) into one
+/// type-tagged hierarchy table, same collapse rationale as OrgUnit. No
+/// allocation percentages, ERP mapping, or status-history — just the
+/// hierarchy and its assignment to departments/employees for costing
+/// traceability.
+model FinancialCenter {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// CostCenter | ProfitCenter | Project
+  centerType String @map("center_type")
+  code       String
+  name       String
+  status     String @default("Active")
+
+  parentCenterId String?           @map("parent_center_id") @db.Uuid
+  parentCenter   FinancialCenter?  @relation("FinancialCenterHierarchy", fields: [parentCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  childCenters   FinancialCenter[] @relation("FinancialCenterHierarchy")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant      Tenant       @relation(fields: [tenantId], references: [id])
+  departments Department[]
+  employees   Employee[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, centerType])
+  @@map("financial_centers")
 }
 
 /// People Core service. Spec: docs/08-submodule-specifications/02-people-management/01-employee-master.md
@@ -89,9 +325,9 @@ model Department {
 /// field masking/reveal workflows — all called out explicitly in the spec's
 /// section 19 edge cases and section 3 detailed rules.
 model Employee {
-  id           String  @id @default(uuid()) @db.Uuid
-  tenantId     String  @map("tenant_id") @db.Uuid
-  employeeCode String  @map("employee_code")
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  employeeCode String @map("employee_code")
 
   legalName     String    @map("legal_name")
   preferredName String?   @map("preferred_name")
@@ -106,9 +342,51 @@ model Employee {
   manager   Employee?  @relation("EmployeeManager", fields: [managerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   reports   Employee[] @relation("EmployeeManager")
 
+  /// Wave 1 deepening pass: workforce-architecture assignment. Employment
+  /// category and worker type collapses to a plain field (no classification
+  /// rules/conversion-event history); position/grade/financial-center are
+  /// direct FKs settable at creation or via a dedicated org-assignment
+  /// endpoint — no promotion/transfer workflow or effective-dated history
+  /// yet (that stays deferred to a future People Management pass).
+  /// Permanent | FixedTerm | Contractor | Intern | Consultant
+  workerType String @default("Permanent") @map("worker_type")
+
+  positionId String?   @map("position_id") @db.Uuid
+  position   Position? @relation(fields: [positionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  gradeId String? @map("grade_id") @db.Uuid
+  grade   Grade?  @relation(fields: [gradeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  financialCenterId String?          @map("financial_center_id") @db.Uuid
+  financialCenter   FinancialCenter? @relation(fields: [financialCenterId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  designationId String?      @map("designation_id") @db.Uuid
+  designation   Designation? @relation(fields: [designationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// Wave 1 People Management deepening pass. Contract renewal (L2, no
+  /// dedicated spec beyond the catalog entry) is a plain end-date field plus
+  /// a ContractRenewal log, not a full contract-lifecycle document. Alumni
+  /// (L1, overview-only in the spec) is two opt-in fields, not an alumni
+  /// portal/directory — there is no deeper alumni spec to build against.
+  /// Retirement (L2) deliberately has no new model: it reuses the existing
+  /// Exit mechanism below (a Separated status with exitReason = "Retirement"),
+  /// since the spec doesn't call for mechanics beyond separation-with-a-reason.
+  contractEndDate    DateTime? @map("contract_end_date") @db.Date
+  alumniOptIn        Boolean   @default(false) @map("alumni_opt_in")
+  alumniContactEmail String?   @map("alumni_contact_email")
+
   /// Spec section 15 state machine: Draft, Pre-Active, Active, Suspended, Separated, Archived.
   status      String    @default("Draft")
   joiningDate DateTime? @map("joining_date") @db.Date
+
+  /// Phase 7 addendum, v1 slice of docs/08-submodule-specifications/02-people-management/13-exit.md:
+  /// set together when an admin transitions an employee to Separated. No exit
+  /// interview, clearance checklist, asset-return linkage, or F&F-settlement
+  /// automation yet — those stay deferred. This is just enough to (a) record
+  /// when/why someone left and (b) let their still-active User account see a
+  /// restricted post-exit view instead of full login (see ExitStatusGuard).
+  lastWorkingDay DateTime? @map("last_working_day") @db.Date
+  exitReason     String?   @map("exit_reason")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -117,8 +395,69 @@ model Employee {
   tenant Tenant @relation(fields: [tenantId], references: [id])
   users  User[]
 
-  leaveRequests         LeaveRequest[] @relation("LeaveRequestEmployee")
-  approvedLeaveRequests LeaveRequest[] @relation("LeaveRequestApprover")
+  leaveRequests                LeaveRequest[]               @relation("LeaveRequestEmployee")
+  approvedLeaveRequests        LeaveRequest[]               @relation("LeaveRequestApprover")
+  attendanceDays               AttendanceDay[]
+  compensation                 EmployeeCompensation?
+  payrollRunResults            PayrollRunResult[]
+  requisitionsAsHiringManager  Requisition[]                @relation("RequisitionHiringManager")
+  convertedFromOffer           Offer?                       @relation("OfferConvertedEmployee")
+  referredCandidates           Candidate[]                  @relation("CandidateReferrer")
+  interviewRoundsAsInterviewer InterviewRound[]             @relation("InterviewRoundInterviewer")
+  feedbackCampaignsAsSubject   FeedbackCampaign[]           @relation("FeedbackCampaignSubject")
+  feedbackAsRater              FeedbackRater[]              @relation("FeedbackRaterEmployee")
+  calibrationCases             CalibrationCase[]            @relation("CalibrationCaseEmployee")
+  certificationRecords         CertificationRecord[]
+  criticalRolesAsIncumbent     CriticalRole[]               @relation("CriticalRoleIncumbent")
+  successionSuccessorFor       SuccessionSuccessor[]        @relation("SuccessionSuccessorEmployee")
+  benefitEnrollments           BenefitEnrollment[]
+  surveyResponses              SurveyResponse[]
+  recognitionsGiven            Recognition[]                @relation("RecognitionFromEmployee")
+  recognitionsReceived         Recognition[]                @relation("RecognitionToEmployee")
+  ticketsRaised                Ticket[]                     @relation("TicketRaiser")
+  ticketsAssigned              Ticket[]                     @relation("TicketAgent")
+  transferPromotionRequests    TransferPromotionRequest[]   @relation("TransferPromotionRequestEmployee")
+  onboardingCase               OnboardingCase?
+  goals                        Goal[]
+  appraisals                   Appraisal[]
+  learningEnrollments          LearningEnrollment[]
+  talentAssessments            TalentAssessment[]
+  compensationReviewItems      CompensationReviewItem[]
+  expenseClaims                ExpenseClaim[]               @relation("ExpenseClaimEmployee")
+  approvedExpenseClaims        ExpenseClaim[]               @relation("ExpenseClaimApprover")
+  travelRequests               TravelRequest[]              @relation("TravelRequestEmployee")
+  approvedTravelRequests       TravelRequest[]              @relation("TravelRequestApprover")
+  assetAssignments             AssetAssignment[]
+  reportingLines               ReportingLine[]              @relation("ReportingLineEmployee")
+  managedReportingLines        ReportingLine[]              @relation("ReportingLineManager")
+  personalDetail               PersonalDetail?
+  emergencyContacts            EmergencyContact[]
+  identityDocuments            IdentityDocument[]
+  bankAccounts                 BankAccount[]
+  taxProfile                   TaxProfile?
+  documents                    EmployeeDocument[]
+  certifications               EmployeeCertification[]
+  skills                       EmployeeSkill[]
+  educationRecords             EducationRecord[]
+  priorExperience              PriorExperience[]
+  assignmentHistory            EmployeeAssignmentHistory[]  @relation("AssignmentHistoryEmployee")
+  probationRecords             ProbationRecord[]
+  salaryRevisions              SalaryRevision[]
+  contractRenewals             ContractRenewal[]
+  generatedDocuments           GeneratedDocument[]
+  shiftAssignments             ShiftAssignment[]
+  rosterEntries                RosterEntry[]
+  timesheetEntries             TimesheetEntry[]
+  overtimeRequests             OvertimeRequest[]
+  leaveLedgerEntries           LeaveLedgerEntry[]
+  employeePayComponents        EmployeePayComponent[]
+  arrearEntries                ArrearEntry[]
+  fnfCase                      FnfCase?
+  flexAssignments              EmployeeFlexAssignment[]
+  rotationAssignments          EmployeeRotationAssignment[]
+  leaveEncashmentRequests      LeaveEncashmentRequest[]
+  loanAdvances                 LoanAdvance[]
+  incentiveBonuses             IncentiveBonus[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
@@ -153,10 +492,13 @@ model User {
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
-  tenant        Tenant         @relation(fields: [tenantId], references: [id])
-  sessions      Session[]
-  otpChallenges OtpChallenge[]
-  notifications Notification[]
+  tenant              Tenant         @relation(fields: [tenantId], references: [id])
+  sessions            Session[]
+  otpChallenges       OtpChallenge[]
+  notifications       Notification[]
+  mfaFactors          MfaFactor[]
+  delegationsGiven    Delegation[]   @relation("DelegationDelegator")
+  delegationsReceived Delegation[]   @relation("DelegationDelegate")
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -215,19 +557,33 @@ model OtpChallenge {
 /// applicability-matrix/versioning/publish/simulation model the spec
 /// describes — that governance layer is a later leave-management pass.
 model LeavePolicy {
-  id         String  @id @default(uuid()) @db.Uuid
-  tenantId   String  @map("tenant_id") @db.Uuid
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
   /// Annual | Casual | Sick for this slice; spec section 3 lists many more types.
-  leaveType  String  @map("leave_type")
+  leaveType  String @map("leave_type")
   name       String
-  annualDays Float   @map("annual_days")
-  status     String  @default("Active")
+  annualDays Float  @map("annual_days")
+  status     String @default("Active")
+
+  /// Wave 2 W2·E08 deepening (02-leave-accrual.md). Max days LeaveLedgerService.runCarryForward
+  /// may carry from one year into the next for this leave type. 0 (default) means no
+  /// carry-forward — existing seeded policies keep today's behavior unless explicitly raised.
+  carryForwardCapDays Float @default(0) @map("carry_forward_cap_days")
+
+  /// Wave 2 W2·E08 gap-closure. false (default): a leave request's day count
+  /// excludes non-working days (per the effective WorkCalendar) that fall
+  /// inside its range. true: the full inclusive calendar-day count is charged
+  /// instead — a weekend/holiday "sandwiched" between two leave-consuming
+  /// days counts against the employee too.
+  sandwichRuleEnabled Boolean @default(false) @map("sandwich_rule_enabled")
 
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  tenant             Tenant                   @relation(fields: [tenantId], references: [id])
+  ledgerEntries      LeaveLedgerEntry[]
+  encashmentRequests LeaveEncashmentRequest[]
 
   @@unique([tenantId, leaveType])
   @@index([tenantId])
@@ -244,8 +600,8 @@ model LeavePolicy {
 /// the persisted-ledger + BullMQ-accrual-job model in 02-leave-accrual.md
 /// (no queue infrastructure exists yet — see tech-stack ADR).
 model LeaveRequest {
-  id        String   @id @default(uuid()) @db.Uuid
-  tenantId  String   @map("tenant_id") @db.Uuid
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
 
   employeeId String   @map("employee_id") @db.Uuid
   employee   Employee @relation("LeaveRequestEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -284,9 +640,9 @@ model LeaveRequest {
 /// events publish here for now; the full notification-catalog/channel model
 /// (appendix 3, 16) is deferred.
 model Notification {
-  id       String  @id @default(uuid()) @db.Uuid
-  tenantId String  @map("tenant_id") @db.Uuid
-  userId   String  @map("user_id") @db.Uuid
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  userId   String @map("user_id") @db.Uuid
 
   type     String
   title    String
@@ -302,4 +658,3130 @@ model Notification {
   @@index([tenantId])
   @@index([tenantId, userId])
   @@map("notifications")
+}
+
+/// Workforce Management, Phase 5 slice. Spec: docs/08-submodule-specifications/07-workforce-management/01-attendance.md
+/// Deliberately manual-only: no biometric/device capture sources, no shift
+/// mapping, no regularization workflow, no cross-midnight handling — a
+/// single self-marked status per calendar day. The spec's six-entity model
+/// (attendance_event, attendance_day_record, attendance_exception,
+/// attendance_regularization, attendance_policy_rule,
+/// attendance_finalization_batch) is collapsed to this one table for v1.
+model AttendanceDay {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  date       DateTime @db.Date
+  /// Present | Absent | HalfDay
+  status     String
+  source     String   @default("Manual")
+
+  /// Wave 2 W2·E07 deepening gap-closure (flexible hours). Self-reported "HH:mm"
+  /// — no punch-clock capture exists in this build — evaluated against the
+  /// employee's active FlexibleHoursPolicy assignment, if any, when both are present.
+  checkInTime   String?  @map("check_in_time")
+  checkOutTime  String?  @map("check_out_time")
+  flexCompliant Boolean? @map("flex_compliant")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, employeeId, date])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("attendance_days")
+}
+
+/// Payroll, Phase 5 slice. Spec: docs/08-submodule-specifications/09-payroll/01-salary-structures.md
+/// and 02-pay-components.md. Deliberately NOT the full versioned/composable
+/// structure + component-catalog model those specs describe (no publish
+/// workflow, no formula engine, no applicability matrix) — one active flat
+/// compensation record per employee, with HRA/special-allowance/PF/ESIC/PT/TDS
+/// all derived by fixed formula in PayrollCalculationService rather than
+/// configurable components. See that service for the exact rules and every
+/// simplification made against real Indian statutory law.
+model EmployeeCompensation {
+  id            String   @id @default(uuid()) @db.Uuid
+  tenantId      String   @map("tenant_id") @db.Uuid
+  employeeId    String   @unique @map("employee_id") @db.Uuid
+  monthlyBasic  Float    @map("monthly_basic")
+  effectiveFrom DateTime @map("effective_from") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@map("employee_compensations")
+}
+
+/// Spec: docs/08-submodule-specifications/09-payroll/05-payroll-processing.md
+/// Collapses the spec's 9-state model (Created/Inputs Ready/Processing/
+/// Processed with Exceptions/Processed/Approval Pending/Approved/Close
+/// Ready/Closed) to 4: Draft, Processed, Approved, Closed. Off-cycle runs,
+/// employee-level rerun, and a separate payroll_recalculation_event audit
+/// trail are deferred — reprocessing overwrites PayrollRunResult rows
+/// in place while status is Draft/Processed (blocked once Approved).
+model PayrollRun {
+  id          String @id @default(uuid()) @db.Uuid
+  tenantId    String @map("tenant_id") @db.Uuid
+  periodYear  Int    @map("period_year")
+  periodMonth Int    @map("period_month")
+
+  /// Draft | Processed | Approved | Closed
+  status String @default("Draft")
+
+  processedAt      DateTime? @map("processed_at") @db.Timestamptz(6)
+  approvedAt       DateTime? @map("approved_at") @db.Timestamptz(6)
+  approvedByUserId String?   @map("approved_by_user_id") @db.Uuid
+  closedAt         DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant             @relation(fields: [tenantId], references: [id])
+  results       PayrollRunResult[]
+  arrearEntries ArrearEntry[]
+
+  @@unique([tenantId, periodYear, periodMonth])
+  @@index([tenantId])
+  @@map("payroll_runs")
+}
+
+/// One row per employee per run: the frozen input snapshot (payableDays /
+/// totalWorkingDays) plus every calculated output. Collapses the spec's
+/// payroll_input_snapshot + payroll_component_result + payroll_exception
+/// into a single table for v1 — see PayrollRun's comment for the rest of
+/// the collapsing rationale. Amount fields are nullable because a blocking
+/// exception (e.g. no EmployeeCompensation configured) leaves them unset.
+model PayrollRunResult {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  payrollRunId String @map("payroll_run_id") @db.Uuid
+  employeeId   String @map("employee_id") @db.Uuid
+
+  payableDays      Float @map("payable_days")
+  totalWorkingDays Float @map("total_working_days")
+
+  basic            Float? @map("basic")
+  hra              Float? @map("hra")
+  /// Wave 2 W2·E09 deepening: sum of the employee's active EmployeePayComponent
+  /// earnings for this period (was always 0 pre-deepening — see payroll-calculator.ts).
+  specialAllowance Float? @map("special_allowance")
+  grossEarnings    Float? @map("gross_earnings")
+  pfEmployee       Float? @map("pf_employee")
+  pfEmployer       Float? @map("pf_employer")
+  esicEmployee     Float? @map("esic_employee")
+  esicEmployer     Float? @map("esic_employer")
+  professionalTax  Float? @map("professional_tax")
+  tds              Float? @map("tds")
+  /// Sum of the employee's active EmployeePayComponent deductions for this period.
+  otherDeductions  Float? @map("other_deductions")
+  /// Lump sum from any Pending ArrearEntry rows consumed into this run (04-arrears-and-retro-pay.md).
+  arrearsIncluded  Float? @map("arrears_included")
+  netPay           Float? @map("net_pay")
+
+  hasException  Boolean @default(false) @map("has_exception")
+  exceptionNote String? @map("exception_note")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  payrollRun PayrollRun @relation(fields: [payrollRunId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee   Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([payrollRunId, employeeId])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("payroll_run_results")
+}
+
+/// Phase 6 slice. Spec: docs/08-submodule-specifications/06-recruitment-and-ats/02-requisitions.md.
+/// Collapses the spec's 8-state model (Draft/Submitted/Approved/Published/
+/// OnHold/Closed/Cancelled/Reopened) to 6 — Submitted is folded into Draft
+/// (single-level approval, no separate submit step) and Reopened is folded
+/// into re-publishing a Closed/OnHold requisition. No amendment history,
+/// posting-channel rules, or confidentiality classes — see requisition
+/// service comments for the full deferral list.
+model Requisition {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+
+  title        String
+  departmentId String?     @map("department_id") @db.Uuid
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  hiringManagerId String?   @map("hiring_manager_id") @db.Uuid
+  hiringManager   Employee? @relation("RequisitionHiringManager", fields: [hiringManagerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  headcount       Int       @default(1)
+  compensationMin Float?    @map("compensation_min")
+  compensationMax Float?    @map("compensation_max")
+  targetJoinDate  DateTime? @map("target_join_date") @db.Date
+
+  /// Draft | Approved | Published | OnHold | Closed | Cancelled
+  status String @default("Draft")
+
+  approvedByUserId String?   @map("approved_by_user_id") @db.Uuid
+  approvedAt       DateTime? @map("approved_at") @db.Timestamptz(6)
+  publishedAt      DateTime? @map("published_at") @db.Timestamptz(6)
+  closedAt         DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  applications Application[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("requisitions")
+}
+
+/// Phase 6 slice, deepened in the Wave 2 E06 pass. No candidate portal or
+/// resume storage — a candidate is contact info + a source tag. Screening
+/// stays collapsed into Application.stage (no resume-parsing infra exists to
+/// justify a real screening entity); interview scheduling and feedback are
+/// now real (see InterviewRound/InterviewFeedback below). `referredByEmployeeId`
+/// backs the Employee Referrals sub-capability — a real catalog gap, not
+/// covered by any deep-spec file.
+model Candidate {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  fullName String @map("full_name")
+  email    String
+
+  /// Direct | Referral | JobBoard
+  source String @default("Direct")
+
+  referredByEmployeeId String?   @map("referred_by_employee_id") @db.Uuid
+  referredByEmployee   Employee? @relation("CandidateReferrer", fields: [referredByEmployeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  applications Application[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("candidates")
+}
+
+/// One candidate applying to one requisition. `stage` still collapses
+/// screening into a single pipeline field, but interview scheduling and
+/// feedback now hang off InterviewRound rows keyed to this application.
+model Application {
+  id            String @id @default(uuid()) @db.Uuid
+  tenantId      String @map("tenant_id") @db.Uuid
+  requisitionId String @map("requisition_id") @db.Uuid
+  candidateId   String @map("candidate_id") @db.Uuid
+
+  /// Applied | Screening | Interview | Offer | Hired | Rejected
+  stage           String  @default("Applied")
+  rejectionReason String? @map("rejection_reason")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  requisition     Requisition      @relation(fields: [requisitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  candidate       Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  offer           Offer?
+  interviewRounds InterviewRound[]
+
+  @@unique([requisitionId, candidateId])
+  @@index([tenantId])
+  @@index([tenantId, requisitionId])
+  @@map("applications")
+}
+
+/// v1 slice of 06-interview-scheduling.md: collapses interview_plan/
+/// interview_slot/interview_panel_member/candidate_availability/
+/// calendar_sync_log into one row per round — a single interviewer, no
+/// panel, no calendar-sync log (no real calendar provider in this
+/// environment). One round per (application, roundNumber).
+model InterviewRound {
+  id            String @id @default(uuid()) @db.Uuid
+  tenantId      String @map("tenant_id") @db.Uuid
+  applicationId String @map("application_id") @db.Uuid
+  roundNumber   Int    @map("round_number")
+
+  interviewerId String   @map("interviewer_id") @db.Uuid
+  scheduledAt   DateTime @map("scheduled_at") @db.Timestamptz(6)
+
+  /// InPerson | Video | Phone
+  mode String @default("Video")
+
+  /// Scheduled | Completed | Cancelled
+  status String @default("Scheduled")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant             @relation(fields: [tenantId], references: [id])
+  application Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  interviewer Employee           @relation("InterviewRoundInterviewer", fields: [interviewerId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  feedback    InterviewFeedback?
+
+  @@unique([applicationId, roundNumber])
+  @@index([tenantId])
+  @@map("interview_rounds")
+}
+
+/// v1 slice of 07-interview-feedback.md: collapses interview_feedback_rating/
+/// interview_feedback_comment/interview_debrief/feedback_template/
+/// feedback_version_log into one flat row per round — a single rating,
+/// recommendation, and free-text comment, no rubric/competency breakdown or
+/// blind-review flag.
+model InterviewFeedback {
+  id               String @id @default(uuid()) @db.Uuid
+  tenantId         String @map("tenant_id") @db.Uuid
+  interviewRoundId String @unique @map("interview_round_id") @db.Uuid
+
+  /// 1-5
+  rating Int
+
+  /// StrongHire | Hire | NoHire | StrongNoHire
+  recommendation String
+  comments       String?
+
+  submittedAt DateTime @default(now()) @map("submitted_at") @db.Timestamptz(6)
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  interviewRound InterviewRound @relation(fields: [interviewRoundId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@map("interview_feedback")
+}
+
+/// Spec: docs/08-submodule-specifications/06-recruitment-and-ats/08-offer-management.md.
+/// Collapses the spec's 10-state model to 8 (negotiation and expired folded
+/// out — no counter-offer workflow or expiry-timer job in v1). One flat
+/// monthlyBasic like EmployeeCompensation, not the full component/clause/
+/// template system. Accepting an offer converts it directly to a Draft
+/// Employee + OnboardingCase (see OfferService) — no separate preboarding
+/// entity.
+model Offer {
+  id            String @id @default(uuid()) @db.Uuid
+  tenantId      String @map("tenant_id") @db.Uuid
+  applicationId String @unique @map("application_id") @db.Uuid
+
+  monthlyBasic Float    @map("monthly_basic")
+  joiningDate  DateTime @map("joining_date") @db.Date
+
+  /// Draft | PendingApproval | Approved | Issued | Accepted | Declined | Withdrawn | Converted
+  status String @default("Draft")
+
+  approvedByUserId String?   @map("approved_by_user_id") @db.Uuid
+  approvedAt       DateTime? @map("approved_at") @db.Timestamptz(6)
+  issuedAt         DateTime? @map("issued_at") @db.Timestamptz(6)
+  respondedAt      DateTime? @map("responded_at") @db.Timestamptz(6)
+  declineReason    String?   @map("decline_reason")
+
+  convertedEmployeeId String?   @unique @map("converted_employee_id") @db.Uuid
+  convertedEmployee   Employee? @relation("OfferConvertedEmployee", fields: [convertedEmployeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  application     Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  backgroundCheck BackgroundCheck?
+
+  @@index([tenantId])
+  @@map("offers")
+}
+
+/// L2 item covered inside 08-offer-management.md ("pre-joining document
+/// checklist and background verification dependencies") — not a dedicated
+/// deep-spec, so no separate panel/report/scoring machinery. One check per
+/// offer, admin-recorded (no real third-party verification vendor in this
+/// environment). A Flagged result blocks `OfferService.convert()` — see
+/// OfferService — giving the check real teeth rather than being advisory.
+model BackgroundCheck {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  offerId  String @unique @map("offer_id") @db.Uuid
+
+  /// Identity | Employment | Education | Criminal | Comprehensive
+  checkType String @default("Comprehensive") @map("check_type")
+
+  /// Pending | Cleared | Flagged
+  status  String  @default("Pending")
+  remarks String?
+
+  initiatedByUserId String    @map("initiated_by_user_id") @db.Uuid
+  initiatedAt       DateTime  @default(now()) @map("initiated_at") @db.Timestamptz(6)
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  offer  Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@map("background_checks")
+}
+
+/// Phase 6 slice. Spec: docs/08-submodule-specifications/02-people-management/09-onboarding.md.
+/// Collapses the spec's 6-state case model (Created/In Progress/Ready for
+/// Join Date/Blocked/Activated/Cancelled) to 5 — Created folds into
+/// InProgress since a case is created with its checklist already attached.
+/// One case per employee, created automatically when an Offer converts (see
+/// OfferService.convert) with a fixed task checklist (ONBOARDING_TASKS in
+/// onboarding.service.ts) rather than the spec's configurable
+/// checklist-template-by-worker-type/geography engine.
+model OnboardingCase {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @unique @map("employee_id") @db.Uuid
+
+  /// InProgress | ReadyForActivation | Blocked | Activated | Cancelled
+  status String @default("InProgress")
+
+  activatedAt DateTime? @map("activated_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant           @relation(fields: [tenantId], references: [id])
+  employee Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tasks    OnboardingTask[]
+
+  @@index([tenantId])
+  @@map("onboarding_cases")
+}
+
+/// Collapses the spec's 7-state task model (Not Started/In Progress/
+/// Submitted/Approved/Rejected/Waived/Completed) to 3 — no document
+/// upload/review sub-workflow in v1, a task is simply done or not.
+model OnboardingTask {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  caseId   String @map("case_id") @db.Uuid
+
+  title      String
+  isBlocking Boolean @default(true) @map("is_blocking")
+
+  /// NotStarted | Completed | Waived
+  status      String    @default("NotStarted")
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  case   OnboardingCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, caseId])
+  @@map("onboarding_tasks")
+}
+
+/// Phase 7 slice. Spec: docs/08-submodule-specifications/11-performance-management/01-goal-management.md.
+/// No cascading/alignment links, no shared goals, no milestones/evidence
+/// attachments, no separate check-in history entity — progress is a single
+/// updatable percentage + note. Collapses the spec's 8-state model (draft/
+/// submitted/returned/approved/in-progress/on-hold/completed/closed) to 4.
+model Goal {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  periodYear   Int       @map("period_year")
+  title        String
+  description  String?
+  weight       Int       @default(100)
+  progress     Int       @default(0)
+  progressNote String?   @map("progress_note")
+  dueDate      DateTime? @map("due_date") @db.Date
+
+  /// Draft | Active | Completed | Closed
+  status String @default("Draft")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("goals")
+}
+
+/// Spec: docs/08-submodule-specifications/11-performance-management/02-appraisals.md.
+/// Self + manager review only — no skip-level, no calibration, no disputes,
+/// no configurable multi-section forms. One overall rating (1-5) and one
+/// comments field per side. Collapses the spec's 9-state model to 4.
+model Appraisal {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  periodYear Int @map("period_year")
+
+  /// Draft | SelfSubmitted | ManagerReviewed | Finalized
+  status String @default("Draft")
+
+  selfRating      Int?      @map("self_rating")
+  selfComments    String?   @map("self_comments")
+  selfSubmittedAt DateTime? @map("self_submitted_at") @db.Timestamptz(6)
+
+  managerRating      Int?      @map("manager_rating")
+  managerComments    String?   @map("manager_comments")
+  managerSubmittedAt DateTime? @map("manager_submitted_at") @db.Timestamptz(6)
+
+  finalizedAt DateTime? @map("finalized_at") @db.Timestamptz(6)
+
+  /// Wave 3 E11 deepening (04-calibration.md): set when a CalibrationSession
+  /// closes and this appraisal was one of its cases. Defaults to
+  /// managerRating if the committee didn't adjust it. Null means this
+  /// appraisal has never been calibrated — the UI falls back to
+  /// managerRating in that case.
+  calibratedRating     Int?    @map("calibrated_rating")
+  calibrationSessionId String? @map("calibration_session_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  employee           Employee            @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  calibrationSession CalibrationSession? @relation(fields: [calibrationSessionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  calibrationCase    CalibrationCase?
+
+  @@unique([tenantId, employeeId, periodYear])
+  @@index([tenantId])
+  @@map("appraisals")
+}
+
+/// v1 slice of 03-360-feedback.md: collapses feedback_360_participant/
+/// feedback_360_question/feedback_360_report into a flat structure — one
+/// subject employee per campaign per cycle, a single fixed rating+two-text-field
+/// questionnaire (no configurable question bank), no anonymity-threshold
+/// enforcement or tokenized rater links (a small single-tenant deployment has
+/// no real anonymity risk to model against), no reminder/expiry job.
+model FeedbackCampaign {
+  id                String @id @default(uuid()) @db.Uuid
+  tenantId          String @map("tenant_id") @db.Uuid
+  subjectEmployeeId String @map("subject_employee_id") @db.Uuid
+  cycleYear         Int    @map("cycle_year")
+
+  /// Draft | Open | Closed
+  status String @default("Draft")
+
+  createdByUserId String    @map("created_by_user_id") @db.Uuid
+  closedAt        DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id])
+  subjectEmployee Employee        @relation("FeedbackCampaignSubject", fields: [subjectEmployeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  raters          FeedbackRater[]
+
+  @@unique([tenantId, subjectEmployeeId, cycleYear])
+  @@index([tenantId])
+  @@map("feedback_campaigns")
+}
+
+/// One nominated rater per campaign. Self-service: the nominated employee
+/// submits their own response once the campaign is Open.
+model FeedbackRater {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  campaignId String @map("campaign_id") @db.Uuid
+
+  raterEmployeeId String @map("rater_employee_id") @db.Uuid
+
+  /// Manager | Peer | DirectReport | Self
+  category String @default("Peer")
+
+  /// Invited | Completed
+  status String @default("Invited")
+
+  rating           Int?
+  strengths        String?
+  developmentAreas String?   @map("development_areas")
+  submittedAt      DateTime? @map("submitted_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant        Tenant           @relation(fields: [tenantId], references: [id])
+  campaign      FeedbackCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  raterEmployee Employee         @relation("FeedbackRaterEmployee", fields: [raterEmployeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([campaignId, raterEmployeeId])
+  @@index([tenantId])
+  @@map("feedback_raters")
+}
+
+/// v1 slice of 04-calibration.md: collapses calibration_cohort/
+/// calibration_distribution_snapshot out — a session's "cohort" is just a
+/// free-text label plus periodYear, no distribution-guidance bands or
+/// snapshot history. Committee-only (org_admin/hr_ops), no separate
+/// participant-role model.
+model CalibrationSession {
+  id          String @id @default(uuid()) @db.Uuid
+  tenantId    String @map("tenant_id") @db.Uuid
+  periodYear  Int    @map("period_year")
+  cohortLabel String @map("cohort_label")
+
+  /// Draft | InSession | Closed
+  status String @default("Draft")
+
+  createdByUserId String    @map("created_by_user_id") @db.Uuid
+  closedByUserId  String?   @map("closed_by_user_id") @db.Uuid
+  closedAt        DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant     Tenant            @relation(fields: [tenantId], references: [id])
+  cases      CalibrationCase[]
+  appraisals Appraisal[]
+
+  @@unique([tenantId, periodYear, cohortLabel])
+  @@index([tenantId])
+  @@map("calibration_sessions")
+}
+
+/// One Finalized appraisal pulled into a session. originalRating is a
+/// snapshot of managerRating at generation time; calibratedRating stays null
+/// until the committee decides (closing the session defaults any
+/// undecided case to its originalRating). rationale is required whenever
+/// calibratedRating differs from originalRating (enforced in the service).
+model CalibrationCase {
+  id          String @id @default(uuid()) @db.Uuid
+  tenantId    String @map("tenant_id") @db.Uuid
+  sessionId   String @map("session_id") @db.Uuid
+  appraisalId String @unique @map("appraisal_id") @db.Uuid
+  employeeId  String @map("employee_id") @db.Uuid
+
+  originalRating   Int     @map("original_rating")
+  calibratedRating Int?    @map("calibrated_rating")
+  rationale        String?
+
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant    Tenant             @relation(fields: [tenantId], references: [id])
+  session   CalibrationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  appraisal Appraisal          @relation(fields: [appraisalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee  Employee           @relation("CalibrationCaseEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([sessionId, appraisalId])
+  @@index([tenantId])
+  @@map("calibration_cases")
+}
+
+/// Phase 7 slice. Spec: docs/08-submodule-specifications/12-learning-and-development/01-learning-management-system.md.
+/// A single flat course catalog — no programs/pathways/cohorts/sessions,
+/// no prerequisite dependency graph, no multi-language metadata. Collapses
+/// the spec's 4-state object lifecycle (Draft/Published/Archived/Superseded)
+/// to 3 by dropping "Superseded" (a course is simply archived and replaced
+/// with a new catalog entry).
+model LearningCourse {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  title         String
+  description   String?
+  durationHours Int     @map("duration_hours")
+  isMandatory   Boolean @default(false) @map("is_mandatory")
+
+  /// Wave 3 E12 deepening (03-compliance-training.md): only meaningful when
+  /// isMandatory — null means one-time, a value (e.g. 12) means the
+  /// enrollment renews on that cycle after completion. Consumed by
+  /// EnrollmentService's daily assignment sweep, not a generic recurrence engine.
+  recurrenceMonths Int? @map("recurrence_months")
+
+  /// Draft | Published | Archived
+  status String @default("Draft")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant               @relation(fields: [tenantId], references: [id])
+  enrollments LearningEnrollment[]
+
+  @@index([tenantId])
+  @@map("learning_courses")
+}
+
+/// Spec: docs/08-submodule-specifications/12-learning-and-development/01-learning-management-system.md.
+/// Self-enroll and admin-assign only — no waitlists, no attendance/session
+/// tracking, no assessment scoring, no external-import equivalency. Collapses
+/// the spec's 7-state model (Assigned/Enrolled/In Progress/Completed/Failed/
+/// Withdrawn/Expired) to 3.
+model LearningEnrollment {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+  courseId   String @map("course_id") @db.Uuid
+
+  /// Enrolled | Completed | Withdrawn | Overdue
+  status      String    @default("Enrolled")
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  /// Wave 3 E12 deepening: set only on system-assigned mandatory enrollments
+  /// (assignedAutomatically = true) — the daily sweep flips Enrolled past
+  /// this date to Overdue and escalates to the employee's manager. A
+  /// completed recurring enrollment is reset back to Enrolled with a new
+  /// dueDate at the next cycle rather than creating a second row, since
+  /// (tenantId, employeeId, courseId) stays unique — no multi-cycle history.
+  dueDate               DateTime? @map("due_date") @db.Timestamptz(6)
+  assignedAutomatically Boolean   @default(false) @map("assigned_automatically")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id])
+  employee Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  course   LearningCourse @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, employeeId, courseId])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("learning_enrollments")
+}
+
+/// v1 slice of 02-certifications.md: collapses certification_requirement/
+/// certification_verification/certification_renewal_case/equivalency-mapping
+/// into a flat catalog — no role-eligibility rule engine or equivalency
+/// groups, since nothing in this build currently blocks staffing on a
+/// missing certification.
+model CertificationCatalog {
+  id       String  @id @default(uuid()) @db.Uuid
+  tenantId String  @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  issuer   String?
+
+  /// null = does not expire
+  validityMonths Int?    @map("validity_months")
+  isMandatory    Boolean @default(false) @map("is_mandatory")
+  isActive       Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant  Tenant                @relation(fields: [tenantId], references: [id])
+  records CertificationRecord[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("certification_catalog")
+}
+
+/// One record per employee per catalog entry. Starts Active immediately on
+/// creation (no Draft/PendingVerification gate — verification is an
+/// after-the-fact admin confirmation, not a blocker on use). The daily sweep
+/// (reusing the Scheduler-engine cron pattern from ComplianceCalendarService)
+/// flips Active -> Expiring within the reminder window, then -> Expired past
+/// expiryDate, and notifies the employee plus admins for mandatory records.
+model CertificationRecord {
+  id                     String @id @default(uuid()) @db.Uuid
+  tenantId               String @map("tenant_id") @db.Uuid
+  employeeId             String @map("employee_id") @db.Uuid
+  certificationCatalogId String @map("certification_catalog_id") @db.Uuid
+
+  certificateNumber String?   @map("certificate_number")
+  issueDate         DateTime  @map("issue_date") @db.Date
+  expiryDate        DateTime? @map("expiry_date") @db.Date
+
+  /// Active | Expiring | Expired | Revoked
+  status String @default("Active")
+
+  evidenceFileId String?     @map("evidence_file_id") @db.Uuid
+  evidenceFile   StoredFile? @relation(fields: [evidenceFileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  verifiedByUserId String?   @map("verified_by_user_id") @db.Uuid
+  verifiedAt       DateTime? @map("verified_at") @db.Timestamptz(6)
+  revokedReason    String?   @map("revoked_reason")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant               @relation(fields: [tenantId], references: [id])
+  employee      Employee             @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  certification CertificationCatalog @relation(fields: [certificationCatalogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("certification_records")
+}
+
+/// Phase 7 slice. Spec: docs/08-submodule-specifications/13-talent-management/02-talent-reviews.md.
+/// A single 9-box placement per employee per period, entered directly by
+/// org_admin/hr_ops — no review cycles, no calibration sessions or change
+/// history, no development/retention/mobility action tracking, no
+/// confidential-note segmentation, no succession-planning links. Collapses
+/// the spec's 5-state cycle model (Draft/Open/Calibrating/Finalized/Archived)
+/// entirely: there is no cycle object, just a directly-editable placement.
+model TalentAssessment {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  periodYear Int @map("period_year")
+
+  performanceRating Int     @map("performance_rating")
+  /// Low | Medium | High
+  potentialRating   String  @map("potential_rating")
+  notes             String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, employeeId, periodYear])
+  @@index([tenantId])
+  @@map("talent_assessments")
+}
+
+/// v1 slice of 01-succession-planning.md: collapses succession_cycle/
+/// succession_slate/succession_risk_indicator/succession_development_action
+/// into two flat tables — a critical role stays critical until deactivated
+/// (no versioned review cycle for the designation itself), and successors
+/// are added/removed directly rather than through a slate/calibration
+/// workflow. No risk indicators (flight/retirement risk) — no data source
+/// exists in this build to compute them against. Confidential per the spec
+/// (section 10): the whole module is org_admin/hr_ops only, no self-service.
+model CriticalRole {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  title        String
+  departmentId String? @map("department_id") @db.Uuid
+
+  incumbentEmployeeId String? @map("incumbent_employee_id") @db.Uuid
+
+  /// High | Medium | Low
+  criticalityTier String  @default("Medium") @map("criticality_tier")
+  isActive        Boolean @default(true) @map("is_active")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant     Tenant                @relation(fields: [tenantId], references: [id])
+  department Department?           @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  incumbent  Employee?             @relation("CriticalRoleIncumbent", fields: [incumbentEmployeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  successors SuccessionSuccessor[]
+
+  @@index([tenantId])
+  @@map("critical_roles")
+}
+
+/// One successor per (role, employee). readiness collapses the spec's
+/// "ready now / ready in 1 year / ready in 2 years / high-potential unknown"
+/// into a fixed set; isEmergency is a separate flag rather than a distinct
+/// readiness track, since an emergency successor can be at any readiness level.
+model SuccessionSuccessor {
+  id             String @id @default(uuid()) @db.Uuid
+  tenantId       String @map("tenant_id") @db.Uuid
+  criticalRoleId String @map("critical_role_id") @db.Uuid
+  employeeId     String @map("employee_id") @db.Uuid
+
+  /// ReadyNow | Ready1Year | Ready2Years | Unknown
+  readiness   String  @default("Unknown")
+  isEmergency Boolean @default(false) @map("is_emergency")
+  notes       String?
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  criticalRole CriticalRole @relation(fields: [criticalRoleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee     Employee     @relation("SuccessionSuccessorEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([criticalRoleId, employeeId])
+  @@index([tenantId])
+  @@map("succession_successors")
+}
+
+/// Phase 7 slice. Spec: docs/08-submodule-specifications/14-compensation-and-benefits/03-merit-cycles.md.
+/// One cycle per period year, one review item per employee — no budget
+/// pools, guideline matrices, exception routing, or scenario mode. Collapses
+/// the spec's 7-state cycle model (draft/configured/planning-open/submitted/
+/// approved/published/closed) to 2 (Open/Closed): the item-level status
+/// carries the real workflow instead. "Publish" is replaced by a direct
+/// per-item Apply action that writes through to EmployeeCompensation via
+/// the existing CompensationRepository — no downstream payroll export batch.
+model CompensationReviewCycle {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  periodYear Int @map("period_year")
+
+  /// Open | Closed
+  status String @default("Open")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant                   @relation(fields: [tenantId], references: [id])
+  items  CompensationReviewItem[]
+
+  @@unique([tenantId, periodYear])
+  @@index([tenantId])
+  @@map("compensation_review_cycles")
+}
+
+/// One proposed pay change per employee per cycle. currentMonthlyBasic is a
+/// snapshot taken at proposal time (not live-recomputed) so the recommended
+/// increase stays stable even if EmployeeCompensation changes elsewhere
+/// before this item is applied.
+model CompensationReviewItem {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  cycleId    String @map("cycle_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  currentMonthlyBasic  Float @map("current_monthly_basic")
+  proposedMonthlyBasic Float @map("proposed_monthly_basic")
+
+  /// Proposed | Approved | Applied
+  status    String    @default("Proposed")
+  appliedAt DateTime? @map("applied_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant                  @relation(fields: [tenantId], references: [id])
+  cycle    CompensationReviewCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee                @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, cycleId, employeeId])
+  @@index([tenantId])
+  @@index([tenantId, cycleId])
+  @@map("compensation_review_items")
+}
+
+/// v1 slice of 04-benefits-administration.md + 05-flexible-benefits.md,
+/// deliberately built as one coherent vertical rather than two parallel
+/// entity families. Collapses eligibility rules, dependent management,
+/// life events, vendor batches, and proof/reimbursement tracking — no real
+/// vendor or payroll-file integration point exists in this environment, and
+/// dependents stay a Wave-1 deferral (see EmergencyContact's comment).
+/// category "FlexAllowance" plans (e.g. meal/fuel/telecom) are the flexible-
+/// benefits slice: an employee allocates an annual amount up to
+/// maxAnnualAllocation, validated against FlexBasketPolicy. Enrolling in any
+/// plan creates a real PayComponent + EmployeePayComponent assignment
+/// (reusing the Payroll engine from E09) rather than a separate deduction
+/// mechanism — a Deduction component for employeeCost on standard benefits,
+/// an Earning component for the monthly allocation on flex options — so
+/// benefit elections genuinely change the next payroll run.
+model BenefitPlan {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+
+  /// Insurance | Retirement | Wellness | FlexAllowance
+  category String
+
+  employerCost Float @default(0) @map("employer_cost")
+  employeeCost Float @default(0) @map("employee_cost")
+
+  /// Only meaningful for category = FlexAllowance — the annual cap an employee may allocate to this option.
+  maxAnnualAllocation Float? @map("max_annual_allocation")
+
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  enrollments BenefitEnrollment[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("benefit_plans")
+}
+
+/// Collapses the spec's 8-state model (draft/open-for-enrollment/submitted/
+/// pending-proof/approved/active/suspended/terminated) to 3 — an enrollment
+/// is Enrolled immediately (no proof/approval gate), Waived, or Terminated.
+model BenefitEnrollment {
+  id            String @id @default(uuid()) @db.Uuid
+  tenantId      String @map("tenant_id") @db.Uuid
+  employeeId    String @map("employee_id") @db.Uuid
+  benefitPlanId String @map("benefit_plan_id") @db.Uuid
+
+  /// Enrolled | Waived | Terminated
+  status        String   @default("Enrolled")
+  effectiveDate DateTime @map("effective_date") @db.Date
+
+  /// Only set for FlexAllowance plans — the employee's chosen annual allocation; monthly payroll amount = this / 12.
+  allocatedAmount Float? @map("allocated_amount")
+
+  waiverReason String?   @map("waiver_reason")
+  terminatedAt DateTime? @map("terminated_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  benefitPlan BenefitPlan @relation(fields: [benefitPlanId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, employeeId, benefitPlanId])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("benefit_enrollments")
+}
+
+/// One row per tenant — the flex basket's total annual cap. No per-grade or
+/// per-legal-entity variation (the spec's segmentation), since a single
+/// tenant-wide policy is enough to prove the allocation-cap validation works.
+model FlexBasketPolicy {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @unique @map("tenant_id") @db.Uuid
+  annualAmount Float  @map("annual_amount")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("flex_basket_policies")
+}
+
+/// Wave 4 slice of docs/08-submodule-specifications/17-expense-management/01-expense-claims.md
+/// and 02-reimbursements.md. Single-line claims only (category + amount +
+/// date), not multi-line expense reports — no receipts/OCR, no policy/budget/
+/// duplicate/fraud checks, no multi-currency (tenant-currency only), no
+/// separate finance-review stage beyond manager approval, and no settlement
+/// batching/channel-routing/netting/reconciliation. Collapses the claim
+/// spec's 9-state model (Draft/Submitted/Under Approval/Sent Back/Finance
+/// Review/Approved/Rejected/Paid/Closed) to 5 (Pending/Approved/Rejected/
+/// Paid/Cancelled) and stands in for the entire Reimbursements submodule
+/// with a single admin "mark paid" action instead of payable/batch/channel
+/// machinery. Approval permission pattern mirrors LeaveRequest exactly.
+model ExpenseClaim {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("ExpenseClaimEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  category        String
+  amount          Float
+  expenseDate     DateTime @map("expense_date") @db.Date
+  merchant        String?
+  businessPurpose String?  @map("business_purpose")
+
+  /// Pending | Approved | Rejected | Paid | Cancelled
+  status String @default("Pending")
+
+  approverId String?   @map("approver_id") @db.Uuid
+  approver   Employee? @relation("ExpenseClaimApprover", fields: [approverId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+
+  paidAt DateTime? @map("paid_at") @db.Timestamptz(6)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, approverId])
+  @@map("expense_claims")
+}
+
+/// Wave 4 slice of docs/08-submodule-specifications/16-travel-management/01-travel-requests.md.
+/// A single flat trip request (no itinerary segments, cost-estimate lines, or
+/// policy-exception sub-entities), no visa/passport/insurance prerequisite
+/// checks, no destination-risk or leave-overlap validation, no travel-desk or
+/// booking-tool integration, and no linkage to travel advances or expense
+/// claims. Collapses the spec's 7-state model (Draft/Submitted/Under Review/
+/// Approved/Booking-Ready/Cancelled/Closed) to 5 (Pending/Approved/Rejected/
+/// Cancelled/Completed) and stands in for the entire booking/travel-desk
+/// downstream flow with a single admin "mark completed" action, mirroring
+/// ExpenseClaim's "mark paid" stand-in for Reimbursements. Approval
+/// permission pattern mirrors LeaveRequest/ExpenseClaim exactly.
+model TravelRequest {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("TravelRequestEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// Business | Training | ClientVisit | Relocation | Emergency
+  tripType      String   @map("trip_type")
+  origin        String
+  destination   String
+  startDate     DateTime @map("start_date") @db.Date
+  endDate       DateTime @map("end_date") @db.Date
+  estimatedCost Float?   @map("estimated_cost")
+  purpose       String?
+
+  /// Pending | Approved | Rejected | Cancelled | Completed
+  status String @default("Pending")
+
+  approverId String?   @map("approver_id") @db.Uuid
+  approver   Employee? @relation("TravelRequestApprover", fields: [approverId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, approverId])
+  @@map("travel_requests")
+}
+
+/// Wave 4 slice of docs/08-submodule-specifications/18-asset-management/01-asset-assignment.md
+/// and 02-asset-return.md. A flat asset catalog with a single current-status
+/// field (no reservation/eligibility/kit-issue machinery, no high-value
+/// approval routing, no digital-acknowledgment capture) and a flat assignment
+/// record collapsing both specs' state machines: Assignment's 8-state model
+/// (Requested/Approved/Reserved/Issued/Acknowledged/Transferred/Cancelled/
+/// Closed) and Return's 7-state model (Initiated/Scheduled/Received/Under
+/// Inspection/Recovery Pending/Closed/Reopened) both collapse into a single
+/// Assigned -> Returned transition. No transfer/reassignment, no partial or
+/// multi-item kit returns, no inspection/photo-evidence workflow, no
+/// recovery-case or waiver approval chain — "returnCondition" captures the
+/// outcome in one field instead. Admin-driven (org_admin/hr_ops assign and
+/// process returns directly) rather than an employee-request-and-approve
+/// flow, since the spec itself frames this as an IT/Workplace-Ops-operated
+/// process, not a self-service one — the only self-service surface is a
+/// read-only "My Assets" view.
+model Asset {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  assetTag String @map("asset_tag")
+  category String
+  name     String
+
+  /// Available | Assigned | UnderRepair | Retired
+  status String @default("Available")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant      Tenant            @relation(fields: [tenantId], references: [id])
+  assignments AssetAssignment[]
+
+  @@unique([tenantId, assetTag])
+  @@index([tenantId])
+  @@map("assets")
+}
+
+model AssetAssignment {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  assetId String @map("asset_id") @db.Uuid
+  asset   Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  assignedAt       DateTime @default(now()) @map("assigned_at") @db.Timestamptz(6)
+  assignedByUserId String?  @map("assigned_by_user_id") @db.Uuid
+
+  /// Assigned | Returned
+  status String @default("Assigned")
+
+  returnedAt      DateTime? @map("returned_at") @db.Timestamptz(6)
+  returnCondition String?   @map("return_condition")
+  notes           String?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, assetId])
+  @@map("asset_assignments")
+}
+
+/// Wave 1 deepening pass of docs/08-submodule-specifications/01-organization-management/05-reporting-structure.md.
+/// Employee.managerId (already in production use for every approval flow in
+/// this build) remains the primary reporting line. This model covers only
+/// the *additional* lines the spec calls out — dotted-line, matrix, and
+/// acting-manager assignments — collapsing its 5-state model
+/// (Draft/Scheduled/Active/Superseded/Cancelled) to a flat Active/Ended
+/// status with start/end dates. No manager-hierarchy snapshot table.
+model ReportingLine {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("ReportingLineEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  managerId String   @map("manager_id") @db.Uuid
+  manager   Employee @relation("ReportingLineManager", fields: [managerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// Dotted | Matrix | Acting
+  lineType String @map("line_type")
+
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  notes     String?
+
+  /// Active | Ended
+  status String @default("Active")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, managerId])
+  @@map("reporting_lines")
+}
+
+/// Wave 1 deepening pass — job family (docs/.../01-organization-management, no dedicated deep spec). Flat reference catalog.
+model JobFamily {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  status   String @default("Active")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  jobFunctions JobFunction[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("job_families")
+}
+
+/// Wave 1 deepening pass — job function. Flat reference catalog, optionally grouped under a job family.
+model JobFunction {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  status   String @default("Active")
+
+  jobFamilyId String?    @map("job_family_id") @db.Uuid
+  jobFamily   JobFamily? @relation(fields: [jobFamilyId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  designations Designation[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("job_functions")
+}
+
+/// Wave 1 deepening pass — designation, with career track folded in as a plain field rather than a separate model.
+model Designation {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  title    String
+  status   String @default("Active")
+
+  jobFunctionId String?      @map("job_function_id") @db.Uuid
+  jobFunction   JobFunction? @relation(fields: [jobFunctionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// IC | Managerial
+  careerTrack String @default("IC") @map("career_track")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant                    Tenant                     @relation(fields: [tenantId], references: [id])
+  positions                 Position[]
+  employees                 Employee[]
+  transferPromotionRequests TransferPromotionRequest[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("designations")
+}
+
+/// Wave 1 deepening pass of docs/08-submodule-specifications/01-organization-management/07-grade-and-band.md.
+/// Band is folded into a plain field rather than a separate model/mapping
+/// table; no harmonization map or assignment-history table.
+model Grade {
+  id       String  @id @default(uuid()) @db.Uuid
+  tenantId String  @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+  band     String?
+  status   String  @default("Active")
+
+  minCompensation Float? @map("min_compensation")
+  maxCompensation Float? @map("max_compensation")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant                    Tenant                     @relation(fields: [tenantId], references: [id])
+  employees                 Employee[]
+  transferPromotionRequests TransferPromotionRequest[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("grades")
+}
+
+/// Wave 1 deepening pass — position management. This sub-capability has no
+/// dedicated spec file at all (a real catalog gap, not a collapsed spec); the
+/// model below follows common HRIS practice: a budgeted seat in a
+/// department, optionally linked to a designation/grade, that an employee
+/// may occupy (via Employee.positionId) — no headcount-budget ledger or
+/// requisition linkage yet.
+model Position {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  title    String
+
+  /// Open | Filled | Frozen | Closed
+  status String @default("Open")
+
+  departmentId String     @map("department_id") @db.Uuid
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  designationId String?      @map("designation_id") @db.Uuid
+  designation   Designation? @relation(fields: [designationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id])
+  employees Employee[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, departmentId])
+  @@map("positions")
+}
+
+/// Wave 1 deepening pass of docs/08-submodule-specifications/01-organization-management/09-work-calendar.md.
+/// Holiday calendar folds in as WorkCalendarDay rows with dayType=Holiday —
+/// no separate holiday-calendar entity. Collapses the 5-state model
+/// (Draft/Published/Future Effective/Superseded/Retired) to Draft/Published/Retired.
+model WorkCalendar {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  code     String
+  name     String
+
+  /// Draft | Published | Retired
+  status String @default("Draft")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant      Tenant                   @relation(fields: [tenantId], references: [id])
+  days        WorkCalendarDay[]
+  assignments WorkCalendarAssignment[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("work_calendars")
+}
+
+model WorkCalendarDay {
+  id         String       @id @default(uuid()) @db.Uuid
+  tenantId   String       @map("tenant_id") @db.Uuid
+  calendarId String       @map("calendar_id") @db.Uuid
+  calendar   WorkCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  date DateTime @map("date_iso") @db.Date
+
+  /// Working | Holiday | Weekend | Shutdown
+  dayType String  @map("day_type")
+  label   String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([calendarId, date])
+  @@index([tenantId])
+  @@index([tenantId, calendarId])
+  @@map("work_calendar_days")
+}
+
+/// Which calendar applies to which scope — Tenant-wide (scopeId null), a LegalEntity, or a Department.
+model WorkCalendarAssignment {
+  id         String       @id @default(uuid()) @db.Uuid
+  tenantId   String       @map("tenant_id") @db.Uuid
+  calendarId String       @map("calendar_id") @db.Uuid
+  calendar   WorkCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// Tenant | LegalEntity | Department
+  scope   String  @default("Tenant")
+  scopeId String? @map("scope_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, scope, scopeId])
+  @@map("work_calendar_assignments")
+}
+
+/// Wave 1 deepening pass — organization policies. This sub-capability has no
+/// dedicated spec file; modeled as a minimal policy-document registry (title
+/// + content + category + effective date), not a rules/versioning/acknowledgment engine.
+model OrgPolicy {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  category String
+  title    String
+  content  String
+
+  /// Active | Archived
+  status        String   @default("Active")
+  effectiveFrom DateTime @map("effective_from") @db.Date
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, category])
+  @@map("org_policies")
+}
+
+/// Wave 1 People Management deepening pass, docs/08-submodule-specifications/02-people-management/02-personal-information.md.
+/// Collapses employee_personal_profile + employee_contact_detail (the
+/// change-request/demographic-history sidecar tables are dropped) into one
+/// 1:1 record with direct self-service edit — no approval workflow. Also
+/// folds in the "contact details and address" catalog item, which the spec
+/// treats as part of the same personal-information domain.
+model PersonalDetail {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @unique @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  maritalStatus String? @map("marital_status")
+  gender        String?
+  bloodGroup    String? @map("blood_group")
+  nationality   String?
+
+  currentAddressLine String? @map("current_address_line")
+  currentCity        String? @map("current_city")
+  currentState       String? @map("current_state")
+  currentCountry     String? @map("current_country")
+  currentPincode     String? @map("current_pincode")
+
+  /// When true, permanent address fields are ignored and current-address fields are used for both.
+  permanentSameAsCurrent Boolean @default(true) @map("permanent_same_as_current")
+  permanentAddressLine   String? @map("permanent_address_line")
+  permanentCity          String? @map("permanent_city")
+  permanentState         String? @map("permanent_state")
+  permanentCountry       String? @map("permanent_country")
+  permanentPincode       String? @map("permanent_pincode")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("personal_details")
+}
+
+/// Part of docs/.../02-personal-information.md's "family/dependents/nominees/emergency contacts"
+/// catalog item — emergency contacts only. Dependents and insurance/PF
+/// nominees are explicitly deferred (no dependent-relationship or nomination
+/// entity yet).
+model EmergencyContact {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  name         String
+  relationship String
+  phone        String
+  email        String?
+  isPrimary    Boolean @default(false) @map("is_primary")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("emergency_contacts")
+}
+
+/// Wave 1 People Management deepening pass, consolidating 2 catalog items —
+/// national identity (docs/.../04-national-identity.md) and "passport, visa,
+/// driving license" — into one type-tagged document table, same pattern as
+/// OrgUnit/Asset elsewhere in this build. No verification workflow,
+/// expiry-alerting, or field-level encryption/masking (see this phase's
+/// disclosed security-depth gap) — just the record and its expiry date.
+model IdentityDocument {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// PAN | Aadhaar | Passport | DrivingLicense | VoterID | NationalID | Visa | Other
+  documentType   String    @map("document_type")
+  documentNumber String    @map("document_number")
+  issuingCountry String?   @map("issuing_country")
+  expiryDate     DateTime? @map("expiry_date") @db.Date
+
+  /// Active | Expired | Verified | Pending
+  status String @default("Pending")
+
+  /// Optional scan/photo of the physical document, via the File Storage engine.
+  fileId String?     @map("file_id") @db.Uuid
+  file   StoredFile? @relation(fields: [fileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("identity_documents")
+}
+
+/// Wave 1 People Management deepening pass, docs/.../06-bank-accounts.md.
+/// Collapses bank_account_verification/change_request/country_format_rule
+/// into direct fields with a simple status — no maker-checker approval
+/// workflow (a real deferral: the spec calls for segregation of duties here).
+model BankAccount {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  accountHolderName String  @map("account_holder_name")
+  accountNumber     String  @map("account_number")
+  ifscCode          String? @map("ifsc_code")
+  bankName          String  @map("bank_name")
+  branchName        String? @map("branch_name")
+  isPrimary         Boolean @default(true) @map("is_primary")
+
+  /// Active | Inactive
+  status String @default("Active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("bank_accounts")
+}
+
+/// Wave 1 People Management deepening pass, docs/.../07-tax-information.md.
+/// One flat profile per employee — no declaration-header/exception-review/
+/// residency-history sub-entities, no regime-election workflow.
+model TaxProfile {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @unique @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  panNumber           String? @map("pan_number")
+  taxRegime           String? @map("tax_regime")
+  taxResidencyCountry String? @map("tax_residency_country")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("tax_profiles")
+}
+
+/// Wave 1 People Management deepening pass, docs/.../14-employee-documents.md.
+/// A flat, type-tagged document metadata registry — no file storage
+/// integration (this app has none), no versioning/retention/legal-hold
+/// machinery, and no digital-signature capability (the "digital signature"
+/// catalog item stays fully deferred — there is no e-sign integration at all).
+model EmployeeDocument {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// OfferLetter | Payslip | Certificate | IdProof | Contract | Other
+  documentType String  @map("document_type")
+  title        String
+  referenceUrl String? @map("reference_url")
+
+  /// Uploaded file, via the File Storage engine — preferred over referenceUrl,
+  /// which stays only for pointing at an external link (e.g. a shared drive).
+  fileId String?     @map("file_id") @db.Uuid
+  file   StoredFile? @relation(fields: [fileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// Uploaded | Verified | Expired
+  status String @default("Uploaded")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_documents")
+}
+
+/// Part of "certifications, skills, languages" — the certifications half.
+model EmployeeCertification {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  name                String
+  issuingOrganization String?   @map("issuing_organization")
+  issueDate           DateTime? @map("issue_date") @db.Date
+  expiryDate          DateTime? @map("expiry_date") @db.Date
+  credentialId        String?   @map("credential_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_certifications")
+}
+
+/// Part of "certifications, skills, languages" — skills and languages
+/// consolidated into one type-tagged table.
+model EmployeeSkill {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// Skill | Language
+  skillType        String @map("skill_type")
+  name             String
+  /// Beginner | Intermediate | Advanced | Expert
+  proficiencyLevel String @default("Intermediate") @map("proficiency_level")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_skills")
+}
+
+/// Part of "education and experience" — the education half.
+model EducationRecord {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  degree       String
+  institution  String
+  fieldOfStudy String? @map("field_of_study")
+  startYear    Int?    @map("start_year")
+  endYear      Int?    @map("end_year")
+  grade        String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("education_records")
+}
+
+/// Part of "education and experience" — the prior-work-experience half.
+model PriorExperience {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  companyName      String    @map("company_name")
+  title            String
+  startDate        DateTime? @map("start_date") @db.Date
+  endDate          DateTime? @map("end_date") @db.Date
+  reasonForLeaving String?   @map("reason_for_leaving")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("prior_experiences")
+}
+
+/// Wave 1 People Management deepening pass, consolidating 3 catalog items —
+/// employment information (docs/.../03-employment-information.md, the
+/// effective-dated assignment history explicitly deferred back in Phase 2),
+/// promotion/demotion/transfer (docs/.../11-promotion-demotion-transfer.md),
+/// and deputation/secondment — into one append-only, type-tagged ledger. No
+/// separate approval-case/impact-analysis sub-entities: recording a movement
+/// both snapshots the "from" state and applies the "to" state directly to
+/// the live Employee record (department/manager/designation/grade), the same
+/// direct-assignment pattern as the Org Management pass's org-assignment
+/// endpoint, rather than a maker-checker workflow.
+model EmployeeAssignmentHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("AssignmentHistoryEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// Transfer | Promotion | Demotion | Deputation | Confirmation | Other
+  changeType    String   @map("change_type")
+  effectiveDate DateTime @map("effective_date") @db.Date
+
+  fromDepartmentId  String? @map("from_department_id") @db.Uuid
+  toDepartmentId    String? @map("to_department_id") @db.Uuid
+  fromManagerId     String? @map("from_manager_id") @db.Uuid
+  toManagerId       String? @map("to_manager_id") @db.Uuid
+  fromDesignationId String? @map("from_designation_id") @db.Uuid
+  toDesignationId   String? @map("to_designation_id") @db.Uuid
+  fromGradeId       String? @map("from_grade_id") @db.Uuid
+  toGradeId         String? @map("to_grade_id") @db.Uuid
+
+  reason          String?
+  createdByUserId String? @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_assignment_histories")
+}
+
+/// Wave 1 People Management deepening pass, docs/.../10-probation-and-confirmation.md.
+/// Collapses the review/extension/reminder sidecar tables into one record
+/// per probation period with a direct decision field.
+model ProbationRecord {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  startDate     DateTime  @map("start_date") @db.Date
+  endDate       DateTime  @map("end_date") @db.Date
+  extendedUntil DateTime? @map("extended_until") @db.Date
+
+  /// OnProbation | Extended | Confirmed | Failed
+  status String @default("OnProbation")
+
+  decisionDate DateTime? @map("decision_date") @db.Date
+  decisionNote String?   @map("decision_note")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("probation_records")
+}
+
+/// Wave 1 People Management deepening pass, docs/.../12-salary-revision.md.
+/// A standalone, ad-hoc individual pay change — distinct from
+/// CompensationReviewCycle/Item (Phase 7's annual merit-cycle mechanism).
+/// Collapses the case/component/publish-log/history sidecar tables into one
+/// record; applying writes straight through to EmployeeCompensation, same
+/// pattern as CompensationReviewItem.apply().
+model SalaryRevision {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  previousMonthlyBasic Float    @map("previous_monthly_basic")
+  proposedMonthlyBasic Float    @map("proposed_monthly_basic")
+  effectiveDate        DateTime @map("effective_date") @db.Date
+  reason               String?
+
+  /// Proposed | Approved | Applied | Rejected
+  status String @default("Proposed")
+
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decisionNote    String?   @map("decision_note")
+  appliedAt       DateTime? @map("applied_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("salary_revisions")
+}
+
+/// Wave 1 People Management deepening pass — contract renewal (L2, no
+/// dedicated spec beyond the catalog entry). A simple renewal log;
+/// Employee.contractEndDate holds the current value.
+model ContractRenewal {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  previousEndDate DateTime? @map("previous_end_date") @db.Date
+  newEndDate      DateTime  @map("new_end_date") @db.Date
+  note            String?
+  renewedByUserId String?   @map("renewed_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("contract_renewals")
+}
+
+/// Foundation & Platform (E00) — File Storage engine. A real catalog gap: no
+/// spec file names it, but every document/attachment field elsewhere in the
+/// catalog (employee documents, identity documents, and future expense
+/// receipts/asset photos/resumes) needs somewhere to actually store bytes
+/// rather than a bare reference URL. Local-disk storage for this build;
+/// storageKey is a relative path under the configured uploads root, kept
+/// generic enough that swapping in an object-store adapter later wouldn't
+/// change any consumer's contract.
+model StoredFile {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  originalName     String @map("original_name")
+  mimeType         String @map("mime_type")
+  sizeBytes        Int    @map("size_bytes")
+  storageKey       String @map("storage_key")
+  uploadedByUserId String @map("uploaded_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id])
+  identityDocuments       IdentityDocument[]
+  employeeDocuments       EmployeeDocument[]
+  generatedDocuments      GeneratedDocument[]
+  complianceTasks         ComplianceTask[]
+  certificationRecords    CertificationRecord[]
+  externalWorkerDocuments ExternalWorkerDocument[]
+
+  @@index([tenantId])
+  @@map("stored_files")
+}
+
+/// Foundation & Platform (E00) — Audit Engine. A real catalog gap: Security &
+/// Governance (E29) lists "audit logs" as pending, and several modules
+/// (Salary Revision, Org Policy, Exit) already needed a compliance trail for
+/// significant state changes but each was quietly skipping it. One generic,
+/// append-only log keyed by (entityType, entityId) rather than a
+/// per-module history table for everything — modules that already have their
+/// own rich history (EmployeeAssignmentHistory, ProbationRecord) keep those;
+/// this is for the mutations that had no trail at all.
+model AuditLog {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  actorUserId String @map("actor_user_id") @db.Uuid
+  entityType  String @map("entity_type")
+  entityId    String @map("entity_id") @db.Uuid
+  action      String
+
+  before Json?
+  after  Json?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, entityType, entityId])
+  @@map("audit_logs")
+}
+
+/// Foundation & Platform (E00) — Document Generation + Template engines,
+/// treated as one pair since neither has an independent consumer yet.
+/// bodyTemplate holds plain text with {{mergeField}} placeholders (employee/
+/// org data only, no rich layout or PDF rendering) — the first real consumer
+/// of the "Generate Letter" quick action stubbed since Phase 2.
+model DocumentTemplate {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name String
+
+  /// OfferLetter | ExperienceLetter | SalaryCertificate | BankAdvice | Other
+  category     String
+  bodyTemplate String @map("body_template")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant             Tenant              @relation(fields: [tenantId], references: [id])
+  generatedDocuments GeneratedDocument[]
+
+  @@index([tenantId])
+  @@map("document_templates")
+}
+
+model GeneratedDocument {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  templateId String           @map("template_id") @db.Uuid
+  template   DocumentTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employeeId String           @map("employee_id") @db.Uuid
+  employee   Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fileId     String           @map("file_id") @db.Uuid
+  file       StoredFile       @relation(fields: [fileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  generatedByUserId String @map("generated_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("generated_documents")
+}
+
+/// Foundation & Platform (E00) — Number Series engine. Replaces the ad hoc
+/// `NH-${count + 1}` string built inline in OfferService.convert() (a
+/// count-based scheme that isn't race-safe under concurrent conversions)
+/// with one configurable, atomically-incremented series per entity type,
+/// reused for both employee codes and asset tags.
+model NumberSeries {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// Employee | Asset | ... — one row per entity type per tenant.
+  entityType String @map("entity_type")
+  prefix     String
+  padding    Int    @default(4)
+  nextValue  Int    @default(1) @map("next_value")
+
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, entityType])
+  @@map("number_series")
+}
+
+/// Wave 1 Identity and Access deepening (03-mfa.md) — v1 slice: authenticator-
+/// app (TOTP) factor only, no SMS/email/hardware-token/push factors, no
+/// adaptive risk-based triggering, no break-glass bypass workflow. One factor
+/// per user for now (spec allows several).
+model MfaFactor {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  userId   String @map("user_id") @db.Uuid
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// TOTP only for v1.
+  type         String @default("TOTP")
+  secretBase32 String @map("secret_base32")
+
+  /// PendingEnrollment | Active | Revoked
+  status String @default("PendingEnrollment")
+
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  verifiedAt DateTime? @map("verified_at") @db.Timestamptz(6)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, userId])
+  @@map("mfa_factors")
+}
+
+/// Wave 1 Identity and Access deepening (06-delegation.md) — v1 slice: one
+/// scope tag per delegation rather than a generic workflow-type/task-type
+/// registry (no workflow engine exists to register against), no approval
+/// step for the delegation itself, no SoD/conflict engine. Real effect: the
+/// delegate can decide Leave/Expense/Travel requests routed to the delegator
+/// while the delegation is Active and today falls in [startDate, endDate].
+model Delegation {
+  id              String @id @default(uuid()) @db.Uuid
+  tenantId        String @map("tenant_id") @db.Uuid
+  delegatorUserId String @map("delegator_user_id") @db.Uuid
+  delegateUserId  String @map("delegate_user_id") @db.Uuid
+  delegator       User   @relation("DelegationDelegator", fields: [delegatorUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  delegate        User   @relation("DelegationDelegate", fields: [delegateUserId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// LeaveApproval | ExpenseApproval | TravelApproval | All
+  scope     String
+  startDate DateTime @map("start_date") @db.Date
+  endDate   DateTime @map("end_date") @db.Date
+
+  /// Active | Revoked
+  status          String @default("Active")
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, delegateUserId])
+  @@map("delegations")
+}
+
+/// Wave 2 W2·E07 Workforce Management, 03-shift-management.md. Collapses
+/// shift_definition/shift_version/shift_break_rule/shift_rotation_pattern/
+/// shift_rotation_member/shift_assignment/shift_override into two models:
+/// this one (no Draft/Published/Superseded version state machine — edits
+/// apply immediately) and ShiftAssignment (effective-dated, one active row
+/// per employee). Rotation patterns, per-break-type detail, and multi-segment
+/// split shifts are deferred — no real consumer yet to justify them.
+model ShiftDefinition {
+  id             String  @id @default(uuid()) @db.Uuid
+  tenantId       String  @map("tenant_id") @db.Uuid
+  code           String
+  name           String
+  /// "HH:mm" 24-hour local time
+  startTime      String  @map("start_time")
+  endTime        String  @map("end_time")
+  crossMidnight  Boolean @default(false) @map("cross_midnight")
+  plannedMinutes Int     @map("planned_minutes")
+  graceMinutes   Int     @default(0) @map("grace_minutes")
+  isActive       Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant              @relation(fields: [tenantId], references: [id])
+  assignments   ShiftAssignment[]
+  rosterEntries RosterEntry[]
+  rotationSteps ShiftRotationStep[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("shift_definitions")
+}
+
+/// The employee's default/standing shift. RosterEntry (below) can override
+/// it for a specific date; where no RosterEntry exists for a date, this is
+/// the effective shift. One active (effectiveTo null) assignment per employee
+/// is enforced in the service layer, not the database.
+model ShiftAssignment {
+  id            String    @id @default(uuid()) @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  employeeId    String    @map("employee_id") @db.Uuid
+  shiftId       String    @map("shift_id") @db.Uuid
+  effectiveFrom DateTime  @map("effective_from") @db.Date
+  effectiveTo   DateTime? @map("effective_to") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+  employee Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shift    ShiftDefinition @relation(fields: [shiftId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("shift_assignments")
+}
+
+/// Wave 2 W2·E07, 04-rostering.md + 07-workforce-scheduling.md — the two specs
+/// describe the same underlying concept (date-level shift assignment across a
+/// planning horizon, published for execution) so they're consolidated into one
+/// model rather than built as two parallel entities. Collapses roster_plan/
+/// roster_version/roster_entry/roster_coverage_rule/roster_publish_event plus
+/// workforce_schedule/schedule_shift/schedule_assignment/schedule_constraint_result
+/// into a single per-employee-per-date row with a Draft/Published status.
+/// Coverage rules, skill/certification constraints, and demand forecasting are
+/// deferred — no staffing-rules or forecasting engine exists to drive them
+/// honestly; swap requests (RosterSwapRequest) are the one workflow built on top.
+model RosterEntry {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  shiftId    String   @map("shift_id") @db.Uuid
+  date       DateTime @db.Date
+
+  /// Draft | Published
+  status String @default("Draft")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant       Tenant              @relation(fields: [tenantId], references: [id])
+  employee     Employee            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shift        ShiftDefinition     @relation(fields: [shiftId], references: [id])
+  swapRequests RosterSwapRequest[]
+
+  @@unique([tenantId, employeeId, date])
+  @@index([tenantId])
+  @@index([tenantId, date])
+  @@map("roster_entries")
+}
+
+/// A published roster entry's employee proposes a shift swap with a named
+/// counterpart; the requester's manager (or org_admin/hr_ops) approves —
+/// same assigned-approver-or-admin-override pattern used across Leave/Expense/
+/// Travel. Approval reassigns the entry's employeeId to the counterpart.
+model RosterSwapRequest {
+  id                    String    @id @default(uuid()) @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  rosterEntryId         String    @map("roster_entry_id") @db.Uuid
+  requestedByEmployeeId String    @map("requested_by_employee_id") @db.Uuid
+  counterpartEmployeeId String    @map("counterpart_employee_id") @db.Uuid
+  reason                String?
+  /// Pending | Approved | Rejected | Withdrawn
+  status                String    @default("Pending")
+  decisionNote          String?   @map("decision_note")
+  decidedByUserId       String?   @map("decided_by_user_id") @db.Uuid
+  decidedAt             DateTime? @map("decided_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  rosterEntry RosterEntry @relation(fields: [rosterEntryId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("roster_swap_requests")
+}
+
+/// Wave 2 W2·E07, 05-timesheets.md. Collapses timesheet_header/timesheet_entry/
+/// timesheet_approval/timesheet_period/timesheet_exception into one
+/// row-per-day-per-activity model. No project/client/cost-center master data
+/// exists yet, so allocation is a free-text activity label, not a governed
+/// project reference; period locking, dual (manager + project-manager)
+/// approval, and billing/costing export are deferred.
+model TimesheetEntry {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  date       DateTime @db.Date
+  hours      Float
+  activity   String
+
+  /// Draft | Submitted | Approved | Rejected
+  status          String    @default("Draft")
+  approverId      String?   @map("approver_id") @db.Uuid
+  decisionNote    String?   @map("decision_note")
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId, date])
+  @@map("timesheet_entries")
+}
+
+/// Wave 2 W2·E07, 06-overtime.md. Collapses overtime_policy/overtime_request/
+/// overtime_result/overtime_approval/overtime_export_batch into a single
+/// request+result row. Eligibility is open to all employees (no worker-
+/// category/union policy engine exists); payableAmount is an estimate
+/// (hourly-equivalent of EmployeeCompensation.monthlyBasic x 1.5), computed
+/// on approval and informational only until Payroll (E09) is deepened enough
+/// to actually consume it. Comp-off conversion is deferred.
+model OvertimeRequest {
+  id             String   @id @default(uuid()) @db.Uuid
+  tenantId       String   @map("tenant_id") @db.Uuid
+  employeeId     String   @map("employee_id") @db.Uuid
+  date           DateTime @db.Date
+  hoursRequested Float    @map("hours_requested")
+  reason         String?
+
+  /// Payable | CompOff — chosen by the employee at request time. CompOff credits
+  /// the "Comp Off" leave balance via the existing Leave Ledger (E08) on approval
+  /// instead of computing a payable amount; consuming it is just applying for
+  /// "Comp Off" leave through the existing leave-request flow.
+  settlementType      String @default("Payable") @map("settlement_type")
+  compOffDaysCredited Float? @map("comp_off_days_credited")
+
+  /// Pending | Approved | Rejected
+  status          String    @default("Pending")
+  approverId      String?   @map("approver_id") @db.Uuid
+  payableAmount   Float?    @map("payable_amount")
+  decisionNote    String?   @map("decision_note")
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("overtime_requests")
+}
+
+/// Wave 2 W2·E08 Leave Management deepening, 02-leave-accrual.md. Deliberately
+/// NOT a replacement for the live-computed entitlement in LeaveBalanceService
+/// (prorateEntitlement already gives a correct, explainable accrual-to-date
+/// figure with no queue infrastructure needed) — this is an additive
+/// correction ledger for the two things that genuinely can't be computed
+/// live: manual adjustments (with audit trail) and year-end carry-forward.
+/// periodYear is the leave-year the entry affects (not necessarily the year
+/// it was posted in), so carry-forward runs are idempotent per employee/
+/// leave-type/year and the ledger reads naturally per year.
+model LeaveLedgerEntry {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+  leaveType  String @map("leave_type")
+  periodYear Int    @map("period_year")
+
+  /// Adjustment | CarryForward
+  entryType  String  @map("entry_type")
+  /// Signed — positive credits the balance, negative debits it.
+  amountDays Float   @map("amount_days")
+  reason     String?
+
+  postedByUserId String @map("posted_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant      @relation(fields: [tenantId], references: [id])
+  employee Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  policy   LeavePolicy @relation(fields: [tenantId, leaveType], references: [tenantId, leaveType])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId, leaveType, periodYear])
+  @@map("leave_ledger_entries")
+}
+
+/// Wave 2 W2·E09 Payroll deepening, 02-pay-components.md. Collapses the
+/// spec's pay_component/pay_component_version/pay_component_formula/
+/// pay_component_mapping/pay_component_usage_reference/
+/// pay_component_publish_request into one catalog row (no version history,
+/// no formula engine, no GL/dependency mapping — no chart-of-accounts or
+/// formula-authoring surface exists in this build). Two calculation methods
+/// only: a flat monthly amount, or a percentage of prorated Basic.
+model PayComponent {
+  id                String  @id @default(uuid()) @db.Uuid
+  tenantId          String  @map("tenant_id") @db.Uuid
+  code              String
+  name              String
+  /// Earning | Deduction
+  type              String
+  /// FixedAmount | PercentOfBasic
+  calculationMethod String  @map("calculation_method")
+  /// Flat rupee amount for FixedAmount, or a fraction (0.1 = 10%) for PercentOfBasic.
+  defaultValue      Float   @map("default_value")
+  isActive          Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant      Tenant                 @relation(fields: [tenantId], references: [id])
+  assignments EmployeePayComponent[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("pay_components")
+}
+
+/// One active row per employee per component; value overrides the
+/// component's defaultValue when set. No effective-dated version history —
+/// changing an assignment just updates it in place, consistent with
+/// EmployeeCompensation's own v1 simplification.
+model EmployeePayComponent {
+  id             String  @id @default(uuid()) @db.Uuid
+  tenantId       String  @map("tenant_id") @db.Uuid
+  employeeId     String  @map("employee_id") @db.Uuid
+  payComponentId String  @map("pay_component_id") @db.Uuid
+  value          Float?
+  isActive       Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  payComponent PayComponent @relation(fields: [payComponentId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, employeeId, payComponentId])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_pay_components")
+}
+
+/// Wave 2 W2·E09 deepening, 04-arrears-and-retro-pay.md. Collapses
+/// retro_pay_case/retro_pay_impacted_period/retro_pay_component_delta/
+/// retro_pay_posting_log/retro_pay_statutory_adjustment into one lump-sum
+/// row per trigger — no period-by-period component delta breakdown, no
+/// statutory recomputation of historical periods, no difference-only vs
+/// full-rebuild mode choice (always a simple gross-impact estimate). Real
+/// trigger: SalaryRevisionService.apply() creates one Pending entry when its
+/// effectiveDate falls inside an already-Processed/Approved/Closed payroll
+/// period. PayrollRunService.process() consumes all of an employee's Pending
+/// entries as a lump sum each time it (re)processes a run.
+model ArrearEntry {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  employeeId   String  @map("employee_id") @db.Uuid
+  /// SalaryRevision | LeaveEncashment — what created this lump sum.
+  sourceType   String  @map("source_type")
+  sourceId     String  @map("source_id") @db.Uuid
+  description  String
+  /// Signed — positive owed to the employee.
+  amount       Float
+  payrollRunId String? @map("payroll_run_id") @db.Uuid
+
+  /// Pending | Included | Paid
+  status String @default("Pending")
+
+  postedByUserId String @map("posted_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant     Tenant      @relation(fields: [tenantId], references: [id])
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  payrollRun PayrollRun? @relation(fields: [payrollRunId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId, status])
+  @@map("arrear_entries")
+}
+
+/// Wave 2 W2·E09 deepening, 07-full-and-final-settlement.md. Collapses
+/// fnf_case/fnf_component_result/fnf_recovery_item/fnf_approval/
+/// fnf_payment_instruction/fnf_recalculation_event into one row — no
+/// component-level breakdown persisted beyond the three summed figures, no
+/// recovery/waiver model (no loans/advances/asset-damage-billing module
+/// exists to source recoveries from), no payment-channel integration. Real
+/// calculation: final-month gross-to-net via the same computeGrossToNet used
+/// by regular payroll runs, plus unused Annual-leave encashment via
+/// LeaveBalanceService's existing formula, plus any of the employee's
+/// still-Pending ArrearEntry rows (settled here since there's no future
+/// payroll run left to include them in).
+model FnfCase {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @unique @map("employee_id") @db.Uuid
+  exitDate   DateTime @map("exit_date") @db.Date
+
+  finalMonthNetPay Float @map("final_month_net_pay")
+  leaveEncashment  Float @map("leave_encashment")
+  arrearsIncluded  Float @map("arrears_included")
+  /// Payment of Gratuity Act 1972: (last drawn monthly basic x 15 x years of service) / 26, only if service >= 5 years. 0 when ineligible.
+  gratuityAmount   Float @default(0) @map("gratuity_amount")
+  netPayable       Float @map("net_payable")
+
+  /// Draft | Approved | Released
+  status String @default("Draft")
+
+  calculatedAt     DateTime  @default(now()) @map("calculated_at") @db.Timestamptz(6)
+  approvedByUserId String?   @map("approved_by_user_id") @db.Uuid
+  approvedAt       DateTime? @map("approved_at") @db.Timestamptz(6)
+  releasedAt       DateTime? @map("released_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("fnf_cases")
+}
+
+/// Wave 2 W2·E10 Statutory and Compliance deepening, 05-compliance-calendar.md.
+/// Collapses compliance_obligation/compliance_task_dependency/
+/// compliance_escalation_rule into one catalog row — no dependency chains,
+/// no maker-checker, no jurisdiction/legal-entity scoping (single-entity
+/// tenant). Monthly frequency only: this ties directly back to the PF/ESIC/
+/// TDS/PT figures the payroll calculator already produces every run — the
+/// real gap being closed is "now here's the obligation to actually file/pay
+/// them, tracked," not a generic multi-frequency scheduling engine.
+model ComplianceObligation {
+  id                 String  @id @default(uuid()) @db.Uuid
+  tenantId           String  @map("tenant_id") @db.Uuid
+  code               String
+  name               String
+  /// PF | ESIC | TDS | PT | Custom
+  category           String
+  /// Day of the month following the covered period that this obligation is due.
+  dueDayOfMonth      Int     @map("due_day_of_month")
+  reminderDaysBefore Int     @default(3) @map("reminder_days_before")
+  isActive           Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id])
+  tasks  ComplianceTask[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("compliance_obligations")
+}
+
+/// One instance per obligation per calendar month, generated idempotently by
+/// ComplianceCalendarService.generateForTenant(). periodLabel ("YYYY-MM") is
+/// the month the deadline falls in, not the period being filed for.
+model ComplianceTask {
+  id           String   @id @default(uuid()) @db.Uuid
+  tenantId     String   @map("tenant_id") @db.Uuid
+  obligationId String   @map("obligation_id") @db.Uuid
+  periodLabel  String   @map("period_label")
+  dueDate      DateTime @db.Date
+
+  /// Open | Completed | Overdue | Waived
+  status            String    @default("Open")
+  completedByUserId String?   @map("completed_by_user_id") @db.Uuid
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz(6)
+  evidenceFileId    String?   @map("evidence_file_id") @db.Uuid
+  note              String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant       Tenant               @relation(fields: [tenantId], references: [id])
+  obligation   ComplianceObligation @relation(fields: [obligationId], references: [id], onDelete: Cascade)
+  evidenceFile StoredFile?          @relation(fields: [evidenceFileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([tenantId, obligationId, periodLabel])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("compliance_tasks")
+}
+
+/// Tenant-wide statutory parameters for the three computed compliance checks
+/// (minimum wages, labour welfare fund, statutory bonus) — one row per
+/// tenant, like FlexBasketPolicy. Single-tier/flat-rate simplification
+/// (matching the existing PT calculator's approach): real minimum-wage and
+/// LWF rates vary by Indian state, but this v1 slice has no state-wise rate
+/// table, so the tenant configures one applicable figure directly.
+model StatutoryComplianceSetting {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @unique @map("tenant_id") @db.Uuid
+
+  minimumWageThreshold    Float @default(0) @map("minimum_wage_threshold")
+  lwfEmployeeContribution Float @default(0) @map("lwf_employee_contribution")
+  lwfEmployerContribution Float @default(0) @map("lwf_employer_contribution")
+  lwfFrequencyMonths      Int   @default(6) @map("lwf_frequency_months")
+  bonusEligibilityCeiling Float @default(0) @map("bonus_eligibility_ceiling")
+  bonusPercent            Float @default(8.33) @map("bonus_percent")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("statutory_compliance_settings")
+}
+
+/// Wave 2 W2·E27 Integration Platform, 02-webhooks.md. Collapses
+/// webhook_secret_version/webhook_dead_letter into direct fields on the
+/// subscription/delivery rows — no secret rotation history, no dead-letter
+/// queue, one retry on failure rather than governed backoff. eventTypes
+/// uses "*" as a wildcard matching every event; concrete event names are
+/// whatever WebhookDispatchService.dispatch() is called with from real
+/// mutation points (see that file's comment for the wired call sites).
+model WebhookSubscription {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  url        String
+  secret     String
+  eventTypes String[] @map("event_types")
+  isActive   Boolean  @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant     Tenant            @relation(fields: [tenantId], references: [id])
+  deliveries WebhookDelivery[]
+
+  @@index([tenantId])
+  @@map("webhook_subscriptions")
+}
+
+/// One row per delivery attempt (including the single retry) — not per
+/// event, so a retried delivery shows as two rows, both visible in the log.
+model WebhookDelivery {
+  id             String  @id @default(uuid()) @db.Uuid
+  tenantId       String  @map("tenant_id") @db.Uuid
+  subscriptionId String  @map("subscription_id") @db.Uuid
+  eventType      String  @map("event_type")
+  payload        Json
+  responseStatus Int?    @map("response_status")
+  success        Boolean @default(false)
+  errorMessage   String? @map("error_message")
+
+  attemptedAt DateTime @default(now()) @map("attempted_at") @db.Timestamptz(6)
+
+  tenant       Tenant              @relation(fields: [tenantId], references: [id])
+  subscription WebhookSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, subscriptionId])
+  @@map("webhook_deliveries")
+}
+
+/// Wave 4 W4·E15 Employee Experience, docs/03-module-specifications/15-employee-experience.md.
+/// v1 slice: surveys and recognition only. Pulse surveys collapse into `type`
+/// on Survey rather than a separate entity — a pulse survey is just a
+/// Standard survey with a shorter/recurring cadence, no new mechanics.
+/// Social feed, communities, events, wellness programs, the quote/culture
+/// library, and AI-generated celebration cards all stay deferred: no
+/// moderation/photo-consent/vendor-rewards infra exists in this build to
+/// make any of them a real (non-cosmetic) feature yet.
+model Survey {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  title       String
+  description String?
+
+  /// Standard | Pulse
+  type        String  @default("Standard")
+  isAnonymous Boolean @default(false) @map("is_anonymous")
+
+  /// Draft | Published | Closed
+  status          String    @default("Draft")
+  createdByUserId String    @map("created_by_user_id") @db.Uuid
+  publishedAt     DateTime? @map("published_at") @db.Timestamptz(6)
+  closesAt        DateTime? @map("closes_at") @db.Timestamptz(6)
+  closedAt        DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant    Tenant           @relation(fields: [tenantId], references: [id])
+  questions SurveyQuestion[]
+  responses SurveyResponse[]
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("surveys")
+}
+
+model SurveyQuestion {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  surveyId String @map("survey_id") @db.Uuid
+  text     String
+
+  /// Rating | Text
+  type      String @default("Rating")
+  sortOrder Int    @default(0) @map("sort_order")
+
+  tenant  Tenant         @relation(fields: [tenantId], references: [id])
+  survey  Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  answers SurveyAnswer[]
+
+  @@index([tenantId, surveyId])
+  @@map("survey_questions")
+}
+
+/// One row per employee per survey — enforces a single submission. employeeId
+/// is always stored (needed to enforce the one-response-per-employee rule and
+/// to notify late responders), but SurveyService never returns it in results
+/// when the survey is anonymous.
+model SurveyResponse {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  surveyId    String   @map("survey_id") @db.Uuid
+  employeeId  String   @map("employee_id") @db.Uuid
+  submittedAt DateTime @default(now()) @map("submitted_at") @db.Timestamptz(6)
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id])
+  survey   Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  employee Employee       @relation(fields: [employeeId], references: [id])
+  answers  SurveyAnswer[]
+
+  @@unique([tenantId, surveyId, employeeId])
+  @@index([tenantId])
+  @@map("survey_responses")
+}
+
+model SurveyAnswer {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  responseId  String  @map("response_id") @db.Uuid
+  questionId  String  @map("question_id") @db.Uuid
+  ratingValue Int?    @map("rating_value")
+  textValue   String? @map("text_value")
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id])
+  response SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question SurveyQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, responseId, questionId])
+  @@index([tenantId])
+  @@map("survey_answers")
+}
+
+/// Peer-to-peer kudos: any employee can recognize any other employee (not
+/// gated behind a manager/admin approval workflow, unlike the spec's
+/// "recognition approval workflow" — a small single-tenant deployment has no
+/// real abuse signal yet to justify a moderation queue). `points` is tracked
+/// but there is no redemption catalog — "rewards" per the spec stays a
+/// deferred capability, not this running counter.
+model Recognition {
+  id             String @id @default(uuid()) @db.Uuid
+  tenantId       String @map("tenant_id") @db.Uuid
+  fromEmployeeId String @map("from_employee_id") @db.Uuid
+  toEmployeeId   String @map("to_employee_id") @db.Uuid
+  value          String
+  message        String
+  points         Int    @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  fromEmployee Employee @relation("RecognitionFromEmployee", fields: [fromEmployeeId], references: [id])
+  toEmployee   Employee @relation("RecognitionToEmployee", fields: [toEmployeeId], references: [id])
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, toEmployeeId])
+  @@map("recognitions")
+}
+
+/// Wave 4 W4·E19 Helpdesk and Case Management, docs/03-module-specifications/19-helpdesk-case-management.md.
+/// The four spec queues (HR/IT/Admin/Finance helpdesk) collapse into one
+/// `Ticket.queue` type tag rather than four parallel systems. The spec's
+/// 7-state machine (Open/Assigned/InProgress/PendingUser/Escalated/
+/// Resolved/Closed) collapses to 5 states with escalation as an `isEscalated`
+/// overlay flag rather than a blocking state, since a ticket can be
+/// InProgress and escalated at the same time — "Pending User" isn't tracked
+/// separately (no distinct employee-response-required signal in this build).
+/// `Service Agent`/`Queue Manager` collapse to org_admin/hr_ops, matching
+/// every other module this pass — no separate agent role exists yet.
+/// Employee relations and grievance management stays deferred: it needs its
+/// own confidential/redacted handling, not just another queue value.
+model Ticket {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// HR | IT | Admin | Finance
+  queue       String
+  category    String
+  subject     String
+  description String
+
+  /// Low | Medium | High | Urgent
+  priority String @default("Medium")
+
+  /// Open | Assigned | InProgress | Resolved | Closed
+  status          String  @default("Open")
+  isEscalated     Boolean @default(false) @map("is_escalated")
+  assignedAgentId String? @map("assigned_agent_id") @db.Uuid
+
+  dueAt              DateTime? @map("due_at") @db.Timestamptz(6)
+  resolvedAt         DateTime? @map("resolved_at") @db.Timestamptz(6)
+  closedAt           DateTime? @map("closed_at") @db.Timestamptz(6)
+  satisfactionRating Int?      @map("satisfaction_rating")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant          @relation(fields: [tenantId], references: [id])
+  employee      Employee        @relation("TicketRaiser", fields: [employeeId], references: [id])
+  assignedAgent Employee?       @relation("TicketAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  comments      TicketComment[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, employeeId])
+  @@map("tickets")
+}
+
+/// isInternal comments (agent notes) are never returned to the raising employee — enforced in HelpdeskService, not the repository.
+model TicketComment {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  ticketId     String  @map("ticket_id") @db.Uuid
+  authorUserId String  @map("author_user_id") @db.Uuid
+  body         String
+  isInternal   Boolean @default(false) @map("is_internal")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, ticketId])
+  @@map("ticket_comments")
+}
+
+model SlaPolicy {
+  id              String @id @default(uuid()) @db.Uuid
+  tenantId        String @map("tenant_id") @db.Uuid
+  queue           String
+  priority        String
+  resolutionHours Int    @map("resolution_hours")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, queue, priority])
+  @@map("sla_policies")
+}
+
+model KnowledgeArticle {
+  id              String  @id @default(uuid()) @db.Uuid
+  tenantId        String  @map("tenant_id") @db.Uuid
+  queue           String
+  title           String
+  body            String
+  isPublished     Boolean @default(false) @map("is_published")
+  createdByUserId String  @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, queue])
+  @@map("knowledge_articles")
+}
+
+/// Wave 4 W4·E20 Contractor and External Workforce, docs/03-module-specifications/20-contractor-external-workforce.md.
+/// "Agency" collapses into Vendor (no separate agency entity — an agency is
+/// just a vendor whose workers are AgencyStaff). Assignment tracking (the
+/// spec's external_worker_assignment entity) collapses into direct fields on
+/// ExternalWorker rather than a separate historized table, matching the
+/// position/grade-assignment collapse used for Employee in People
+/// Management — no effective-dated assignment history yet. "Access control"
+/// is a real grantedAt/revokedAt timestamp pair plus admin actions, not
+/// integrated with any actual badge/access system (none exists in this build).
+model Vendor {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  name         String
+  contactEmail String? @map("contact_email")
+  contactPhone String? @map("contact_phone")
+  isActive     Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  externalWorkers ExternalWorker[]
+
+  @@unique([tenantId, name])
+  @@map("vendors")
+}
+
+model ExternalWorker {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  vendorId String @map("vendor_id") @db.Uuid
+
+  fullName String  @map("full_name")
+  email    String?
+
+  /// Contractor | Consultant | AgencyStaff | Intern
+  category String @default("Contractor")
+
+  /// Draft | PendingApproval | Active | Expired | Suspended | Inactive
+  status String @default("Draft")
+
+  contractStartDate DateTime    @map("contract_start_date") @db.Date
+  contractEndDate   DateTime    @map("contract_end_date") @db.Date
+  departmentId      String?     @map("department_id") @db.Uuid
+  department        Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  workLocation      String?     @map("work_location")
+
+  accessGrantedAt DateTime? @map("access_granted_at") @db.Timestamptz(6)
+  accessRevokedAt DateTime? @map("access_revoked_at") @db.Timestamptz(6)
+  statusReason    String?   @map("status_reason")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant    Tenant                   @relation(fields: [tenantId], references: [id])
+  vendor    Vendor                   @relation(fields: [vendorId], references: [id])
+  documents ExternalWorkerDocument[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, vendorId])
+  @@map("external_workers")
+}
+
+/// Compliance documents — reuses the File Storage engine (StoredFile) exactly
+/// like EmployeeDocument does. isVerified stands in for the spec's
+/// "compliance checklist" — an after-the-fact admin confirmation, not a
+/// blocker on the worker's own status (mirrors CertificationRecord.verify()).
+model ExternalWorkerDocument {
+  id               String @id @default(uuid()) @db.Uuid
+  tenantId         String @map("tenant_id") @db.Uuid
+  externalWorkerId String @map("external_worker_id") @db.Uuid
+
+  /// NDA | BackgroundCheck | IdProof | InsuranceCertificate | Other
+  documentType String      @map("document_type")
+  fileId       String?     @map("file_id") @db.Uuid
+  file         StoredFile? @relation(fields: [fileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  isVerified       Boolean   @default(false) @map("is_verified")
+  verifiedByUserId String?   @map("verified_by_user_id") @db.Uuid
+  verifiedAt       DateTime? @map("verified_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id])
+  externalWorker ExternalWorker @relation(fields: [externalWorkerId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, externalWorkerId])
+  @@map("external_worker_documents")
+}
+
+/// Wave 4 W4·E23 Communication Platform, docs/03-module-specifications/23-communication-platform.md.
+/// Announcements, news, bulletin board, and campaigns all collapse into this
+/// one type-tagged entity — a "campaign" is just an Announcement with a
+/// broader `category`, and there's no per-channel dispatch mechanism to
+/// justify separate entities. The spec's 6-state machine
+/// (Draft/Scheduled/Sending/Sent/Failed/Archived) collapses to 3
+/// (Draft/Published/Archived) since there is no actual async delivery
+/// pipeline — publishing just makes it visible tenant-wide, it doesn't
+/// dispatch anything. Email/SMS/push notifications/WhatsApp/Slack/Teams all
+/// stay deferred — no real external gateway or collaboration-platform
+/// integration exists in this build (same honest deferral as ERP/identity
+/// provider integrations in the Integration Platform). This is a real
+/// catalog gap fill: it replaces the hardcoded "Announcements" widget on the
+/// home dashboard with genuine tenant-scoped data.
+model Announcement {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  title String
+  body  String
+
+  /// Policy | Event | Holiday | General | Urgent
+  category String @default("General")
+
+  /// Draft | Published | Archived
+  status String @default("Draft")
+
+  createdByUserId String    @map("created_by_user_id") @db.Uuid
+  publishedAt     DateTime? @map("published_at") @db.Timestamptz(6)
+  archivedAt      DateTime? @map("archived_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, status])
+  @@map("announcements")
+}
+
+/// Wave 1 W1·E05 Manager Self Service, closing the "transfers and promotions"
+/// gap. Manager-initiated, mirroring the exact Proposed/Approved/Applied/
+/// Rejected state machine already proven by SalaryRevision. On Apply, this
+/// writes through the same EmployeeAssignmentHistory ledger and
+/// Employee.applyAssignmentChange() the existing admin-only CareerService
+/// "movement" flow already uses — no parallel history mechanism.
+model TransferPromotionRequest {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId        String   @map("employee_id") @db.Uuid
+  employee          Employee @relation("TransferPromotionRequestEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  requestedByUserId String   @map("requested_by_user_id") @db.Uuid
+
+  /// Transfer | Promotion | Demotion
+  changeType String @map("change_type")
+
+  toDepartmentId  String?      @map("to_department_id") @db.Uuid
+  toDepartment    Department?  @relation(fields: [toDepartmentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  toDesignationId String?      @map("to_designation_id") @db.Uuid
+  toDesignation   Designation? @relation(fields: [toDesignationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  toGradeId       String?      @map("to_grade_id") @db.Uuid
+  toGrade         Grade?       @relation(fields: [toGradeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  effectiveDate DateTime @map("effective_date") @db.Date
+  reason        String
+
+  /// Proposed | Approved | Applied | Rejected
+  status String @default("Proposed")
+
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decisionNote    String?   @map("decision_note")
+  appliedAt       DateTime? @map("applied_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, status])
+  @@index([tenantId, employeeId])
+  @@map("transfer_promotion_requests")
+}
+
+/// Wave 2 W2·E07 deepening gap-closure, 07-workforce-management (flexible hours
+/// sub-capability — no dedicated deep-spec exists, folded in here). Mirrors
+/// ShiftDefinition/ShiftAssignment's exact shape: a policy catalog plus an
+/// effective-dated standing assignment. Compliance is evaluated against
+/// self-reported check-in/check-out times on AttendanceDay (no punch-clock
+/// capture exists in this build) — informational, not payroll-integrated.
+model FlexibleHoursPolicy {
+  id                   String  @id @default(uuid()) @db.Uuid
+  tenantId             String  @map("tenant_id") @db.Uuid
+  name                 String
+  /// "HH:mm" 24-hour local time — the window every assigned employee must be present for.
+  coreStartTime        String  @map("core_start_time")
+  coreEndTime          String  @map("core_end_time")
+  requiredDailyMinutes Int     @map("required_daily_minutes")
+  isActive             Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant                   @relation(fields: [tenantId], references: [id])
+  assignments EmployeeFlexAssignment[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("flexible_hours_policies")
+}
+
+/// One active (effectiveTo null) assignment per employee, enforced in the
+/// service layer exactly like ShiftAssignment.
+model EmployeeFlexAssignment {
+  id            String    @id @default(uuid()) @db.Uuid
+  tenantId      String    @map("tenant_id") @db.Uuid
+  employeeId    String    @map("employee_id") @db.Uuid
+  policyId      String    @map("policy_id") @db.Uuid
+  effectiveFrom DateTime  @map("effective_from") @db.Date
+  effectiveTo   DateTime? @map("effective_to") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant              @relation(fields: [tenantId], references: [id])
+  employee Employee            @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  policy   FlexibleHoursPolicy @relation(fields: [policyId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_flex_assignments")
+}
+
+/// Wave 2 W2·E07 deepening gap-closure — the real "shift rotation" gap
+/// ShiftDefinition's own v1 comment named ("no rotation patterns"). A pattern
+/// is an ordered cycle of shifts, one per week; assigning an employee to a
+/// pattern plus an anchor week lets ShiftRotationService.generateRoster()
+/// materialize real RosterEntry rows for a date range via
+/// RosterRepository.upsertEntry — reused exactly, no parallel roster-writing path.
+model ShiftRotationPattern {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  name         String
+  cadenceWeeks Int     @map("cadence_weeks")
+  isActive     Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant      Tenant                       @relation(fields: [tenantId], references: [id])
+  steps       ShiftRotationStep[]
+  assignments EmployeeRotationAssignment[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("shift_rotation_patterns")
+}
+
+model ShiftRotationStep {
+  id        String @id @default(uuid()) @db.Uuid
+  tenantId  String @map("tenant_id") @db.Uuid
+  patternId String @map("pattern_id") @db.Uuid
+  /// 0-based position in the cycle — week 0, week 1, etc.
+  weekIndex Int    @map("week_index")
+  shiftId   String @map("shift_id") @db.Uuid
+
+  tenant  Tenant               @relation(fields: [tenantId], references: [id])
+  pattern ShiftRotationPattern @relation(fields: [patternId], references: [id], onDelete: Cascade)
+  shift   ShiftDefinition      @relation(fields: [shiftId], references: [id])
+
+  @@unique([tenantId, patternId, weekIndex])
+  @@index([tenantId])
+  @@map("shift_rotation_steps")
+}
+
+/// One active (effectiveTo null) rotation per employee, enforced in the
+/// service layer exactly like ShiftAssignment. anchorWeekStart must be a Monday.
+model EmployeeRotationAssignment {
+  id              String    @id @default(uuid()) @db.Uuid
+  tenantId        String    @map("tenant_id") @db.Uuid
+  employeeId      String    @map("employee_id") @db.Uuid
+  patternId       String    @map("pattern_id") @db.Uuid
+  anchorWeekStart DateTime  @map("anchor_week_start") @db.Date
+  effectiveFrom   DateTime  @map("effective_from") @db.Date
+  effectiveTo     DateTime? @map("effective_to") @db.Date
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant               @relation(fields: [tenantId], references: [id])
+  employee Employee             @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  pattern  ShiftRotationPattern @relation(fields: [patternId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("employee_rotation_assignments")
+}
+
+/// Wave 2 W2·E08 deepening gap-closure — leave encashment while still in
+/// service (distinct from the F&F-settlement encashment E09 already built for
+/// exiting employees). Approval debits the leave balance via a signed
+/// LeaveLedgerEntry Adjustment (same mechanism as a manual adjustment or
+/// comp-off credit) and creates an ArrearEntry (sourceType "LeaveEncashment")
+/// so the payout rides the existing lump-sum-claimed-by-next-payroll-run
+/// mechanism — no parallel payout path.
+model LeaveEncashmentRequest {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+  leaveType  String @map("leave_type")
+  days       Float
+
+  /// Snapshot of EmployeeCompensation.monthlyBasic / 30 at request time.
+  ratePerDay Float @map("rate_per_day")
+  amount     Float
+
+  reason String?
+
+  /// Pending | Approved | Rejected
+  status          String    @default("Pending")
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant      @relation(fields: [tenantId], references: [id])
+  employee Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  policy   LeavePolicy @relation(fields: [tenantId, leaveType], references: [tenantId, leaveType])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("leave_encashment_requests")
+}
+
+/// Wave 2 W2·E09 deepening gap-closure, 09-payroll (loans and advances — no
+/// dedicated deep-spec, folded in here). Flat-installment repayment, no
+/// interest computation. Requested by the employee; approving disburses
+/// (sets outstandingBalance = principal, status Active) in one step — no
+/// separate disbursement stage. PayrollRunService reads the live installment
+/// (min(monthlyInstallment, outstandingBalance)) into otherDeductions on
+/// every process() (idempotent — a pure read), and PayrollRunService.approve()
+/// commits the real balance decrement once per run, auto-closing at zero.
+model LoanAdvance {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// Loan | Advance — same flat-installment mechanism; Advance implies a shorter tenor in common usage only.
+  type               String
+  principal          Float
+  monthlyInstallment Float   @map("monthly_installment")
+  outstandingBalance Float   @map("outstanding_balance")
+  reason             String?
+
+  /// Requested | Approved | Rejected | Active | Closed
+  status String @default("Requested")
+
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  closedAt        DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("loan_advances")
+}
+
+/// Wave 2 W2·E09 deepening gap-closure — collapses "incentives and bonus" and
+/// "variable pay" (both L2, no dedicated deep-spec) into one type-tagged
+/// table, the same discipline used elsewhere in this build (IdentityDocument,
+/// OrgUnit). Admin-granted, not employee-requested — created directly in
+/// Approved status (audited, one step, same shape as LeaveLedgerService's
+/// manual-adjustment posting) and immediately creates an ArrearEntry
+/// (sourceType "IncentiveBonus") so the payout rides the existing
+/// lump-sum-claimed-by-next-payroll-run mechanism from E09's own arrears
+/// work — zero new payroll-engine code.
+model IncentiveBonus {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// Bonus | Incentive | VariablePay
+  payType String @map("pay_type")
+  amount  Float
+  reason  String
+
+  postedByUserId String @map("posted_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("incentive_bonuses")
 }

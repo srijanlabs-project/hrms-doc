@@ -33,9 +33,9 @@ export function TopBar() {
           <Menu className="h-5 w-5" />
         </button>
 
-        <a href="/" className="flex items-center gap-2 text-lg font-bold text-primary">
-          <span aria-hidden className="inline-block h-6 w-6 rounded bg-primary" />
-          Staffsy
+        <a href="/" className="flex items-center" aria-label="Staffsy">
+          <img src="/staffsy-logo.png" alt="Staffsy" className="hidden h-6 w-auto sm:block" />
+          <img src="/staffsy-mark.png" alt="Staffsy" className="h-8 w-8 sm:hidden" />
         </a>
 
         <div className="mx-auto w-full max-w-xl">

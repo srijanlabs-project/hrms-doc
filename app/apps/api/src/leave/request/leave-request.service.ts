@@ -1,12 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { AuthRepository } from "../../auth/auth.repository";
+import { DelegationService } from "../../auth/delegation/delegation.service";
 import { NotificationService } from "../../notifications/notification.service";
+import { WorkCalendarRepository } from "../../org/work-calendar/work-calendar.repository";
 import { EmployeeRepository } from "../../people/employee/employee.repository";
 import { RequestContextService } from "../../platform/context/request-context.service";
 import { AppError } from "../../platform/errors/app-error";
 import { AuthenticationAppError, ForbiddenAppError, NotFoundAppError, ValidationAppError } from "../../platform/errors/errors";
-import { CurrentEmployeeService } from "../current-employee.service";
+import { CurrentEmployeeService } from "../../people/current-employee.service";
+import { WebhookDispatchService } from "../../webhook/webhook.service";
 import { LeaveBalanceService } from "../balance/leave-balance.service";
+import { LeavePolicyRepository } from "../policy/leave-policy.repository";
 import type { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
 import { LeaveRequestRepository } from "./leave-request.repository";
 
@@ -22,6 +26,10 @@ export class LeaveRequestService {
     private readonly notificationService: NotificationService,
     private readonly currentEmployee: CurrentEmployeeService,
     private readonly requestContext: RequestContextService,
+    private readonly delegationService: DelegationService,
+    private readonly webhookDispatchService: WebhookDispatchService,
+    private readonly policyRepository: LeavePolicyRepository,
+    private readonly workCalendarRepository: WorkCalendarRepository,
   ) {}
 
   async create(dto: CreateLeaveRequestDto) {
@@ -34,7 +42,12 @@ export class LeaveRequestService {
         { field: "endDate", code: "BEFORE_START", message: "endDate must be on or after startDate." },
       ]);
     }
-    const days = Math.round((endDate.getTime() - startDate.getTime()) / 86_400_000) + 1;
+    const days = await this.computeLeaveDays(tenantId, employee.departmentId, dto.leaveType, startDate, endDate);
+    if (days === 0) {
+      throw new ValidationAppError([
+        { field: "endDate", code: "NO_WORKING_DAYS", message: "This date range has no working days to take as leave." },
+      ]);
+    }
 
     const available = await this.balanceService.getAvailable(
       tenantId,
@@ -105,7 +118,12 @@ export class LeaveRequestService {
     const user = await this.authRepository.findUserById(tenantId, userId);
     const isAssignedApprover = !!user?.employeeId && user.employeeId === request.approverId;
     const isAdminOverride = !!user?.roles.some((role) => role === "org_admin" || role === "hr_ops");
-    if (!isAssignedApprover && !isAdminOverride) {
+    let isDelegatedApprover = false;
+    if (!isAssignedApprover && !isAdminOverride && request.approverId) {
+      const approverUser = await this.authRepository.findUserByEmployeeId(tenantId, request.approverId);
+      isDelegatedApprover = !!approverUser && (await this.delegationService.isDelegated(tenantId, userId, approverUser.id, "LeaveApproval"));
+    }
+    if (!isAssignedApprover && !isAdminOverride && !isDelegatedApprover) {
       throw new ForbiddenAppError(this.requestContext.correlationId);
     }
 
@@ -136,6 +154,14 @@ export class LeaveRequestService {
       });
     }
 
+    await this.webhookDispatchService.dispatch(tenantId, `leave.request.${decision.toLowerCase()}`, {
+      requestId: id,
+      employeeId: request.employeeId,
+      leaveType: request.leaveType,
+      days: request.days,
+      status: decision,
+    });
+
     return this.repository.findById(tenantId, id);
   }
 
@@ -145,6 +171,44 @@ export class LeaveRequestService {
     if (count === 0) {
       throw new NotFoundAppError("OBJ-LEAVE-REQUEST", "Request not found, not yours, or no longer pending.");
     }
+  }
+
+  /**
+   * Wave 2 W2·E08 gap-closure (holiday integration + sandwich rule). Default:
+   * charge only working days per the employee's effective WorkCalendar
+   * (holidays/weekends inside the range aren't consumed). When the leave
+   * type's policy has sandwichRuleEnabled, revert to the full inclusive
+   * calendar-day count — a weekend/holiday sandwiched between two
+   * leave-consuming days counts against the employee too. No calendar
+   * assigned falls back to the original full inclusive count unchanged.
+   */
+  private async computeLeaveDays(
+    tenantId: string,
+    departmentId: string | null,
+    leaveType: string,
+    startDate: Date,
+    endDate: Date,
+  ): Promise<number> {
+    const totalCalendarDays = Math.round((endDate.getTime() - startDate.getTime()) / 86_400_000) + 1;
+
+    const policy = await this.policyRepository.findByType(tenantId, leaveType);
+    if (policy?.sandwichRuleEnabled) {
+      return totalCalendarDays;
+    }
+
+    const calendarId = await this.workCalendarRepository.findEffectiveCalendarId(tenantId, departmentId);
+    if (!calendarId) {
+      return totalCalendarDays;
+    }
+
+    const nonWorkingDates = await this.workCalendarRepository.findNonWorkingDatesInRange(tenantId, calendarId, startDate, endDate);
+    let workingDays = 0;
+    for (let d = new Date(startDate); d <= endDate; d.setUTCDate(d.getUTCDate() + 1)) {
+      if (!nonWorkingDates.has(d.toISOString().slice(0, 10))) {
+        workingDays += 1;
+      }
+    }
+    return workingDays;
   }
 
   private async resolveApprover(tenantId: string, managerId: string | null) {

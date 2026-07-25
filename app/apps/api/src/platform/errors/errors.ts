@@ -79,6 +79,28 @@ export class ForbiddenAppError extends AppError {
   }
 }
 
+/**
+ * Authenticated, but the linked Employee has exited (status Separated or
+ * Archived) and this route isn't on the post-exit allow-list. See
+ * ExitStatusGuard and the `@AllowSeparated()` decorator.
+ */
+export class ExitAccessRestrictedError extends AppError {
+  constructor(correlationId: string) {
+    super({
+      errorRef: "ERR-EXIT-001",
+      code: "EXIT-001",
+      category: "authorization",
+      severity: "medium",
+      httpStatus: 403,
+      message: "Your access is limited following your exit from the organization.",
+      userAction: "Contact HR if you believe this is incorrect.",
+      retryable: false,
+      tenantSafe: true,
+      details: { correlationId },
+    });
+  }
+}
+
 /** A tenant-scoped resource was not found within the caller's own tenant. */
 export class NotFoundAppError extends AppError {
   constructor(objectRef: string, message = "The requested item could not be found.") {

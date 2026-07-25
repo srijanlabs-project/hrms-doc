@@ -1,6 +1,6 @@
 import { IsDateString, IsIn, IsOptional, IsString, Length } from "class-validator";
 
-const LEAVE_TYPES = ["Annual", "Casual", "Sick"] as const;
+const LEAVE_TYPES = ["Annual", "Casual", "Sick", "Comp Off"] as const;
 
 export class CreateLeaveRequestDto {
   @IsIn(LEAVE_TYPES)

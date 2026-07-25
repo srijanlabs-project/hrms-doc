@@ -59,6 +59,7 @@ This catalog identifies the sub-modules that sit under each top-level Enterprise
 - Project hierarchy - `L2`
 - Job family - `L2`
 - Job function - `L2`
+- Position management - `L3`
 - Grade and band - `L3`
 - Designation - `L2`
 - Career track - `L2`
@@ -144,6 +145,7 @@ This catalog identifies the sub-modules that sit under each top-level Enterprise
 - Requisitions - `L3`
 - Career portal - `L3`
 - Internal mobility - `L2`
+- Employee referrals - `L3`
 - Candidate portal - `L3`
 - Resume parsing - `L2`
 - Talent pool - `L2`
@@ -310,6 +312,7 @@ This catalog identifies the sub-modules that sit under each top-level Enterprise
 - SLA management - `L3`
 - Knowledge base - `L2`
 - Escalations - `L3`
+- Employee relations and grievance management - `L3`
 
 ## 20. Contractor and External Workforce
 

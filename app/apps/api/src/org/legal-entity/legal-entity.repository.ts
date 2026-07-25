@@ -30,6 +30,7 @@ export class LegalEntityRepository {
           code: dto.code,
           name: dto.name,
           country: dto.country ?? "IN",
+          companyId: dto.companyId,
         },
       }),
     );
