@@ -95,6 +95,6 @@ import { WorkCalendarService } from "./work-calendar/work-calendar.service";
     OrgTreeService,
     EmployeeRepository,
   ],
-  exports: [DepartmentRepository, GradeRepository, PositionRepository, FinancialCenterRepository],
+  exports: [DepartmentRepository, GradeRepository, PositionRepository, FinancialCenterRepository, DepartmentService, LegalEntityService],
 })
 export class OrgModule {}

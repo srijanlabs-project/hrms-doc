@@ -45,6 +45,6 @@ import { LeaveRequestService } from "./request/leave-request.service";
     ArrearRepository,
     CompensationRepository,
   ],
-  exports: [LeaveRequestRepository, LeaveBalanceService],
+  exports: [LeaveRequestRepository, LeaveBalanceService, LeavePolicyService],
 })
 export class LeaveModule {}

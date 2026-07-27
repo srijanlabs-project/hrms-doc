@@ -91,6 +91,9 @@ model Tenant {
   accessReviewCycles          AccessReviewCycle[]
   accessReviewItems           AccessReviewItem[]
   backupRecords               BackupRecord[]
+  importBatches               ImportBatch[]
+  importBatchRows             ImportBatchRow[]
+  goLiveChecklistItems        GoLiveChecklistItem[]
   mfaFactors                  MfaFactor[]
   delegations                 Delegation[]
   shiftDefinitions            ShiftDefinition[]
@@ -2680,6 +2683,77 @@ model BackupRecord {
 
   @@index([tenantId])
   @@map("backup_records")
+}
+
+/// W0·E31 Implementation and Migration — a generic multi-entity import
+/// engine (Employee, Department, LegalEntity, LeavePolicy today) that reuses
+/// each module's existing create(dto) service rather than a parallel
+/// per-entity bulk path, giving legacy-system data migration one configurable
+/// surface instead of N bespoke ones. createdEntityId is a plain UUID, not a
+/// Prisma relation — it points at whichever table entityType names, a
+/// deliberately heterogeneous reference the rollback path resolves itself.
+model ImportBatch {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  entityType String @map("entity_type")
+
+  /// Committed | RolledBack. A dry-run validates and returns results but is
+  /// never persisted as a batch — only real, committed imports get history.
+  status            String @default("Committed")
+  totalRows         Int    @map("total_rows")
+  successCount      Int    @map("success_count")
+  failureCount      Int    @map("failure_count")
+  triggeredByUserId String @map("triggered_by_user_id") @db.Uuid
+
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  rolledBackAt DateTime? @map("rolled_back_at") @db.Timestamptz(6)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id])
+  rows   ImportBatchRow[]
+
+  @@index([tenantId])
+  @@map("import_batches")
+}
+
+model ImportBatchRow {
+  id       String      @id @default(uuid()) @db.Uuid
+  tenantId String      @map("tenant_id") @db.Uuid
+  batchId  String      @map("batch_id") @db.Uuid
+  batch    ImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  rowIndex        Int     @map("row_index")
+  success         Boolean
+  errorMessage    String? @map("error_message")
+  createdEntityId String? @map("created_entity_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, batchId])
+  @@map("import_batch_rows")
+}
+
+/// A curated, admin-trackable checklist of onboarding/setup tasks — not a
+/// full go-live sign-off/environment-handover workflow (no staging
+/// environment or second system exists here to hand over between).
+model GoLiveChecklistItem {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  key      String
+  label    String
+
+  completed         Boolean   @default(false)
+  completedByUserId String?   @map("completed_by_user_id") @db.Uuid
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, key])
+  @@map("go_live_checklist_items")
 }
 
 /// Foundation & Platform (E00) — Document Generation + Template engines,

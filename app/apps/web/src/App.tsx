@@ -5,6 +5,7 @@ import { AdminConsolePage } from "./features/admin/AdminConsolePage";
 import { AuditLogPage } from "./features/security/AuditLogPage";
 import { AccessReviewPage } from "./features/security/AccessReviewPage";
 import { OpsPage } from "./features/ops/OpsPage";
+import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { ProtectedRoute } from "./features/auth/ProtectedRoute";
 import { BulkImportPage } from "./features/employees/BulkImportPage";
@@ -106,6 +107,7 @@ export default function App() {
           <Route path="/security/audit-logs" element={<AuditLogPage />} />
           <Route path="/security/access-reviews" element={<AccessReviewPage />} />
           <Route path="/ops" element={<OpsPage />} />
+          <Route path="/implementation" element={<ImplementationHubPage />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/requests" element={<RequestsHubPage />} />
           <Route path="/team" element={<TeamDashboardPage />} />
