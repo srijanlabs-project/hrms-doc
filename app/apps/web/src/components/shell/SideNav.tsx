@@ -136,6 +136,8 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Announcements", to: "/communications", icon: Megaphone },
         { label: "Employees", to: "/people/employees", icon: Users },
         { label: "Reports", to: "/reports", icon: BarChart3 },
+        { label: "Workforce Analytics", to: "/reports/analytics", icon: TrendingUp },
+        { label: "Custom Reports", to: "/reports/custom", icon: FileUp },
       ],
     },
     {

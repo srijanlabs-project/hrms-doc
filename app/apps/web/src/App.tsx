@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/shell/AppShell";
 import { AttendancePage } from "./features/attendance/AttendancePage";
 import { AdminConsolePage } from "./features/admin/AdminConsolePage";
+import { WorkforceAnalyticsPage } from "./features/analytics/WorkforceAnalyticsPage";
+import { CustomReportBuilderPage } from "./features/analytics/CustomReportBuilderPage";
 import { AuditLogPage } from "./features/security/AuditLogPage";
 import { AccessReviewPage } from "./features/security/AccessReviewPage";
 import { OpsPage } from "./features/ops/OpsPage";
@@ -81,6 +83,8 @@ export default function App() {
           <Route path="/onboarding" element={<OnboardingHomePage />} />
           <Route path="/onboarding/cases" element={<OnboardingControlCenterPage />} />
           <Route path="/reports" element={<ReportsHubPage />} />
+          <Route path="/reports/analytics" element={<WorkforceAnalyticsPage />} />
+          <Route path="/reports/custom" element={<CustomReportBuilderPage />} />
           <Route path="/people/employees/bulk-import" element={<BulkImportPage />} />
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/performance" element={<AppraisalPage />} />

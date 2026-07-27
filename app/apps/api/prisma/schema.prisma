@@ -158,6 +158,7 @@ model Tenant {
   leaveEncashmentRequests     LeaveEncashmentRequest[]
   loanAdvances                LoanAdvance[]
   incentiveBonuses            IncentiveBonus[]
+  reportDefinitions           ReportDefinition[]
 
   @@map("tenants")
 }
@@ -4408,4 +4409,34 @@ model CheckIn {
   @@index([tenantId, employeeId])
   @@index([tenantId, managerId])
   @@map("check_ins")
+}
+
+/// W5·E25 Analytics and BI — the saved-report side of the custom-report
+/// builder (docs/08-submodule-specifications/25-analytics-and-bi/04-custom-reports.md).
+/// Collapses custom_report_definition/custom_report_field_selection into one
+/// row (selectedFields as a string array, not a child table) and drops
+/// custom_report_schedule/custom_report_run_log/custom_report_share — no
+/// scheduled distribution or sharing mechanism exists yet, and a run log adds
+/// no value when every run is synchronous and live. filters is equality-only
+/// (field -> scalar value), a documented simplification consistent with the
+/// rest of this build's read-side query engines.
+model ReportDefinition {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name           String
+  /// Employee | LeaveRequest | PayrollRunResult
+  entityType     String   @map("entity_type")
+  selectedFields String[] @map("selected_fields")
+  filters        Json?
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("report_definitions")
 }

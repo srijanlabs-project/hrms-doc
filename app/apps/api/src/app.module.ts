@@ -1,6 +1,7 @@
 import { type MiddlewareConsumer, Module, type NestModule } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 import { AiModule } from "./ai/ai.module";
+import { AnalyticsModule } from "./analytics/analytics.module";
 import { AssetModule } from "./asset/asset.module";
 import { AttendanceModule } from "./attendance/attendance.module";
 import { AuthModule } from "./auth/auth.module";
@@ -77,6 +78,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     OnboardingModule,
     RecruitmentModule,
     ReportsModule,
+    AnalyticsModule,
     AiModule,
     PerformanceModule,
     LearningModule,
