@@ -92,3 +92,63 @@ export function proxyLogin(userId: string) {
 export function proxyLoginByEmployee(employeeId: string) {
   return apiRequest(`/auth/proxy-login/employee/${employeeId}`, { method: "POST" });
 }
+
+// W0·E29 Security and Governance
+export interface AuditLogEntry {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  before: unknown;
+  after: unknown;
+  createdAt: string;
+  actor: { email: string };
+}
+
+export function listAuditLogs(): Promise<AuditLogEntry[]> {
+  return apiRequest("/audit-logs");
+}
+
+export interface AccessReviewItem {
+  id: string;
+  userId: string;
+  rolesSnapshot: string[];
+  decision: "Pending" | "Confirmed" | "Revoked";
+  reviewedAt: string | null;
+  notes: string | null;
+  user: { id: string; email: string; status: string };
+}
+
+export interface AccessReviewCycle {
+  id: string;
+  periodLabel: string;
+  status: "Open" | "Closed";
+  createdAt: string;
+  closedAt: string | null;
+  _count?: { items: number };
+  items?: AccessReviewItem[];
+}
+
+export function listAccessReviewCycles(): Promise<AccessReviewCycle[]> {
+  return apiRequest("/security/access-reviews");
+}
+
+export function getAccessReviewCycle(id: string): Promise<AccessReviewCycle> {
+  return apiRequest(`/security/access-reviews/${id}`);
+}
+
+export function startAccessReviewCycle(periodLabel: string): Promise<AccessReviewCycle> {
+  return apiRequest("/security/access-reviews", { method: "POST", body: JSON.stringify({ periodLabel }) });
+}
+
+export function closeAccessReviewCycle(id: string): Promise<AccessReviewCycle> {
+  return apiRequest(`/security/access-reviews/${id}/close`, { method: "POST" });
+}
+
+export function confirmAccessReviewItem(itemId: string): Promise<AccessReviewItem> {
+  return apiRequest(`/security/access-reviews/items/${itemId}/confirm`, { method: "POST" });
+}
+
+export function revokeAccessReviewItem(itemId: string, notes?: string): Promise<AccessReviewItem> {
+  return apiRequest(`/security/access-reviews/items/${itemId}/revoke`, { method: "POST", body: JSON.stringify({ notes }) });
+}

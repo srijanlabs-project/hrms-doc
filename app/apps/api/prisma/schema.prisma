@@ -88,6 +88,8 @@ model Tenant {
   generatedDocuments          GeneratedDocument[]
   numberSeries                NumberSeries[]
   systemSettings              SystemSetting[]
+  accessReviewCycles          AccessReviewCycle[]
+  accessReviewItems           AccessReviewItem[]
   mfaFactors                  MfaFactor[]
   delegations                 Delegation[]
   shiftDefinitions            ShiftDefinition[]
@@ -517,13 +519,15 @@ model User {
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
-  tenant              Tenant         @relation(fields: [tenantId], references: [id])
+  tenant              Tenant             @relation(fields: [tenantId], references: [id])
   sessions            Session[]
   otpChallenges       OtpChallenge[]
   notifications       Notification[]
   mfaFactors          MfaFactor[]
-  delegationsGiven    Delegation[]   @relation("DelegationDelegator")
-  delegationsReceived Delegation[]   @relation("DelegationDelegate")
+  delegationsGiven    Delegation[]       @relation("DelegationDelegator")
+  delegationsReceived Delegation[]       @relation("DelegationDelegate")
+  auditLogsAsActor    AuditLog[]         @relation("AuditActor")
+  accessReviewItems   AccessReviewItem[]
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -2592,10 +2596,63 @@ model AuditLog {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   tenant Tenant @relation(fields: [tenantId], references: [id])
+  actor  User   @relation("AuditActor", fields: [actorUserId], references: [id])
 
   @@index([tenantId])
   @@index([tenantId, entityType, entityId])
   @@map("audit_logs")
+}
+
+/// W0·E29 Security and Governance — periodic access certification. A cycle
+/// snapshots every Active user's current roles into one AccessReviewItem
+/// each; a reviewer (org_admin/hr_ops) confirms or revokes per item. Revoking
+/// has a real effect — it suspends the user, not just a paper trail — and
+/// writes to the existing Audit Engine so the two new features tie together.
+model AccessReviewCycle {
+  id          String @id @default(uuid()) @db.Uuid
+  tenantId    String @map("tenant_id") @db.Uuid
+  periodLabel String @map("period_label")
+
+  /// Open | Closed. Closing requires every item to be decided (no Pending left).
+  status String @default("Open")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  closedAt  DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  tenant Tenant             @relation(fields: [tenantId], references: [id])
+  items  AccessReviewItem[]
+
+  @@index([tenantId])
+  @@map("access_review_cycles")
+}
+
+model AccessReviewItem {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  cycleId String            @map("cycle_id") @db.Uuid
+  cycle   AccessReviewCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  /// Snapshot of user.roles at cycle-creation time — the review target, immune
+  /// to the user's roles changing mid-cycle.
+  rolesSnapshot String[] @map("roles_snapshot")
+
+  /// Pending | Confirmed | Revoked.
+  decision         String    @default("Pending")
+  reviewedByUserId String?   @map("reviewed_by_user_id") @db.Uuid
+  reviewedAt       DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  notes            String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, cycleId])
+  @@map("access_review_items")
 }
 
 /// Foundation & Platform (E00) — Document Generation + Template engines,

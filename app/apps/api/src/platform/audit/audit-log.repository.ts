@@ -31,15 +31,24 @@ export class AuditLogRepository {
     );
   }
 
-  findForEntity(tenantId: string, entityType: string, entityId: string): Promise<AuditLog[]> {
+  findForEntity(tenantId: string, entityType: string, entityId: string) {
     return this.prisma.withTenant(tenantId, (tx) =>
-      tx.auditLog.findMany({ where: { tenantId, entityType, entityId }, orderBy: { createdAt: "desc" } }),
+      tx.auditLog.findMany({
+        where: { tenantId, entityType, entityId },
+        orderBy: { createdAt: "desc" },
+        include: { actor: { select: { email: true } } },
+      }),
     );
   }
 
-  findRecent(tenantId: string): Promise<AuditLog[]> {
+  findRecent(tenantId: string) {
     return this.prisma.withTenant(tenantId, (tx) =>
-      tx.auditLog.findMany({ where: { tenantId }, orderBy: { createdAt: "desc" }, take: 200 }),
+      tx.auditLog.findMany({
+        where: { tenantId },
+        orderBy: { createdAt: "desc" },
+        take: 200,
+        include: { actor: { select: { email: true } } },
+      }),
     );
   }
 }
