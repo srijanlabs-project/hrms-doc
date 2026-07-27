@@ -17,6 +17,14 @@ export class NumberSeriesRepository {
     );
   }
 
+  findById(tenantId: string, id: string): Promise<NumberSeries | null> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.numberSeries.findFirst({ where: { id, tenantId } }));
+  }
+
+  updateConfig(tenantId: string, id: string, data: { prefix?: string; padding?: number }): Promise<NumberSeries> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.numberSeries.update({ where: { id }, data }));
+  }
+
   /**
    * Atomically allocates the next number for (tenantId, entityType), creating
    * the series row with the given defaults on first use. The increment runs

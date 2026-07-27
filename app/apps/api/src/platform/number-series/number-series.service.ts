@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { NotFoundAppError } from "../errors/errors";
 import { NumberSeriesRepository, type SeriesDefaults } from "./number-series.repository";
 
 /** entityType -> default prefix/padding, applied the first time a series is used. */
@@ -25,5 +26,13 @@ export class NumberSeriesService {
 
   listAll(tenantId: string) {
     return this.repository.findAll(tenantId);
+  }
+
+  async updateConfig(tenantId: string, id: string, data: { prefix?: string; padding?: number }) {
+    const existing = await this.repository.findById(tenantId, id);
+    if (!existing) {
+      throw new NotFoundAppError("OBJ-NUMBER-SERIES", "Number series not found.");
+    }
+    return this.repository.updateConfig(tenantId, id, data);
   }
 }

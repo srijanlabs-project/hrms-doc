@@ -548,7 +548,17 @@ New `/performance/competencies` page (admin catalog management, a "Rate a Direct
 
 Done when: verified end to end. **Met** — created a goal, added a key result (target 2,000,000, unit "$"), updated its current value to 1,000,000, and confirmed via the raw API response that the parent goal's `progress` field was correctly computed to 50 — with the manual progress form correctly absent for that goal once it had a key result. Created a competency ("Ownership") as org_admin, then rated a direct report (Rohit Singh) 4/5 with comments, confirmed the assessment was created. Scheduled a check-in for the same direct report, added manager notes, and marked it Completed — confirmed the final state (Completed, agenda, and manager notes) rendered correctly. Confirmed zero cross-tenant leakage: the Globex tenant (Alex Carter) correctly saw zero goals, zero competency catalog entries/assessments, and zero check-ins despite Srijan Labs having real data in all three.
 
-# 36. Cross-Phase Tracks
+# 36. Phase 34 — Wave 0 Administration: System Settings + Number Series Console ✅ Done
+
+Goal: build E28 Administration per `docs/03-module-specifications/28-administration.md`, scoped down to two concrete, buildable sub-capabilities rather than the spec's full dynamic-field/masters/localization/branding framework — no current consumer needs per-tenant custom fields or multi-locale UI, so that larger scope stays deliberately deferred (matching the deferral discipline used throughout this build, e.g. SSO/biometric/country-specific compliance elsewhere).
+
+`SystemSetting` is a flat tenant-scoped key/value config store (key, value, optional description) — an admin-editable substitute for the scattered hardcoded assumptions (default currency, fiscal year start, etc.) that would otherwise need code changes to adjust. The pre-existing `NumberSeries` engine (Foundation & Platform, E00) gained its first admin-facing edit capability: a `PATCH /number-series/:id` lets an admin adjust the prefix/padding of an already-allocated series (Employee, Asset) — creating new entity-type series stays out of scope, since `SERIES_DEFAULTS` remains a fixed TypeScript union with no current consumer needing a third type.
+
+Fills the previously-disabled "Settings" nav slot (reserved since Phase 1) with a new `/settings` page: a System Settings panel (add/edit/delete key-value pairs) and a Number Series panel (inline prefix/padding edit per series, showing the live next-generated value).
+
+Done when: verified end to end. **Met** — created a `default_currency` setting as Srijan Labs org_admin, confirmed it persisted and rendered correctly. Edited the Employee number series prefix from `NH-` to `EMP-` and confirmed the "next" preview updated live, then reverted it back to `NH-` to avoid disturbing the existing employee-code convention. Confirmed zero cross-tenant leakage in both directions: a setting created while accidentally still logged in as the Globex tenant (Alex Carter) correctly did not appear after switching to Srijan Labs, and Srijan Labs' two real number-series rows (Employee, Asset) correctly did not appear under Globex, which has none allocated yet.
+
+# 37. Cross-Phase Tracks
 
 - **Design track (user):** produce the 7 missing template boards (Configuration Console and Organization Explorer first — needed by Phases 3–4 admin/org screens); standalone Executive Dashboard + AI Workspace exports; then mobile boards for employee-facing flows, sequenced to match build order.
 - **Quality track:** RLS isolation tests from Phase 1; API negative tests per appendix 27/41 from Phase 2; payroll golden-file regression suite in Phase 5; CI (GitHub Actions) runs build + typecheck + tests from Phase 1.

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppShell } from "./components/shell/AppShell";
 import { AttendancePage } from "./features/attendance/AttendancePage";
+import { AdminConsolePage } from "./features/admin/AdminConsolePage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { ProtectedRoute } from "./features/auth/ProtectedRoute";
 import { BulkImportPage } from "./features/employees/BulkImportPage";
@@ -98,6 +99,7 @@ export default function App() {
           <Route path="/travel" element={<TravelHubPage />} />
           <Route path="/assets" element={<AssetsHubPage />} />
           <Route path="/organization" element={<OrgSettingsPage />} />
+          <Route path="/settings" element={<AdminConsolePage />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/requests" element={<RequestsHubPage />} />
           <Route path="/team" element={<TeamDashboardPage />} />

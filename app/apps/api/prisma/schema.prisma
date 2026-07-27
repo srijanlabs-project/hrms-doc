@@ -87,6 +87,7 @@ model Tenant {
   documentTemplates           DocumentTemplate[]
   generatedDocuments          GeneratedDocument[]
   numberSeries                NumberSeries[]
+  systemSettings              SystemSetting[]
   mfaFactors                  MfaFactor[]
   delegations                 Delegation[]
   shiftDefinitions            ShiftDefinition[]
@@ -2665,6 +2666,27 @@ model NumberSeries {
 
   @@unique([tenantId, entityType])
   @@map("number_series")
+}
+
+/// W0·E28 Administration — generic tenant-scoped config store. Replaces
+/// scattered hardcoded assumptions (default currency, fiscal year start,
+/// date format, etc.) with an admin-editable key/value table, without
+/// building the full dynamic-field/masters framework the spec envisions —
+/// no current consumer needs per-tenant custom fields, so that stays deferred.
+model SystemSetting {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  key         String
+  value       String
+  description String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, key])
+  @@map("system_settings")
 }
 
 /// Wave 1 Identity and Access deepening (03-mfa.md) — v1 slice: authenticator-

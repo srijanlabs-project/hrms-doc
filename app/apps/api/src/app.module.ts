@@ -30,6 +30,7 @@ import { AllExceptionsFilter } from "./platform/errors/all-exceptions.filter";
 import { FilesModule } from "./platform/files/files.module";
 import { NumberSeriesModule } from "./platform/number-series/number-series.module";
 import { SchedulerModule } from "./platform/scheduler/scheduler.module";
+import { SystemSettingModule } from "./platform/system-setting/system-setting.module";
 import { PlatformModule } from "./platform/platform.module";
 import { PrismaModule } from "./platform/prisma/prisma.module";
 import { RecruitmentModule } from "./recruitment/recruitment.module";
@@ -61,6 +62,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     FilesModule,
     AuditModule,
     NumberSeriesModule,
+    SystemSettingModule,
     DocumentGenerationModule,
     SchedulerModule,
     OrgModule,

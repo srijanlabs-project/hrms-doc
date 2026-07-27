@@ -2189,3 +2189,30 @@ export interface CreateRetentionPolicyInput {
   category?: RetentionPolicy["category"];
   retentionMonths: number;
 }
+
+export interface SystemSetting {
+  id: string;
+  key: string;
+  value: string;
+  description: string | null;
+  updatedAt: string;
+}
+
+export interface UpsertSystemSettingInput {
+  value: string;
+  description?: string;
+}
+
+export interface NumberSeries {
+  id: string;
+  entityType: string;
+  prefix: string;
+  padding: number;
+  nextValue: number;
+  updatedAt: string;
+}
+
+export interface UpdateNumberSeriesInput {
+  prefix?: string;
+  padding?: number;
+}

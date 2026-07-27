@@ -134,7 +134,7 @@ function buildSections(roles: string[]): NavSection[] {
       title: "More",
       items: [
         { label: "Company", to: "/company", icon: Building2, disabled: true },
-        { label: "Settings", to: "/settings", icon: Settings, disabled: true },
+        { label: "Settings", to: "/settings", icon: Settings },
         { label: "Help & Support", to: "/helpdesk", icon: Headset },
       ],
     },
