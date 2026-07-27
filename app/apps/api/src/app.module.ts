@@ -11,6 +11,7 @@ import { CommunicationModule } from "./communication/communication.module";
 import { ContractorModule } from "./contractor/contractor.module";
 import { DocumentModule } from "./document/document.module";
 import { SecurityModule } from "./security/security.module";
+import { OpsModule } from "./ops/ops.module";
 import { ExitModule } from "./exit/exit.module";
 import { ExpenseModule } from "./expense/expense.module";
 import { ExperienceModule } from "./experience/experience.module";
@@ -97,6 +98,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     HealthSafetyModule,
     DocumentModule,
     SecurityModule,
+    OpsModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

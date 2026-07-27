@@ -90,6 +90,7 @@ model Tenant {
   systemSettings              SystemSetting[]
   accessReviewCycles          AccessReviewCycle[]
   accessReviewItems           AccessReviewItem[]
+  backupRecords               BackupRecord[]
   mfaFactors                  MfaFactor[]
   delegations                 Delegation[]
   shiftDefinitions            ShiftDefinition[]
@@ -2551,11 +2552,11 @@ model StoredFile {
   id       String @id @default(uuid()) @db.Uuid
   tenantId String @map("tenant_id") @db.Uuid
 
-  originalName     String @map("original_name")
-  mimeType         String @map("mime_type")
-  sizeBytes        Int    @map("size_bytes")
-  storageKey       String @map("storage_key")
-  uploadedByUserId String @map("uploaded_by_user_id") @db.Uuid
+  originalName     String  @map("original_name")
+  mimeType         String  @map("mime_type")
+  sizeBytes        Int     @map("size_bytes")
+  storageKey       String  @map("storage_key")
+  uploadedByUserId String? @map("uploaded_by_user_id") @db.Uuid
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
@@ -2568,6 +2569,7 @@ model StoredFile {
   externalWorkerDocuments ExternalWorkerDocument[]
   healthRecords           HealthRecord[]
   documentVersions        DocumentVersion[]
+  backupRecords           BackupRecord[]
 
   @@index([tenantId])
   @@map("stored_files")
@@ -2653,6 +2655,31 @@ model AccessReviewItem {
   @@index([tenantId])
   @@index([tenantId, cycleId])
   @@map("access_review_items")
+}
+
+/// W0·E30 DevOps and Operations — a JSON snapshot of core system-of-record
+/// tables (org structure, people, leave, payroll), not a full pg_dump-parity
+/// database backup: no replica/point-in-time-recovery infra exists in this
+/// environment to make a full backup/restore meaningful, and shelling out to
+/// pg_dump would be the first native-binary dependency in an otherwise
+/// pure-Prisma codebase. Stored through the existing File Storage engine.
+model BackupRecord {
+  id           String  @id @default(uuid()) @db.Uuid
+  tenantId     String  @map("tenant_id") @db.Uuid
+  status       String  @default("Succeeded") // Running | Succeeded | Failed
+  triggeredBy  String  @map("triggered_by") // Manual | Scheduled
+  tableCounts  Json    @map("table_counts")
+  errorMessage String? @map("error_message")
+
+  fileId String?     @map("file_id") @db.Uuid
+  file   StoredFile? @relation(fields: [fileId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("backup_records")
 }
 
 /// Foundation & Platform (E00) — Document Generation + Template engines,

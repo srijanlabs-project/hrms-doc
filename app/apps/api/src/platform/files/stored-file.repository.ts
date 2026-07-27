@@ -7,7 +7,7 @@ export interface CreateStoredFileInput {
   mimeType: string;
   sizeBytes: number;
   storageKey: string;
-  uploadedByUserId: string;
+  uploadedByUserId?: string;
 }
 
 @Injectable()

@@ -8,6 +8,6 @@ import { StoredFileRepository } from "./stored-file.repository";
 @Module({
   controllers: [FilesController],
   providers: [FilesService, FileStorageService, StoredFileRepository],
-  exports: [FilesService, StoredFileRepository],
+  exports: [FilesService, FileStorageService, StoredFileRepository],
 })
 export class FilesModule {}

@@ -24,6 +24,7 @@ import {
   Network,
   Receipt,
   Plane,
+  Server,
   ScrollText,
   Sparkles,
   UserCheck,
@@ -106,6 +107,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Organization Settings", to: "/organization", icon: Network },
         { label: "Audit Logs", to: "/security/audit-logs", icon: ScrollText },
         { label: "Access Reviews", to: "/security/access-reviews", icon: UserCheck },
+        { label: "Operations", to: "/ops", icon: Server },
       ],
     });
   }
