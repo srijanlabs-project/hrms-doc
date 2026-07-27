@@ -9,6 +9,7 @@ import { AccessReviewPage } from "./features/security/AccessReviewPage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
+import { ProvisionTenantPage } from "./features/auth/ProvisionTenantPage";
 import { ProtectedRoute } from "./features/auth/ProtectedRoute";
 import { BulkImportPage } from "./features/employees/BulkImportPage";
 import { ContractorPage } from "./features/contractor/ContractorPage";
@@ -62,6 +63,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/platform/provision" element={<ProvisionTenantPage />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppShell />}>

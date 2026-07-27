@@ -27,6 +27,7 @@ cross-origin cookie setup to worry about — one Railway service, one URL.
    |---|---|
    | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` — Railway's variable-reference syntax, pick the Postgres service from the picker in their UI |
    | `JWT_SECRET` | a random secret, e.g. generate one with `openssl rand -hex 32` |
+   | `PLATFORM_PROVISIONING_KEY` | a random secret (same command as above) — gates `POST /api/v1/platform/tenants`, the tenant-creation bootstrap endpoint (see "Creating additional tenants" below) |
    | `NODE_ENV` | `production` (the Dockerfile already sets this, but Railway can override — set it explicitly to be safe) |
 
    `PORT` is injected automatically by Railway — the app already reads
@@ -52,6 +53,17 @@ cross-origin cookie setup to worry about — one Railway service, one URL.
 
 6. **Open the app.** Railway gives the service a `*.up.railway.app` URL —
    that's both the web app and the API (`/api/v1/*`, docs at `/api/docs`).
+
+## Creating additional tenants
+
+Tenants aren't self-service — there's no "sign up" flow, and a tenant's own
+`org_admin` cannot create another tenant (that would break tenant isolation).
+Beyond the two demo tenants the seed script creates, use the standalone
+provisioning page at `/platform/provision` (reachable only by direct URL,
+not linked from any logged-in nav): it asks for the `PLATFORM_PROVISIONING_KEY`
+value plus a workspace code, tenant name, and first admin email, and creates
+the tenant plus its first `org_admin` user. The new admin then logs in
+normally at `/login` with the OTP flow (code `123456` in this UAT build).
 
 ## Known limitations of this UAT build
 

@@ -35,6 +35,7 @@ import { FilesModule } from "./platform/files/files.module";
 import { NumberSeriesModule } from "./platform/number-series/number-series.module";
 import { SchedulerModule } from "./platform/scheduler/scheduler.module";
 import { SystemSettingModule } from "./platform/system-setting/system-setting.module";
+import { ProvisioningModule } from "./platform/provisioning/provisioning.module";
 import { PlatformModule } from "./platform/platform.module";
 import { PrismaModule } from "./platform/prisma/prisma.module";
 import { RecruitmentModule } from "./recruitment/recruitment.module";
@@ -67,6 +68,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     AuditModule,
     NumberSeriesModule,
     SystemSettingModule,
+    ProvisioningModule,
     DocumentGenerationModule,
     SchedulerModule,
     OrgModule,
