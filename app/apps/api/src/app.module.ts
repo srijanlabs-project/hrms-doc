@@ -9,6 +9,7 @@ import { CompensationPlanningModule } from "./compensation-planning/compensation
 import { ComplianceModule } from "./compliance/compliance.module";
 import { CommunicationModule } from "./communication/communication.module";
 import { ContractorModule } from "./contractor/contractor.module";
+import { DocumentModule } from "./document/document.module";
 import { ExitModule } from "./exit/exit.module";
 import { ExpenseModule } from "./expense/expense.module";
 import { ExperienceModule } from "./experience/experience.module";
@@ -35,10 +36,12 @@ import { RecruitmentModule } from "./recruitment/recruitment.module";
 import { MssModule } from "./mss/mss.module";
 import { RequestsHubModule } from "./requests-hub/requests-hub.module";
 import { ReportsModule } from "./reports/reports.module";
+import { HealthSafetyModule } from "./health-safety/health-safety.module";
 import { TalentModule } from "./talent/talent.module";
 import { TravelModule } from "./travel/travel.module";
 import { WebhookModule } from "./webhook/webhook.module";
 import { WorkforceModule } from "./workforce/workforce.module";
+import { WorkplaceModule } from "./workplace/workplace.module";
 
 /**
  * Staffsy modular monolith. Modules mirror the service boundaries defined in
@@ -87,6 +90,9 @@ import { WorkforceModule } from "./workforce/workforce.module";
     WorkforceModule,
     ComplianceModule,
     WebhookModule,
+    WorkplaceModule,
+    HealthSafetyModule,
+    DocumentModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })

@@ -11,6 +11,8 @@ import { CandidateRepository } from "./candidate/candidate.repository";
 import { CandidateService } from "./candidate/candidate.service";
 import { ReferralController } from "./candidate/referral.controller";
 import { ReferralService } from "./candidate/referral.service";
+import { InternalMobilityController } from "./candidate/internal-mobility.controller";
+import { InternalMobilityService } from "./candidate/internal-mobility.service";
 import { InterviewController } from "./interview/interview.controller";
 import { InterviewFeedbackRepository } from "./interview/interview-feedback.repository";
 import { InterviewRoundRepository } from "./interview/interview-round.repository";
@@ -30,6 +32,7 @@ import { RequisitionService } from "./requisition/requisition.service";
     RequisitionController,
     CandidateController,
     ReferralController,
+    InternalMobilityController,
     ApplicationController,
     InterviewController,
     OfferController,
@@ -40,6 +43,7 @@ import { RequisitionService } from "./requisition/requisition.service";
     CandidateService,
     CandidateRepository,
     ReferralService,
+    InternalMobilityService,
     ApplicationService,
     ApplicationRepository,
     InterviewService,

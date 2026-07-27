@@ -1,14 +1,22 @@
 import { apiRequest } from "./http";
 import type {
   Appraisal,
+  AssessCompetencyInput,
   CalibrationSession,
+  CheckIn,
+  Competency,
+  CompetencyAssessment,
   CreateCalibrationSessionInput,
+  CreateCheckInInput,
+  CreateCompetencyInput,
   CreateFeedbackCampaignInput,
   CreateGoalInput,
+  CreateKeyResultInput,
   FeedbackCampaign,
   FeedbackPendingRequest,
   FeedbackSummary,
   Goal,
+  KeyResult,
   NominateRaterInput,
   SubmitFeedback360Input,
 } from "./types";
@@ -34,6 +42,64 @@ export function updateGoalProgress(id: string, progress: number, note?: string):
 
 export function completeGoal(id: string): Promise<Goal> {
   return apiRequest<Goal>(`/performance/goals/${id}/complete`, { method: "POST" });
+}
+
+export function createKeyResult(input: CreateKeyResultInput): Promise<KeyResult> {
+  return apiRequest<KeyResult>("/performance/key-results", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function updateKeyResultValue(id: string, currentValue: number): Promise<KeyResult[]> {
+  return apiRequest<KeyResult[]>(`/performance/key-results/${id}/value`, {
+    method: "POST",
+    body: JSON.stringify({ currentValue }),
+  });
+}
+
+export function listCompetencyCatalog(): Promise<Competency[]> {
+  return apiRequest<Competency[]>("/performance/competencies");
+}
+
+export function createCompetency(input: CreateCompetencyInput): Promise<Competency> {
+  return apiRequest<Competency>("/performance/competencies", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function listMyCompetencyAssessments(): Promise<CompetencyAssessment[]> {
+  return apiRequest<CompetencyAssessment[]>("/performance/competencies/assessments/mine");
+}
+
+export function listCompetencyAssessmentsForEmployee(employeeId: string): Promise<CompetencyAssessment[]> {
+  return apiRequest<CompetencyAssessment[]>(`/performance/competencies/assessments/employee/${employeeId}`);
+}
+
+export function assessCompetency(input: AssessCompetencyInput): Promise<CompetencyAssessment> {
+  return apiRequest<CompetencyAssessment>("/performance/competencies/assessments", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function listMyCheckIns(): Promise<CheckIn[]> {
+  return apiRequest<CheckIn[]>("/performance/check-ins/mine");
+}
+
+export function createCheckIn(input: CreateCheckInInput): Promise<CheckIn> {
+  return apiRequest<CheckIn>("/performance/check-ins", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function addCheckInManagerNotes(id: string, notes: string): Promise<CheckIn> {
+  return apiRequest<CheckIn>(`/performance/check-ins/${id}/manager-notes`, { method: "POST", body: JSON.stringify({ notes }) });
+}
+
+export function addCheckInEmployeeNotes(id: string, notes: string): Promise<CheckIn> {
+  return apiRequest<CheckIn>(`/performance/check-ins/${id}/employee-notes`, { method: "POST", body: JSON.stringify({ notes }) });
+}
+
+export function completeCheckIn(id: string): Promise<CheckIn> {
+  return apiRequest<CheckIn>(`/performance/check-ins/${id}/complete`, { method: "POST" });
+}
+
+export function cancelCheckIn(id: string): Promise<CheckIn> {
+  return apiRequest<CheckIn>(`/performance/check-ins/${id}/cancel`, { method: "POST" });
 }
 
 export function listMyAppraisals(): Promise<Appraisal[]> {

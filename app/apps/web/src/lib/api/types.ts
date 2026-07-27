@@ -394,6 +394,7 @@ export interface Requisition {
   compensationMin: number | null;
   compensationMax: number | null;
   targetJoinDate: string | null;
+  isInternal: boolean;
   status: string;
   createdAt: string;
 }
@@ -407,6 +408,7 @@ export interface CreateRequisitionInput {
   compensationMin?: number;
   compensationMax?: number;
   targetJoinDate?: string;
+  isInternal?: boolean;
 }
 
 export interface Candidate {
@@ -490,6 +492,28 @@ export interface SubmitReferralInput {
   requisitionId: string;
   fullName: string;
   email: string;
+}
+
+/** Internal Mobility — reuses the Requisition/Candidate/Application pipeline; see requisition.isInternal. */
+export interface InternalOpening {
+  id: string;
+  title: string;
+  headcount: number;
+  compensationMin: number | null;
+  compensationMax: number | null;
+  department: { id: string; name: string } | null;
+}
+
+export interface InternalMobilityCandidate {
+  id: string;
+  fullName: string;
+  email: string;
+  createdAt: string;
+  applications: ReferredApplication[];
+}
+
+export interface SubmitInternalApplicationInput {
+  requisitionId: string;
 }
 
 export interface InterviewFeedback {
@@ -581,6 +605,17 @@ export interface BulkImportRowResult {
   error?: string;
 }
 
+/** Wave 3 W3·E11 Performance Management deepening — a Goal doubles as an OKR "Objective" once it has KeyResults. */
+export interface KeyResult {
+  id: string;
+  goalId: string;
+  title: string;
+  targetValue: number;
+  currentValue: number;
+  unit: string | null;
+  createdAt: string;
+}
+
 export interface Goal {
   id: string;
   employeeId: string;
@@ -593,6 +628,7 @@ export interface Goal {
   dueDate: string | null;
   status: string;
   createdAt: string;
+  keyResults: KeyResult[];
 }
 
 export interface CreateGoalInput {
@@ -601,6 +637,67 @@ export interface CreateGoalInput {
   description?: string;
   weight?: number;
   dueDate?: string;
+}
+
+export interface CreateKeyResultInput {
+  goalId: string;
+  title: string;
+  targetValue: number;
+  unit?: string;
+}
+
+export interface Competency {
+  id: string;
+  name: string;
+  description: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface CreateCompetencyInput {
+  name: string;
+  description?: string;
+}
+
+export interface CompetencyAssessment {
+  id: string;
+  employeeId: string;
+  competencyId: string;
+  competency: { id: string; name: string };
+  periodYear: number;
+  rating: number;
+  comments: string | null;
+  assessedByUserId: string;
+  createdAt: string;
+}
+
+export interface AssessCompetencyInput {
+  employeeId: string;
+  competencyId: string;
+  periodYear: number;
+  rating: number;
+  comments?: string;
+}
+
+export interface CheckIn {
+  id: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  managerId: string;
+  manager: { id: string; legalName: string; employeeCode: string };
+  scheduledDate: string;
+  agenda: string | null;
+  managerNotes: string | null;
+  employeeNotes: string | null;
+  status: "Scheduled" | "Completed" | "Cancelled";
+  completedAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateCheckInInput {
+  employeeId: string;
+  scheduledDate: string;
+  agenda?: string;
 }
 
 export interface LearningCourse {
@@ -1881,3 +1978,214 @@ export interface CreateAnnouncementInput {
   category?: Announcement["category"];
 }
 
+
+/** Wave 4 W4·E21 Visitor and Workplace Management — a gate pass IS the visitor record. */
+export interface Visitor {
+  id: string;
+  fullName: string;
+  company: string | null;
+  phone: string | null;
+  email: string | null;
+  purpose: string | null;
+  hostEmployeeId: string;
+  hostEmployee: { id: string; legalName: string; employeeCode: string };
+  scheduledAt: string;
+  status: "Requested" | "Approved" | "CheckedIn" | "CheckedOut" | "Cancelled" | "Expired";
+  approvedAt: string | null;
+  checkedInAt: string | null;
+  checkedOutAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateVisitorInput {
+  fullName: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+  purpose?: string;
+  scheduledAt: string;
+}
+
+/** Desk/Room/Parking/Shuttle/Cafeteria collapse into one type-tagged resource catalog. */
+export interface WorkplaceResource {
+  id: string;
+  type: "Desk" | "Room" | "Parking" | "Shuttle" | "Cafeteria";
+  name: string;
+  location: string | null;
+  capacity: number;
+  isActive: boolean;
+}
+
+export interface CreateResourceInput {
+  type: WorkplaceResource["type"];
+  name: string;
+  location?: string;
+  capacity?: number;
+}
+
+export interface WorkplaceBooking {
+  id: string;
+  resourceId: string;
+  resource: { id: string; type: string; name: string; capacity: number };
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  bookingDate: string;
+  notes: string | null;
+  status: "Confirmed" | "Cancelled";
+  createdAt: string;
+}
+
+export interface CreateBookingInput {
+  resourceId: string;
+  bookingDate: string;
+  notes?: string;
+}
+
+/** Wave 4 W4·E22 Health Safety and Wellness. State machine collapsed 5→4: spec's
+ * ActionAssigned folds into UnderReview's investigationNotes field. */
+export interface SafetyIncident {
+  id: string;
+  reportedByEmployeeId: string;
+  reportedByEmployee: { id: string; legalName: string; employeeCode: string };
+  incidentDate: string;
+  location: string;
+  description: string;
+  severity: "Low" | "Medium" | "High" | "Critical";
+  status: "Reported" | "UnderReview" | "Resolved" | "Closed";
+  investigationNotes: string | null;
+  resolvedAt: string | null;
+  closedAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateSafetyIncidentInput {
+  incidentDate: string;
+  location: string;
+  description: string;
+  severity?: SafetyIncident["severity"];
+}
+
+/** Audits/risk assessments/drills collapse into one type-tagged assessment entity. */
+export interface SafetyAssessment {
+  id: string;
+  type: "Audit" | "RiskAssessment" | "Drill";
+  location: string;
+  assessedDate: string;
+  conductedByEmployeeId: string | null;
+  conductedByEmployee: { id: string; legalName: string; employeeCode: string } | null;
+  findings: string | null;
+  riskLevel: "Low" | "Medium" | "High";
+  status: "Scheduled" | "Completed";
+  createdAt: string;
+}
+
+export interface CreateSafetyAssessmentInput {
+  type: SafetyAssessment["type"];
+  location: string;
+  assessedDate: string;
+  conductedByEmployeeId?: string;
+}
+
+export interface CompleteSafetyAssessmentInput {
+  findings?: string;
+  riskLevel: "Low" | "Medium" | "High";
+}
+
+/** Checkups/vaccinations/occupational-health reviews collapse into one type-tagged
+ * flat record catalog per employee — mirrors CertificationRecord's shape. */
+export interface HealthRecord {
+  id: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  type: "MedicalCheckup" | "Vaccination" | "OccupationalHealthReview";
+  recordDate: string;
+  provider: string | null;
+  notes: string | null;
+  nextDueDate: string | null;
+  evidenceFileId: string | null;
+  createdAt: string;
+}
+
+export interface CreateHealthRecordInput {
+  employeeId?: string;
+  type: HealthRecord["type"];
+  recordDate: string;
+  provider?: string;
+  notes?: string;
+  nextDueDate?: string;
+  evidenceFileId?: string;
+}
+
+/** Admin-managed "who to call" directory — distinct from the per-employee
+ * EmergencyContact (People Management's personal next-of-kin record). */
+export interface EmergencyResponseContact {
+  id: string;
+  name: string;
+  role: string;
+  phone: string;
+  category: "Fire" | "Medical" | "Security" | "Facilities" | "Other";
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface CreateEmergencyResponseContactInput {
+  name: string;
+  role: string;
+  phone: string;
+  category?: EmergencyResponseContact["category"];
+}
+
+/** Wave 4 W4·E24 Document Management. State machine collapsed 6→4: Signed drops
+ * entirely (no e-signature vendor), Generated+Shared merge into Published. */
+export interface DocumentVersionSummary {
+  id: string;
+  versionNumber: number;
+  fileId: string;
+  uploadedByUserId: string;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface DocumentRecord {
+  id: string;
+  employeeId: string | null;
+  employee: { id: string; legalName: string; employeeCode: string } | null;
+  title: string;
+  category: "Policy" | "Contract" | "Certificate" | "Form" | "Report" | "Other";
+  status: "Draft" | "Published" | "Archived" | "Expired";
+  retentionPolicyId: string | null;
+  createdByUserId: string;
+  publishedAt: string | null;
+  archivedAt: string | null;
+  expiredAt: string | null;
+  createdAt: string;
+  versions: DocumentVersionSummary[];
+}
+
+export interface CreateDocumentInput {
+  title: string;
+  category?: DocumentRecord["category"];
+  employeeId?: string;
+  retentionPolicyId?: string;
+  fileId: string;
+  notes?: string;
+}
+
+export interface AddDocumentVersionInput {
+  fileId: string;
+  notes?: string;
+}
+
+export interface RetentionPolicy {
+  id: string;
+  name: string;
+  category: "All" | "Policy" | "Contract" | "Certificate" | "Form" | "Report" | "Other";
+  retentionMonths: number;
+  createdAt: string;
+}
+
+export interface CreateRetentionPolicyInput {
+  name: string;
+  category?: RetentionPolicy["category"];
+  retentionMonths: number;
+}

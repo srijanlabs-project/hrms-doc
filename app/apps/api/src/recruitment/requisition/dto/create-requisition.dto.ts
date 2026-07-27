@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, Length, Min } from "class-validator";
+import { IsBoolean, IsDateString, IsInt, IsNumber, IsOptional, IsPositive, IsString, IsUUID, Length, Min } from "class-validator";
 
 export class CreateRequisitionDto {
   @IsString()
@@ -34,4 +34,9 @@ export class CreateRequisitionDto {
   @IsOptional()
   @IsDateString()
   targetJoinDate?: string;
+
+  /** Internal Mobility: visible on the internal jobs board once Published. */
+  @IsOptional()
+  @IsBoolean()
+  isInternal?: boolean;
 }

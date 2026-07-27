@@ -49,6 +49,17 @@ export class RequisitionRepository {
     );
   }
 
+  /** Internal Mobility jobs board — Published and marked internal. Includes compensation band, unlike the referral lookup, since employees weighing an internal move need it. */
+  findPublishedInternal(tenantId: string): Promise<RequisitionWithRefs[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.requisition.findMany({
+        where: { tenantId, status: "Published", isInternal: true },
+        include: includeRefs,
+        orderBy: { title: "asc" },
+      }),
+    );
+  }
+
   updateStatus(
     tenantId: string,
     id: string,

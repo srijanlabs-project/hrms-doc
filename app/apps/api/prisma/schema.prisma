@@ -42,6 +42,10 @@ model Tenant {
   onboardingTasks             OnboardingTask[]
   goals                       Goal[]
   appraisals                  Appraisal[]
+  keyResults                  KeyResult[]
+  competencies                Competency[]
+  competencyAssessments       CompetencyAssessment[]
+  checkIns                    CheckIn[]
   learningCourses             LearningCourse[]
   learningEnrollments         LearningEnrollment[]
   talentAssessments           TalentAssessment[]
@@ -128,6 +132,16 @@ model Tenant {
   externalWorkers             ExternalWorker[]
   externalWorkerDocuments     ExternalWorkerDocument[]
   announcements               Announcement[]
+  visitors                    Visitor[]
+  workplaceResources          WorkplaceResource[]
+  workplaceBookings           WorkplaceBooking[]
+  safetyIncidents             SafetyIncident[]
+  safetyAssessments           SafetyAssessment[]
+  healthRecords               HealthRecord[]
+  emergencyResponseContacts   EmergencyResponseContact[]
+  documents                   Document[]
+  documentVersions            DocumentVersion[]
+  retentionPolicies           RetentionPolicy[]
   transferPromotionRequests   TransferPromotionRequest[]
   flexibleHoursPolicies       FlexibleHoursPolicy[]
   employeeFlexAssignments     EmployeeFlexAssignment[]
@@ -403,6 +417,7 @@ model Employee {
   requisitionsAsHiringManager  Requisition[]                @relation("RequisitionHiringManager")
   convertedFromOffer           Offer?                       @relation("OfferConvertedEmployee")
   referredCandidates           Candidate[]                  @relation("CandidateReferrer")
+  internalMobilityCandidacies  Candidate[]                  @relation("InternalMobilityCandidate")
   interviewRoundsAsInterviewer InterviewRound[]             @relation("InterviewRoundInterviewer")
   feedbackCampaignsAsSubject   FeedbackCampaign[]           @relation("FeedbackCampaignSubject")
   feedbackAsRater              FeedbackRater[]              @relation("FeedbackRaterEmployee")
@@ -420,6 +435,9 @@ model Employee {
   onboardingCase               OnboardingCase?
   goals                        Goal[]
   appraisals                   Appraisal[]
+  competencyAssessments        CompetencyAssessment[]
+  checkInsAsEmployee           CheckIn[]                    @relation("CheckInEmployee")
+  checkInsAsManager            CheckIn[]                    @relation("CheckInManager")
   learningEnrollments          LearningEnrollment[]
   talentAssessments            TalentAssessment[]
   compensationReviewItems      CompensationReviewItem[]
@@ -458,6 +476,12 @@ model Employee {
   leaveEncashmentRequests      LeaveEncashmentRequest[]
   loanAdvances                 LoanAdvance[]
   incentiveBonuses             IncentiveBonus[]
+  hostedVisitors               Visitor[]
+  workplaceBookings            WorkplaceBooking[]
+  reportedSafetyIncidents      SafetyIncident[]
+  conductedSafetyAssessments   SafetyAssessment[]
+  healthRecords                HealthRecord[]
+  documentRecords              Document[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
@@ -826,6 +850,11 @@ model Requisition {
   compensationMax Float?    @map("compensation_max")
   targetJoinDate  DateTime? @map("target_join_date") @db.Date
 
+  /// Internal Mobility: when true, this opening is visible on the internal
+  /// jobs board and current employees may self-apply, alongside (not
+  /// instead of) the normal external pipeline once Published.
+  isInternal Boolean @default(false) @map("is_internal")
+
   /// Draft | Approved | Published | OnHold | Closed | Cancelled
   status String @default("Draft")
 
@@ -858,11 +887,15 @@ model Candidate {
   fullName String @map("full_name")
   email    String
 
-  /// Direct | Referral | JobBoard
+  /// Direct | Referral | JobBoard | Internal
   source String @default("Direct")
 
   referredByEmployeeId String?   @map("referred_by_employee_id") @db.Uuid
   referredByEmployee   Employee? @relation("CandidateReferrer", fields: [referredByEmployeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// Set when source is "Internal" — the existing employee applying to an internal-mobility requisition.
+  employeeId String?   @map("employee_id") @db.Uuid
+  employee   Employee? @relation("InternalMobilityCandidate", fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -1110,6 +1143,8 @@ model Goal {
 
   tenant   Tenant   @relation(fields: [tenantId], references: [id])
   employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  keyResults KeyResult[]
 
   @@index([tenantId])
   @@index([tenantId, employeeId])
@@ -2526,6 +2561,8 @@ model StoredFile {
   complianceTasks         ComplianceTask[]
   certificationRecords    CertificationRecord[]
   externalWorkerDocuments ExternalWorkerDocument[]
+  healthRecords           HealthRecord[]
+  documentVersions        DocumentVersion[]
 
   @@index([tenantId])
   @@map("stored_files")
@@ -3485,6 +3522,206 @@ model ExternalWorkerDocument {
   @@map("external_worker_documents")
 }
 
+/// Wave 4 W4·E21 Visitor and Workplace Management, docs/03-module-specifications/21-visitor-workplace-management.md.
+/// Collapses visitor registration, gate pass, and check-in/out into one
+/// state-machine entity — a gate pass IS the visitor record, not a separate
+/// row. Meeting management collapses into room booking below (a booking IS
+/// the meeting, no separate Meeting entity). No badge/QR hardware
+/// integration exists in this build, so check-in/out are admin-recorded
+/// actions, not device scans.
+model Visitor {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  fullName String  @map("full_name")
+  company  String?
+  phone    String?
+  email    String?
+  purpose  String?
+
+  hostEmployeeId String   @map("host_employee_id") @db.Uuid
+  scheduledAt    DateTime @map("scheduled_at") @db.Timestamptz(6)
+
+  /// Requested | Approved | CheckedIn | CheckedOut | Cancelled | Expired
+  status String @default("Requested")
+
+  approvedAt   DateTime? @map("approved_at") @db.Timestamptz(6)
+  checkedInAt  DateTime? @map("checked_in_at") @db.Timestamptz(6)
+  checkedOutAt DateTime? @map("checked_out_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant       Tenant   @relation(fields: [tenantId], references: [id])
+  hostEmployee Employee @relation(fields: [hostEmployeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("visitors")
+}
+
+/// Desk, room, parking, cafeteria, and shuttle bookings collapse into one
+/// generic type-tagged resource + booking pair — all five are structurally
+/// identical (reserve a capacity-limited resource for a date). Date-level
+/// granularity only, no intraday time slots, no waitlist.
+model WorkplaceResource {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// Desk | Room | Parking | Shuttle | Cafeteria
+  type     String
+  name     String
+  location String?
+  capacity Int     @default(1)
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant             @relation(fields: [tenantId], references: [id])
+  bookings WorkplaceBooking[]
+
+  @@index([tenantId])
+  @@map("workplace_resources")
+}
+
+model WorkplaceBooking {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  resourceId  String   @map("resource_id") @db.Uuid
+  employeeId  String   @map("employee_id") @db.Uuid
+  bookingDate DateTime @map("booking_date") @db.Date
+  notes       String?
+
+  /// Confirmed | Cancelled
+  status String @default("Confirmed")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant            @relation(fields: [tenantId], references: [id])
+  resource WorkplaceResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  employee Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, resourceId, bookingDate])
+  @@map("workplace_bookings")
+}
+
+/// Wave 4 W4·E22 Health Safety and Wellness, docs/03-module-specifications/22-health-safety-wellness.md.
+/// The spec's 5-state machine (Reported/UnderReview/ActionAssigned/Resolved/
+/// Closed) collapses to 4 — "Action Assigned" folds into UnderReview's
+/// investigationNotes field, since no separate corrective-action-tracking
+/// entity exists in this v1 slice (matching the Helpdesk ticket's 7-to-5
+/// state collapse).
+model SafetyIncident {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  reportedByEmployeeId String   @map("reported_by_employee_id") @db.Uuid
+  incidentDate         DateTime @map("incident_date") @db.Date
+  location             String
+  description          String
+
+  /// Low | Medium | High | Critical
+  severity String @default("Medium")
+
+  /// Reported | UnderReview | Resolved | Closed
+  status String @default("Reported")
+
+  investigationNotes String?   @map("investigation_notes")
+  resolvedAt         DateTime? @map("resolved_at") @db.Timestamptz(6)
+  closedAt           DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant             Tenant   @relation(fields: [tenantId], references: [id])
+  reportedByEmployee Employee @relation(fields: [reportedByEmployeeId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("safety_incidents")
+}
+
+/// Safety audits, risk assessments, and emergency drills collapse into one
+/// type-tagged entity — all three are structurally identical: assess a
+/// location/activity on a date and record findings plus a risk rating.
+model SafetyAssessment {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// Audit | RiskAssessment | Drill
+  type                  String
+  location              String
+  assessedDate          DateTime @map("assessed_date") @db.Date
+  conductedByEmployeeId String?  @map("conducted_by_employee_id") @db.Uuid
+  findings              String?
+
+  /// Low | Medium | High
+  riskLevel String @default("Low") @map("risk_level")
+
+  /// Scheduled | Completed
+  status String @default("Scheduled")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id])
+  conductedByEmployee Employee? @relation(fields: [conductedByEmployeeId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@map("safety_assessments")
+}
+
+/// Occupational health reviews, medical checkups, and vaccinations collapse
+/// into one type-tagged entity per employee — the same "flat record catalog"
+/// shape already used for CertificationRecord.
+model HealthRecord {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// MedicalCheckup | Vaccination | OccupationalHealthReview
+  type String
+
+  recordDate     DateTime  @map("record_date") @db.Date
+  provider       String?
+  notes          String?
+  nextDueDate    DateTime? @map("next_due_date") @db.Date
+  evidenceFileId String?   @map("evidence_file_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant       Tenant      @relation(fields: [tenantId], references: [id])
+  employee     Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  evidenceFile StoredFile? @relation(fields: [evidenceFileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("health_records")
+}
+
+/// Simple admin-managed directory — the buildable slice of "emergency
+/// response" in this environment: no real alerting channel (SMS/push/PA
+/// system) exists to broadcast to, so this is the who-to-call reference
+/// every employee can see, not an automated alert dispatcher.
+model EmergencyResponseContact {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name     String
+  role     String
+  phone    String
+  /// Fire | Medical | Security | Facilities | Other
+  category String  @default("Other")
+  isActive Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@map("emergency_response_contacts")
+}
+
 /// Wave 4 W4·E23 Communication Platform, docs/03-module-specifications/23-communication-platform.md.
 /// Announcements, news, bulletin board, and campaigns all collapse into this
 /// one type-tagged entity — a "campaign" is just an Announcement with a
@@ -3784,4 +4021,211 @@ model IncentiveBonus {
   @@index([tenantId])
   @@index([tenantId, employeeId])
   @@map("incentive_bonuses")
+}
+
+/// Wave 4 W4·E24 Document Management, docs/03-module-specifications/24-document-management.md.
+/// Templates and generation already exist (DocumentTemplate/GeneratedDocument,
+/// Foundation & Platform E00) — this fills the remaining real gap: a durable,
+/// versioned document repository with retention. State machine collapsed 6→4:
+/// Signed drops entirely (no e-signature vendor in this environment, so
+/// signature_request stays deferred too) and Generated+Shared merge into
+/// Published — there's no separate "share" mechanism distinct from making a
+/// document visible to its owner/org scope. OCR (ocr_result) stays deferred
+/// for the same no-vendor reason. Admin-managed end to end (org_admin/hr_ops
+/// stand in for the spec's "Document Controller" role, same collapse used
+/// throughout this build) — employee-uploaded personal documents are already
+/// covered by People Management's EmployeeDocument/IdentityDocument, so this
+/// repository is deliberately the HR-controlled org/employee document store,
+/// not a duplicate self-upload path.
+model Document {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// Null = organization-wide document (e.g. a policy), not owned by one employee.
+  employeeId String?   @map("employee_id") @db.Uuid
+  employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  title String
+
+  /// Policy | Contract | Certificate | Form | Report | Other
+  category String @default("Other")
+
+  /// Draft | Published | Archived | Expired
+  status String @default("Draft")
+
+  retentionPolicyId String?          @map("retention_policy_id") @db.Uuid
+  retentionPolicy   RetentionPolicy? @relation(fields: [retentionPolicyId], references: [id], onDelete: SetNull)
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  publishedAt DateTime? @map("published_at") @db.Timestamptz(6)
+  archivedAt  DateTime? @map("archived_at") @db.Timestamptz(6)
+  expiredAt   DateTime? @map("expired_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant            @relation(fields: [tenantId], references: [id])
+  versions DocumentVersion[]
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, status])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  documentId String   @map("document_id") @db.Uuid
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  versionNumber Int        @map("version_number")
+  fileId        String     @map("file_id") @db.Uuid
+  file          StoredFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  uploadedByUserId String  @map("uploaded_by_user_id") @db.Uuid
+  notes            String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([documentId, versionNumber])
+  @@index([tenantId])
+  @@index([tenantId, documentId])
+  @@map("document_versions")
+}
+
+model RetentionPolicy {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name String
+
+  /// Matches Document.category, or "All"
+  category        String @default("All")
+  retentionMonths Int    @map("retention_months")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id])
+  documents Document[]
+
+  @@index([tenantId])
+  @@map("retention_policies")
+}
+
+/// Wave 3 W3·E11 Performance Management deepening — OKRs and Key Results.
+/// Reuses the existing Goal model directly as the "Objective" rather than a
+/// parallel entity; a KeyResult is a measurable sub-metric under a Goal.
+/// When a Goal has one or more KeyResults its progress is computed as the
+/// average completion across them (see GoalService), a real behavior
+/// change rather than a manually-set percentage — the same collapse
+/// discipline used throughout this build.
+model KeyResult {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  goalId String @map("goal_id") @db.Uuid
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  title        String
+  targetValue  Float   @map("target_value")
+  currentValue Float   @default(0) @map("current_value")
+  unit         String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, goalId])
+  @@map("key_results")
+}
+
+/// Wave 3 W3·E11 Performance Management deepening — Competency framework.
+/// Admin-managed catalog; one rating per employee per competency per
+/// period, rated by the employee's manager or org_admin/hr_ops — distinct
+/// from the already-built 360 Feedback's multi-rater mechanism, this is a
+/// single-rater skill assessment against a fixed organizational list.
+model Competency {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name        String
+  description String?
+  isActive    Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant      Tenant                 @relation(fields: [tenantId], references: [id])
+  assessments CompetencyAssessment[]
+
+  @@index([tenantId])
+  @@map("competencies")
+}
+
+model CompetencyAssessment {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  competencyId String     @map("competency_id") @db.Uuid
+  competency   Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+
+  periodYear Int     @map("period_year")
+  rating     Int
+  comments   String?
+
+  assessedByUserId String @map("assessed_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, employeeId, competencyId, periodYear])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("competency_assessments")
+}
+
+/// Wave 3 W3·E11 Performance Management deepening — Check-ins / 1:1s. The
+/// catalog's separate "check-ins" and "1:1 meetings" items collapse into
+/// one entity — a check-in IS a 1:1 in this build, no distinct mechanism
+/// separates them. Manager schedules for a direct report; both sides can
+/// add their own notes before it's marked complete.
+model CheckIn {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("CheckInEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  managerId  String   @map("manager_id") @db.Uuid
+  manager    Employee @relation("CheckInManager", fields: [managerId], references: [id], onDelete: Cascade)
+
+  scheduledDate DateTime @map("scheduled_date") @db.Date
+  agenda        String?
+  managerNotes  String?  @map("manager_notes")
+  employeeNotes String?  @map("employee_notes")
+
+  /// Scheduled | Completed | Cancelled
+  status String @default("Scheduled")
+
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, managerId])
+  @@map("check_ins")
 }

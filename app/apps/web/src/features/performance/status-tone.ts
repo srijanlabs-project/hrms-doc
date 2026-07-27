@@ -25,3 +25,15 @@ export function appraisalStatusTone(status: string): BadgeTone {
       return "neutral";
   }
 }
+
+export function checkInStatusTone(status: string): BadgeTone {
+  switch (status) {
+    case "Completed":
+      return "positive";
+    case "Cancelled":
+      return "neutral";
+    case "Scheduled":
+    default:
+      return "warning";
+  }
+}

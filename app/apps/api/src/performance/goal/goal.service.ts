@@ -72,6 +72,9 @@ export class GoalService {
     if (TERMINAL_STATUSES.includes(goal.status)) {
       throw stateConflict("This goal is already completed or closed.", goal.status);
     }
+    if (goal.keyResults.length > 0) {
+      throw stateConflict("This goal's progress is computed from its key results — update a key result instead.", goal.status);
+    }
     return this.repository.updateProgress(tenantId, id, { progress, progressNote: note });
   }
 
@@ -82,6 +85,12 @@ export class GoalService {
       throw stateConflict("Only Active goals can be marked complete.", goal.status);
     }
     return this.repository.updateStatus(tenantId, id, "Completed");
+  }
+
+  /** Used by KeyResultService to verify ownership before adding/updating a key result. */
+  async getOwned(id: string) {
+    const { tenantId, employee } = await this.currentEmployee.resolve();
+    return this.findOwnedOrThrow(tenantId, employee.id, id);
   }
 
   private async findOwnedOrThrow(tenantId: string, employeeId: string, id: string) {

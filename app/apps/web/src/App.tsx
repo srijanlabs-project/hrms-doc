@@ -16,6 +16,8 @@ import { IntegrationPlatformPage } from "./features/integration/IntegrationPlatf
 import { ExpenseHubPage } from "./features/expense/ExpenseHubPage";
 import { ExperiencePage } from "./features/experience/ExperiencePage";
 import { HelpdeskPage } from "./features/helpdesk/HelpdeskPage";
+import { HealthSafetyHubPage } from "./features/health-safety/HealthSafetyHubPage";
+import { DocumentManagementHubPage } from "./features/document/DocumentManagementHubPage";
 import { AssetsHubPage } from "./features/asset/AssetsHubPage";
 import { ApplyLeaveForm } from "./features/leave/ApplyLeaveForm";
 import { ApprovalsPage } from "./features/leave/ApprovalsPage";
@@ -32,9 +34,12 @@ import { AppraisalPage } from "./features/performance/AppraisalPage";
 import { CalibrationPage } from "./features/performance/CalibrationPage";
 import { CertificationsPage } from "./features/learning/CertificationsPage";
 import { Feedback360Page } from "./features/performance/Feedback360Page";
+import { CompetenciesPage } from "./features/performance/CompetenciesPage";
+import { CheckInsPage } from "./features/performance/CheckInsPage";
 import { GoalsPage } from "./features/performance/GoalsPage";
 import { RecruitmentPage } from "./features/recruitment/RecruitmentPage";
 import { ReferralPage } from "./features/recruitment/ReferralPage";
+import { InternalMobilityPage } from "./features/recruitment/InternalMobilityPage";
 import { ReportsHubPage } from "./features/reports/ReportsHubPage";
 import { RequestsHubPage } from "./features/requests/RequestsHubPage";
 import { SecurityPage } from "./features/security/SecurityPage";
@@ -43,6 +48,7 @@ import { SuccessionPlanningPage } from "./features/talent/SuccessionPlanningPage
 import { TalentGridPage } from "./features/talent/TalentGridPage";
 import { TravelHubPage } from "./features/travel/TravelHubPage";
 import { WorkforceHubPage } from "./features/workforce/WorkforceHubPage";
+import { WorkplaceHubPage } from "./features/workplace/WorkplaceHubPage";
 import { MyStaffsyPage } from "./pages/MyStaffsyPage";
 
 export default function App() {
@@ -66,6 +72,7 @@ export default function App() {
           <Route path="/payslips" element={<PayslipsPage />} />
           <Route path="/recruitment" element={<RecruitmentPage />} />
           <Route path="/recruitment/refer" element={<ReferralPage />} />
+          <Route path="/recruitment/internal-jobs" element={<InternalMobilityPage />} />
           <Route path="/onboarding" element={<OnboardingHomePage />} />
           <Route path="/onboarding/cases" element={<OnboardingControlCenterPage />} />
           <Route path="/reports" element={<ReportsHubPage />} />
@@ -73,6 +80,8 @@ export default function App() {
           <Route path="/goals" element={<GoalsPage />} />
           <Route path="/performance" element={<AppraisalPage />} />
           <Route path="/performance/360" element={<Feedback360Page />} />
+          <Route path="/performance/competencies" element={<CompetenciesPage />} />
+          <Route path="/performance/check-ins" element={<CheckInsPage />} />
           <Route path="/performance/calibration" element={<CalibrationPage />} />
           <Route path="/learning" element={<LearningCatalogPage />} />
           <Route path="/learning/my" element={<MyLearningPage />} />
@@ -95,6 +104,9 @@ export default function App() {
           <Route path="/workforce" element={<WorkforceHubPage />} />
           <Route path="/compliance" element={<ComplianceCalendarPage />} />
           <Route path="/integrations" element={<IntegrationPlatformPage />} />
+          <Route path="/workplace" element={<WorkplaceHubPage />} />
+          <Route path="/health-safety" element={<HealthSafetyHubPage />} />
+          <Route path="/documents" element={<DocumentManagementHubPage />} />
         </Route>
       </Route>
     </Routes>

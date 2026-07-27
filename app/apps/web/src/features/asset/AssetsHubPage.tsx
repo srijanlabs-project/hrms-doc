@@ -15,7 +15,7 @@ import {
 import { AssetRow } from "./AssetRow";
 import { AssignmentRow } from "./AssignmentRow";
 
-const ASSET_CATEGORIES = ["Laptop", "Phone", "Monitor", "SimCard", "IdCard", "Peripheral", "Other"];
+const ASSET_CATEGORIES = ["Laptop", "Phone", "Monitor", "SimCard", "IdCard", "Peripheral", "PPE", "Other"];
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
 
 /** T-005 Smart Form -> Asset Assignment/Return, v1 slice. See schema.prisma's Asset/AssetAssignment comments for what's deferred. */

@@ -20,17 +20,19 @@ export function RequisitionsPanel({
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("");
   const [headcount, setHeadcount] = useState("1");
+  const [isInternal, setIsInternal] = useState(false);
 
   const invalidate = () => void queryClient.invalidateQueries({ queryKey: ["requisitions"] });
 
   const createMutation = useMutation({
-    mutationFn: () => createRequisition({ code, title, headcount: Number(headcount) }),
+    mutationFn: () => createRequisition({ code, title, headcount: Number(headcount), isInternal }),
     onSuccess: (requisition) => {
       invalidate();
       onSelect(requisition.id);
       setCode("");
       setTitle("");
       setHeadcount("1");
+      setIsInternal(false);
     },
   });
 
@@ -74,14 +76,11 @@ export function RequisitionsPanel({
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-ink-muted">Headcount</span>
-          <input
-            required
-            type="number"
-            min="1"
-            value={headcount}
-            onChange={(e) => setHeadcount(e.target.value)}
-            className="input w-20"
-          />
+          <input required type="number" min="1" value={headcount} onChange={(e) => setHeadcount(e.target.value)} className="input w-20" />
+        </label>
+        <label className="flex items-center gap-1.5 pb-2 text-xs font-medium text-ink-muted">
+          <input type="checkbox" checked={isInternal} onChange={(e) => setIsInternal(e.target.checked)} />
+          Internal Mobility
         </label>
         <button
           type="submit"
@@ -110,7 +109,10 @@ export function RequisitionsPanel({
                     {requisition.code} · {requisition.headcount} opening(s)
                   </div>
                 </div>
-                <Badge tone={requisitionStatusTone(requisition.status)}>{requisition.status}</Badge>
+                <span className="flex gap-1">
+                  {requisition.isInternal && <Badge tone="info">Internal</Badge>}
+                  <Badge tone={requisitionStatusTone(requisition.status)}>{requisition.status}</Badge>
+                </span>
               </button>
               {action && (
                 <button

@@ -35,4 +35,24 @@ export class CandidateRepository {
       }),
     );
   }
+
+  /** Internal Mobility: an employee's own candidate record, reused across every internal application they submit. */
+  findByEmployeeId(tenantId: string, employeeId: string): Promise<Candidate | null> {
+    return this.prisma.withTenant(tenantId, (tx) => tx.candidate.findFirst({ where: { tenantId, employeeId } }));
+  }
+
+  /** Internal Mobility "my applications" list, with each candidate's applications rolled up. */
+  findInternalMobilityByEmployee(tenantId: string, employeeId: string) {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.candidate.findMany({
+        where: { tenantId, employeeId },
+        include: {
+          applications: {
+            select: { id: true, stage: true, requisition: { select: { id: true, title: true } } },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      }),
+    );
+  }
 }

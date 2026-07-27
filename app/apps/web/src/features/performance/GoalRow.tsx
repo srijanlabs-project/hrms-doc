@@ -4,6 +4,7 @@ import { Badge } from "../../components/ui/Badge";
 import { ProgressBar } from "../../components/ui/ProgressBar";
 import { completeGoal, updateGoalProgress } from "../../lib/api/performance";
 import type { Goal } from "../../lib/api/types";
+import { KeyResultList } from "./KeyResultList";
 import { goalStatusTone } from "./status-tone";
 
 /** One goal card with inline progress update — used on both the self-service and manager team views. */
@@ -12,6 +13,7 @@ export function GoalRow({ goal, readOnly = false }: { goal: Goal; readOnly?: boo
   const [progress, setProgress] = useState(String(goal.progress));
   const [note, setNote] = useState("");
   const isTerminal = goal.status === "Completed" || goal.status === "Closed";
+  const hasKeyResults = goal.keyResults.length > 0;
 
   const invalidate = () => {
     void queryClient.invalidateQueries({ queryKey: ["goals-my"] });
@@ -38,8 +40,9 @@ export function GoalRow({ goal, readOnly = false }: { goal: Goal; readOnly?: boo
       </div>
       <ProgressBar value={goal.progress} />
       {goal.progressNote && <p className="mt-1 text-xs text-ink-faint">{goal.progressNote}</p>}
+      {!isTerminal && <KeyResultList goal={goal} readOnly={readOnly} />}
 
-      {!readOnly && !isTerminal && (
+      {!readOnly && !isTerminal && !hasKeyResults && (
         <form
           className="mt-2 flex flex-wrap items-end gap-2 border-t border-border pt-2"
           onSubmit={(e) => {
@@ -78,6 +81,17 @@ export function GoalRow({ goal, readOnly = false }: { goal: Goal; readOnly?: boo
             Mark Complete
           </button>
         </form>
+      )}
+
+      {!readOnly && !isTerminal && hasKeyResults && (
+        <button
+          type="button"
+          disabled={completeMutation.isPending}
+          onClick={() => completeMutation.mutate()}
+          className="mt-2 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
+        >
+          Mark Complete
+        </button>
       )}
     </li>
   );

@@ -5,6 +5,8 @@ import type {
   Candidate,
   CreateCandidateInput,
   CreateRequisitionInput,
+  InternalMobilityCandidate,
+  InternalOpening,
   InterviewRound,
   Offer,
   OpenRequisition,
@@ -12,6 +14,7 @@ import type {
   Requisition,
   ScheduleInterviewInput,
   SubmitInterviewFeedbackInput,
+  SubmitInternalApplicationInput,
   SubmitReferralInput,
 } from "./types";
 
@@ -138,4 +141,16 @@ export function listMyReferrals(): Promise<ReferredCandidate[]> {
 
 export function submitReferral(input: SubmitReferralInput) {
   return apiRequest("/recruitment/referrals", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function listInternalOpenings(): Promise<InternalOpening[]> {
+  return apiRequest<InternalOpening[]>("/recruitment/internal-mobility/openings");
+}
+
+export function listMyInternalApplications(): Promise<InternalMobilityCandidate[]> {
+  return apiRequest<InternalMobilityCandidate[]>("/recruitment/internal-mobility/mine");
+}
+
+export function applyInternally(input: SubmitInternalApplicationInput) {
+  return apiRequest("/recruitment/internal-mobility", { method: "POST", body: JSON.stringify(input) });
 }

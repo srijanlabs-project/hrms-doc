@@ -1,6 +1,6 @@
 import { IsIn, IsOptional, IsString, Length } from "class-validator";
 
-const ASSET_CATEGORIES = ["Laptop", "Phone", "Monitor", "SimCard", "IdCard", "Peripheral", "Other"] as const;
+const ASSET_CATEGORIES = ["Laptop", "Phone", "Monitor", "SimCard", "IdCard", "Peripheral", "PPE", "Other"] as const;
 
 export class CreateAssetDto {
   /** Auto-allocated from the Number Series engine's "Asset" series when omitted. */

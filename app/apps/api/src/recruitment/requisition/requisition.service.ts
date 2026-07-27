@@ -56,6 +56,7 @@ export class RequisitionService {
         compensationMin: dto.compensationMin,
         compensationMax: dto.compensationMax,
         targetJoinDate: dto.targetJoinDate ? new Date(dto.targetJoinDate) : undefined,
+        isInternal: dto.isInternal ?? false,
       });
     } catch {
       throw stateConflict(`A requisition with code "${dto.code}" already exists.`, "Duplicate");
