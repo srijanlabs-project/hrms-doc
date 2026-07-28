@@ -3,7 +3,14 @@ import type { LearningEnrollment, Prisma } from "@prisma/client";
 import { PrismaService } from "../../platform/prisma/prisma.service";
 
 export type EnrollmentWithCourse = LearningEnrollment & {
-  course: { id: string; title: string; durationHours: number; isMandatory: boolean };
+  course: {
+    id: string;
+    title: string;
+    durationHours: number;
+    isMandatory: boolean;
+    passingScore: number | null;
+    skillTags: string[];
+  };
 };
 
 export type EnrollmentWithEmployeeAndCourse = EnrollmentWithCourse & {
@@ -11,7 +18,7 @@ export type EnrollmentWithEmployeeAndCourse = EnrollmentWithCourse & {
 };
 
 const includeCourse = {
-  course: { select: { id: true, title: true, durationHours: true, isMandatory: true } },
+  course: { select: { id: true, title: true, durationHours: true, isMandatory: true, passingScore: true, skillTags: true } },
 } satisfies Prisma.LearningEnrollmentInclude;
 
 const includeEmployeeAndCourse = {
@@ -89,7 +96,14 @@ export class EnrollmentRepository {
   updateStatus(
     tenantId: string,
     id: string,
-    data: { status: string; completedAt?: Date | null; dueDate?: Date | null },
+    data: {
+      status?: string;
+      completedAt?: Date | null;
+      dueDate?: Date | null;
+      assessmentScore?: number;
+      assessmentMaxScore?: number;
+      assessmentPassed?: boolean;
+    },
   ): Promise<LearningEnrollment> {
     return this.prisma.withTenant(tenantId, (tx) => tx.learningEnrollment.update({ where: { id }, data }));
   }

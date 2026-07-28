@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsOptional, IsString, Length, Min } from "class-validator";
+import { ArrayMaxSize, IsArray, IsBoolean, IsInt, IsOptional, IsString, Length, Max, Min } from "class-validator";
 
 export class CreateCourseDto {
   @IsString()
@@ -22,4 +22,16 @@ export class CreateCourseDto {
   @IsInt()
   @Min(1)
   recurrenceMonths?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  passingScore?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @IsString({ each: true })
+  skillTags?: string[];
 }

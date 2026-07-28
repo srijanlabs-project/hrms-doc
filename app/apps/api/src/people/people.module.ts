@@ -63,6 +63,6 @@ import { TimelineService } from "./timeline/timeline.service";
     PayrollRunRepository,
     TimelineService,
   ],
-  exports: [EmployeeRepository, CurrentEmployeeService, EmployeeService],
+  exports: [EmployeeRepository, CurrentEmployeeService, EmployeeService, BackgroundRepository],
 })
 export class PeopleModule {}

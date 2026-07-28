@@ -152,6 +152,9 @@ model Tenant {
   transferPromotionRequests   TransferPromotionRequest[]
   performanceImprovementPlans PerformanceImprovementPlan[]
   pipObjectives               PipObjective[]
+  learningPaths               LearningPath[]
+  learningPathCourses         LearningPathCourse[]
+  learningPathEnrollments     LearningPathEnrollment[]
   flexibleHoursPolicies       FlexibleHoursPolicy[]
   employeeFlexAssignments     EmployeeFlexAssignment[]
   shiftRotationPatterns       ShiftRotationPattern[]
@@ -446,6 +449,7 @@ model Employee {
   ticketsAssigned              Ticket[]                     @relation("TicketAgent")
   transferPromotionRequests    TransferPromotionRequest[]   @relation("TransferPromotionRequestEmployee")
   performanceImprovementPlans  PerformanceImprovementPlan[]
+  learningPathEnrollments      LearningPathEnrollment[]
   onboardingCase               OnboardingCase?
   goals                        Goal[]
   appraisals                   Appraisal[]
@@ -1393,6 +1397,17 @@ model LearningCourse {
   /// EnrollmentService's daily assignment sweep, not a generic recurrence engine.
   recurrenceMonths Int? @map("recurrence_months")
 
+  /// Wave 3 E12 gap closure ("assessments"): null means completion is a plain
+  /// mark-complete as before; a value (0-100) requires a passing
+  /// EnrollmentService.submitAssessment() score before the enrollment can
+  /// become Completed.
+  passingScore Int? @map("passing_score")
+
+  /// Wave 3 E12 gap closure ("skill development"): which skills this course
+  /// develops — cross-referenced against EmployeeSkill for recommendations,
+  /// no new skills taxonomy.
+  skillTags String[] @default([]) @map("skill_tags")
+
   /// Draft | Published | Archived
   status String @default("Draft")
 
@@ -1401,6 +1416,7 @@ model LearningCourse {
 
   tenant      Tenant               @relation(fields: [tenantId], references: [id])
   enrollments LearningEnrollment[]
+  pathCourses LearningPathCourse[]
 
   @@index([tenantId])
   @@map("learning_courses")
@@ -1430,6 +1446,14 @@ model LearningEnrollment {
   dueDate               DateTime? @map("due_date") @db.Timestamptz(6)
   assignedAutomatically Boolean   @default(false) @map("assigned_automatically")
 
+  /// Wave 3 E12 gap closure ("assessments") — only set once
+  /// EnrollmentService.submitAssessment() has been called at least once.
+  /// assessmentPassed=false with status still Enrolled means the employee
+  /// may resubmit; the same row is reused, no attempt-history table.
+  assessmentScore    Int?     @map("assessment_score")
+  assessmentMaxScore Int?     @map("assessment_max_score")
+  assessmentPassed   Boolean? @map("assessment_passed")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
@@ -1441,6 +1465,70 @@ model LearningEnrollment {
   @@index([tenantId])
   @@index([tenantId, employeeId])
   @@map("learning_enrollments")
+}
+
+/// Wave 3 E12 gap closure ("learning paths") — a curated, ordered sequence of
+/// existing LearningCourse rows. Course-level completion stays the single
+/// source of truth (LearningEnrollment); a path's progress is always computed
+/// live from its courses' enrollments, never stored, so there's no
+/// path-vs-course sync problem to solve.
+model LearningPath {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  title       String
+  description String?
+
+  /// Draft | Published | Archived
+  status String @default("Draft")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant                   @relation(fields: [tenantId], references: [id])
+  courses     LearningPathCourse[]
+  enrollments LearningPathEnrollment[]
+
+  @@index([tenantId])
+  @@map("learning_paths")
+}
+
+model LearningPathCourse {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  pathId   String @map("path_id") @db.Uuid
+  courseId String @map("course_id") @db.Uuid
+
+  sequenceOrder Int @map("sequence_order")
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  path   LearningPath   @relation(fields: [pathId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  course LearningCourse @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, pathId, courseId])
+  @@index([tenantId])
+  @@index([tenantId, pathId])
+  @@map("learning_path_courses")
+}
+
+/// A membership record only — no stored status/progress, see LearningPath's
+/// doc comment.
+model LearningPathEnrollment {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+  pathId     String @map("path_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant       @relation(fields: [tenantId], references: [id])
+  employee Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  path     LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, employeeId, pathId])
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("learning_path_enrollments")
 }
 
 /// v1 slice of 02-certifications.md: collapses certification_requirement/

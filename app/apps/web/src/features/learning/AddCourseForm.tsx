@@ -11,6 +11,8 @@ export function AddCourseForm() {
   const [durationHours, setDurationHours] = useState("1");
   const [isMandatory, setIsMandatory] = useState(false);
   const [recurrenceMonths, setRecurrenceMonths] = useState("");
+  const [passingScore, setPassingScore] = useState("");
+  const [skillTagsInput, setSkillTagsInput] = useState("");
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -20,6 +22,11 @@ export function AddCourseForm() {
         durationHours: Number(durationHours),
         isMandatory,
         recurrenceMonths: isMandatory && recurrenceMonths ? Number(recurrenceMonths) : undefined,
+        passingScore: passingScore ? Number(passingScore) : undefined,
+        skillTags: skillTagsInput
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean),
       }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["learning-courses-admin"] });
@@ -29,6 +36,8 @@ export function AddCourseForm() {
       setDurationHours("1");
       setIsMandatory(false);
       setRecurrenceMonths("");
+      setPassingScore("");
+      setSkillTagsInput("");
     },
   });
   const createError = createMutation.error instanceof ApiError ? createMutation.error.message : undefined;
@@ -78,6 +87,22 @@ export function AddCourseForm() {
             />
           </label>
         )}
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-ink-muted">Passing Score % (optional)</span>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            placeholder="No assessment"
+            value={passingScore}
+            onChange={(e) => setPassingScore(e.target.value)}
+            className="input w-36"
+          />
+        </label>
+        <label className="block flex-1 basis-52">
+          <span className="mb-1 block text-xs font-medium text-ink-muted">Skill Tags (comma-separated)</span>
+          <input value={skillTagsInput} onChange={(e) => setSkillTagsInput(e.target.value)} className="input" />
+        </label>
         <button
           type="submit"
           disabled={createMutation.isPending}

@@ -41,6 +41,8 @@ export class CourseService {
       durationHours: dto.durationHours,
       isMandatory: dto.isMandatory,
       recurrenceMonths: dto.recurrenceMonths,
+      passingScore: dto.passingScore,
+      skillTags: dto.skillTags ?? [],
     });
   }
 

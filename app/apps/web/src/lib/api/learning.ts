@@ -5,8 +5,12 @@ import type {
   CreateCertificationCatalogInput,
   CreateCertificationRecordInput,
   CreateCourseInput,
+  CreateLearningPathInput,
   LearningCourse,
   LearningEnrollment,
+  LearningPath,
+  LearningPathProgress,
+  SkillDevelopmentSummary,
   TeamEnrollment,
 } from "./types";
 
@@ -48,6 +52,41 @@ export function completeEnrollment(id: string): Promise<LearningEnrollment> {
 
 export function withdrawEnrollment(id: string): Promise<LearningEnrollment> {
   return apiRequest<LearningEnrollment>(`/learning/enrollments/${id}/withdraw`, { method: "POST" });
+}
+
+export function submitAssessment(id: string, score: number, maxScore: number): Promise<LearningEnrollment> {
+  return apiRequest<LearningEnrollment>(`/learning/enrollments/${id}/assessment`, {
+    method: "POST",
+    body: JSON.stringify({ score, maxScore }),
+  });
+}
+
+export function listLearningPathCatalog(): Promise<LearningPath[]> {
+  return apiRequest<LearningPath[]>("/learning/paths");
+}
+
+export function listAllLearningPaths(): Promise<LearningPath[]> {
+  return apiRequest<LearningPath[]>("/learning/paths/admin");
+}
+
+export function listMyLearningPaths(): Promise<LearningPathProgress[]> {
+  return apiRequest<LearningPathProgress[]>("/learning/paths/mine");
+}
+
+export function createLearningPath(input: CreateLearningPathInput): Promise<LearningPath> {
+  return apiRequest<LearningPath>("/learning/paths", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function publishLearningPath(id: string): Promise<LearningPath> {
+  return apiRequest<LearningPath>(`/learning/paths/${id}/publish`, { method: "POST" });
+}
+
+export function enrollInLearningPath(id: string): Promise<LearningPathProgress> {
+  return apiRequest<LearningPathProgress>(`/learning/paths/${id}/enroll`, { method: "POST" });
+}
+
+export function getMySkillDevelopment(): Promise<SkillDevelopmentSummary> {
+  return apiRequest<SkillDevelopmentSummary>("/learning/skill-development/mine");
 }
 
 export function runComplianceTrainingNow(): Promise<{ triggered: boolean }> {

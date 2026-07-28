@@ -11,11 +11,22 @@ import { CourseService } from "./course/course.service";
 import { EnrollmentController } from "./enrollment/enrollment.controller";
 import { EnrollmentRepository } from "./enrollment/enrollment.repository";
 import { EnrollmentService } from "./enrollment/enrollment.service";
+import { LearningPathController } from "./learning-path/learning-path.controller";
+import { LearningPathRepository } from "./learning-path/learning-path.repository";
+import { LearningPathService } from "./learning-path/learning-path.service";
+import { SkillDevelopmentController } from "./skill-development/skill-development.controller";
+import { SkillDevelopmentService } from "./skill-development/skill-development.service";
 
 /** Learning & Development, Phase 7 — docs/08-submodule-specifications/12-learning-and-development/, deepened per Wave 3 E12. */
 @Module({
   imports: [AuthModule, PeopleModule, NotificationsModule],
-  controllers: [CourseController, EnrollmentController, CertificationController],
+  controllers: [
+    CourseController,
+    EnrollmentController,
+    CertificationController,
+    LearningPathController,
+    SkillDevelopmentController,
+  ],
   providers: [
     CourseService,
     CourseRepository,
@@ -23,6 +34,9 @@ import { EnrollmentService } from "./enrollment/enrollment.service";
     EnrollmentRepository,
     CertificationService,
     CertificationRepository,
+    LearningPathService,
+    LearningPathRepository,
+    SkillDevelopmentService,
   ],
   exports: [EnrollmentService],
 })

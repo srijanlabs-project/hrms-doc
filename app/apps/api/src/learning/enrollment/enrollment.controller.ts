@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from "@nestjs/common";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { CreateEnrollmentDto } from "./dto/create-enrollment.dto";
+import { SubmitAssessmentDto } from "./dto/submit-assessment.dto";
 import { EnrollmentService } from "./enrollment.service";
 
 /** HTTP only — no business logic. Spec: 08-submodule-specifications/12-learning-and-development/{01-learning-management-system,03-compliance-training}.md */
@@ -31,6 +32,13 @@ export class EnrollmentController {
   @HttpCode(200)
   async complete(@Param("id") id: string) {
     const data = await this.service.complete(id);
+    return { data };
+  }
+
+  @Post(":id/assessment")
+  @HttpCode(200)
+  async submitAssessment(@Param("id") id: string, @Body() dto: SubmitAssessmentDto) {
+    const data = await this.service.submitAssessment(id, dto.score, dto.maxScore);
     return { data };
   }
 

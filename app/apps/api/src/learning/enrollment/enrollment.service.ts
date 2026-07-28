@@ -99,7 +99,36 @@ export class EnrollmentService {
     if (enrollment.status !== "Enrolled" && enrollment.status !== "Overdue") {
       throw stateConflict("Only an active enrollment can be marked complete.", enrollment.status);
     }
+    if (enrollment.course.passingScore !== null) {
+      throw stateConflict("This course requires a passing assessment score before it can be completed.", enrollment.status);
+    }
     return this.repository.updateStatus(tenantId, id, { status: "Completed", completedAt: new Date() });
+  }
+
+  /**
+   * W3·E12 gap closure ("assessments"): only meaningful for a course with a
+   * configured passingScore — submitting completes the enrollment on a pass,
+   * or leaves it Enrolled (with the result recorded) for a retry on a fail.
+   */
+  async submitAssessment(id: string, score: number, maxScore: number) {
+    const { tenantId, employee } = await this.currentEmployee.resolve();
+    const enrollment = await this.findOwnedOrThrow(tenantId, employee.id, id);
+    if (enrollment.status !== "Enrolled" && enrollment.status !== "Overdue") {
+      throw stateConflict("Only an active enrollment can submit an assessment.", enrollment.status);
+    }
+    if (enrollment.course.passingScore === null) {
+      throw stateConflict("This course has no assessment configured.", enrollment.status);
+    }
+
+    const percentage = (score / maxScore) * 100;
+    const passed = percentage >= enrollment.course.passingScore;
+    await this.repository.updateStatus(tenantId, id, {
+      assessmentScore: score,
+      assessmentMaxScore: maxScore,
+      assessmentPassed: passed,
+      ...(passed ? { status: "Completed", completedAt: new Date() } : {}),
+    });
+    return this.repository.findById(tenantId, id);
   }
 
   async withdraw(id: string) {

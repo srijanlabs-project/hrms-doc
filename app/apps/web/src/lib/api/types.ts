@@ -730,6 +730,8 @@ export interface LearningCourse {
   durationHours: number;
   isMandatory: boolean;
   recurrenceMonths: number | null;
+  passingScore: number | null;
+  skillTags: string[];
   status: string;
   createdAt: string;
 }
@@ -740,22 +742,54 @@ export interface CreateCourseInput {
   durationHours: number;
   isMandatory?: boolean;
   recurrenceMonths?: number;
+  passingScore?: number;
+  skillTags?: string[];
 }
 
 export interface LearningEnrollment {
   id: string;
   employeeId: string;
   courseId: string;
-  course: { id: string; title: string; durationHours: number; isMandatory: boolean };
+  course: { id: string; title: string; durationHours: number; isMandatory: boolean; passingScore: number | null; skillTags: string[] };
   status: string;
   dueDate: string | null;
   assignedAutomatically: boolean;
+  assessmentScore: number | null;
+  assessmentMaxScore: number | null;
+  assessmentPassed: boolean | null;
   completedAt: string | null;
   createdAt: string;
 }
 
 export interface TeamEnrollment extends LearningEnrollment {
   employee: { id: string; legalName: string; employeeCode: string };
+}
+
+/** W3·E12 gap closure — learning paths + skill development. */
+export interface LearningPath {
+  id: string;
+  title: string;
+  description: string | null;
+  status: string;
+  courses: Array<{ id: string; sequenceOrder: number; course: { id: string; title: string; durationHours: number } }>;
+}
+
+export interface CreateLearningPathInput {
+  title: string;
+  description?: string;
+  courseIds: string[];
+}
+
+export interface LearningPathProgress {
+  path: LearningPath;
+  completedCourses: number;
+  totalCourses: number;
+  isComplete: boolean;
+}
+
+export interface SkillDevelopmentSummary {
+  developedSkillTags: string[];
+  recommendedCourses: Array<{ id: string; title: string; skillTags: string[] }>;
 }
 
 export interface CertificationCatalog {
