@@ -51,6 +51,9 @@ model Tenant {
   talentAssessments           TalentAssessment[]
   compensationReviewCycles    CompensationReviewCycle[]
   compensationReviewItems     CompensationReviewItem[]
+  payoutPlanCycles            PayoutPlanCycle[]
+  payoutPlanItems             PayoutPlanItem[]
+  esopGrants                  EsopGrant[]
   expenseClaims               ExpenseClaim[]
   travelRequests              TravelRequest[]
   assets                      Asset[]
@@ -462,6 +465,8 @@ model Employee {
   learningEnrollments          LearningEnrollment[]
   talentAssessments            TalentAssessment[]
   compensationReviewItems      CompensationReviewItem[]
+  payoutPlanItems              PayoutPlanItem[]
+  esopGrants                   EsopGrant[]
   expenseClaims                ExpenseClaim[]               @relation("ExpenseClaimEmployee")
   approvedExpenseClaims        ExpenseClaim[]               @relation("ExpenseClaimApprover")
   travelRequests               TravelRequest[]              @relation("TravelRequestEmployee")
@@ -1748,6 +1753,100 @@ model CompensationReviewItem {
   @@index([tenantId])
   @@index([tenantId, cycleId])
   @@map("compensation_review_items")
+}
+
+/// Wave 3 E14 gap closure ("bonus planning", "incentives") — one cycle model
+/// covering both, mirroring CompensationReviewCycle/Item's exact Proposed ->
+/// Approved -> Applied shape (renamed "Posted" here since applying means
+/// posting a real payout, not writing back compensation). payType reuses
+/// IncentiveBonus's own enum (Bonus | Incentive) so a posted item rides the
+/// same ArrearEntry-backed payroll consumption path IncentiveBonusService
+/// already provides — no parallel payout mechanism.
+model PayoutPlanCycle {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  periodYear Int    @map("period_year")
+  label      String
+
+  /// Bonus | Incentive
+  payType String @map("pay_type")
+
+  /// Open | Closed
+  status String @default("Open")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant           @relation(fields: [tenantId], references: [id])
+  items  PayoutPlanItem[]
+
+  @@unique([tenantId, periodYear, payType, label])
+  @@index([tenantId])
+  @@map("payout_plan_cycles")
+}
+
+model PayoutPlanItem {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  cycleId    String @map("cycle_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  proposedAmount Float  @map("proposed_amount")
+  reason         String
+
+  /// Proposed | Approved | Rejected | Posted
+  status       String    @default("Proposed")
+  decisionNote String?   @map("decision_note")
+  postedAt     DateTime? @map("posted_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+  cycle    PayoutPlanCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, cycleId, employeeId])
+  @@index([tenantId])
+  @@index([tenantId, cycleId])
+  @@map("payout_plan_items")
+}
+
+/// Wave 3 E14 gap closure ("ESOPs") — grant + vesting-schedule tracking only.
+/// Vested units are always computed live from grantDate/vestingStartDate/
+/// vestingYears/cliffMonths (standard monthly-linear-with-cliff vesting),
+/// never stored — same "live computation, no snapshot" discipline used
+/// throughout this build. No exercise/transaction ledger or cap-table
+/// integration: that needs finance-system infrastructure this build doesn't have.
+model EsopGrant {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  totalUnits       Int      @map("total_units")
+  grantDate        DateTime @map("grant_date") @db.Date
+  vestingStartDate DateTime @map("vesting_start_date") @db.Date
+  vestingYears     Int      @map("vesting_years")
+  cliffMonths      Int      @default(12) @map("cliff_months")
+  exercisePrice    Float?   @map("exercise_price")
+
+  /// Active | Cancelled
+  status String @default("Active")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("esop_grants")
 }
 
 /// v1 slice of 04-benefits-administration.md + 05-flexible-benefits.md,

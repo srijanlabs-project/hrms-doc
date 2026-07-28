@@ -15,3 +15,17 @@ export function reviewItemStatusTone(status: string): BadgeTone {
       return "warning";
   }
 }
+
+export function payoutItemStatusTone(status: string): BadgeTone {
+  switch (status) {
+    case "Posted":
+      return "positive";
+    case "Approved":
+      return "info";
+    case "Rejected":
+      return "negative";
+    case "Proposed":
+    default:
+      return "warning";
+  }
+}

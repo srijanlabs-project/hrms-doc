@@ -854,6 +854,67 @@ export interface CompensationReviewItem {
   createdAt: string;
 }
 
+/** Wave 3 E14 gap closure — bonus planning + incentives. */
+export interface PayoutPlanCycle {
+  id: string;
+  periodYear: number;
+  label: string;
+  payType: "Bonus" | "Incentive";
+  status: string;
+  createdAt: string;
+}
+
+export interface CreatePayoutCycleInput {
+  periodYear: number;
+  label: string;
+  payType: "Bonus" | "Incentive";
+}
+
+export interface PayoutPlanItem {
+  id: string;
+  cycleId: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  proposedAmount: number;
+  reason: string;
+  status: "Proposed" | "Approved" | "Rejected" | "Posted";
+  decisionNote: string | null;
+  postedAt: string | null;
+  createdAt: string;
+}
+
+export interface ProposePayoutItemInput {
+  employeeId: string;
+  proposedAmount: number;
+  reason: string;
+}
+
+/** Wave 3 E14 gap closure — ESOPs. */
+export interface EsopGrant {
+  id: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  totalUnits: number;
+  vestedUnits: number;
+  grantDate: string;
+  vestingStartDate: string;
+  vestingYears: number;
+  cliffMonths: number;
+  exercisePrice: number | null;
+  status: "Active" | "Cancelled";
+  createdAt: string;
+}
+
+export interface CreateEsopGrantInput {
+  employeeId: string;
+  totalUnits: number;
+  grantDate: string;
+  vestingStartDate: string;
+  vestingYears: number;
+  cliffMonths?: number;
+  exercisePrice?: number;
+}
+
 export interface BenefitPlan {
   id: string;
   code: string;

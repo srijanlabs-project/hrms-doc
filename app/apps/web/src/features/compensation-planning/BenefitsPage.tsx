@@ -1,5 +1,7 @@
 import { useAuth } from "../auth/AuthProvider";
 import { BenefitsAdminPanel } from "./BenefitsAdminPanel";
+import { EsopAdminPanel } from "./EsopAdminPanel";
+import { EsopMyPanel } from "./EsopMyPanel";
 import { MyBenefitsPanel } from "./MyBenefitsPanel";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -22,7 +24,9 @@ export function BenefitsPage() {
       </header>
 
       <MyBenefitsPanel />
+      <EsopMyPanel />
       {isAdmin && <BenefitsAdminPanel />}
+      {isAdmin && <EsopAdminPanel />}
     </div>
   );
 }

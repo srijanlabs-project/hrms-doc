@@ -74,6 +74,6 @@ import { WebhookModule } from "../webhook/webhook.module";
     IncentiveBonusRepository,
     PayrollDocumentService,
   ],
-  exports: [PayrollRunRepository, PayslipService, CompensationRepository],
+  exports: [PayrollRunRepository, PayslipService, CompensationRepository, IncentiveBonusService],
 })
 export class PayrollModule {}

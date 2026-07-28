@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../auth/AuthProvider";
 import { CyclesPanel } from "./CyclesPanel";
+import { PayoutCyclesPanel } from "./PayoutCyclesPanel";
+import { PayoutItemsPanel } from "./PayoutItemsPanel";
 import { ReviewItemsPanel } from "./ReviewItemsPanel";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -16,6 +18,7 @@ export function CompensationPlanningPage() {
   const { user } = useAuth();
   const isAdmin = ADMIN_ROLES.some((role) => user?.roles.includes(role));
   const [selectedCycleId, setSelectedCycleId] = useState<string | null>(null);
+  const [selectedPayoutCycleId, setSelectedPayoutCycleId] = useState<string | null>(null);
 
   if (!isAdmin) {
     return (
@@ -39,6 +42,22 @@ export function CompensationPlanningPage() {
         ) : (
           <div className="flex items-center justify-center rounded-(--radius-card) border border-dashed border-border p-8 text-ink-muted">
             Select or create a cycle to see its review items.
+          </div>
+        )}
+      </div>
+
+      <header>
+        <h2 className="text-xl font-bold">Bonus & Incentive Payout Plans</h2>
+        <p className="text-ink-muted">Plan a bonus or incentive pool, then post approved amounts to payroll.</p>
+      </header>
+
+      <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
+        <PayoutCyclesPanel selectedCycleId={selectedPayoutCycleId} onSelect={setSelectedPayoutCycleId} />
+        {selectedPayoutCycleId ? (
+          <PayoutItemsPanel cycleId={selectedPayoutCycleId} />
+        ) : (
+          <div className="flex items-center justify-center rounded-(--radius-card) border border-dashed border-border p-8 text-ink-muted">
+            Select or create a payout cycle to see its items.
           </div>
         )}
       </div>
