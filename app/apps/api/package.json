@@ -11,9 +11,9 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
     "db:rls-check": "tsx scripts/rls-check.ts",
-    "test": "jest --forceExit",
+    "test": "jest --forceExit --runInBand",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage --forceExit"
+    "test:cov": "jest --coverage --forceExit --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.0",

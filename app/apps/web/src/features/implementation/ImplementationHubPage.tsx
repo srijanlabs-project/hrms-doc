@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../auth/AuthProvider";
+import { BulkExportPanel } from "./BulkExportPanel";
 import { DataImportPanel } from "./DataImportPanel";
 import { GoLiveChecklistPanel } from "./GoLiveChecklistPanel";
 import { ImportHistoryPanel } from "./ImportHistoryPanel";
@@ -38,6 +39,7 @@ export function ImplementationHubPage() {
 
       <DataImportPanel onCommitted={() => void queryClient.invalidateQueries({ queryKey: ["import-batches"] })} />
       <ImportHistoryPanel />
+      <BulkExportPanel />
       <GoLiveChecklistPanel />
     </div>
   );

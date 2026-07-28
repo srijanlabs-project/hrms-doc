@@ -17,7 +17,16 @@ import { loginAs } from "./utils/login";
  * (resolveApprover only checks the manager Employee exists, not their
  * status) for the duration of the run, and restores it to null afterward —
  * a direct, tenant-scoped Prisma write, not a new migration or seed change.
+ *
+ * Every request this suite creates gets approved/rejected (real, persisted
+ * decisions), which permanently consumes Priya's small seeded Casual/Sick/
+ * Annual balance for the year unless undone — an earlier version of this
+ * suite didn't clean up and started failing on the second run with
+ * "Only 0 day(s) of Casual leave available." Every created row is tagged
+ * with E2E_TAG in its `reason` and hard-deleted in afterAll so the suite
+ * is repeatable against the same shared dev database.
  */
+const E2E_TAG = "e2e-leave-request-suite";
 describe("Leave request lifecycle (e2e)", () => {
   let app: NestExpressApplication;
   let adminCookie: string;
@@ -43,6 +52,7 @@ describe("Leave request lifecycle (e2e)", () => {
   afterAll(async () => {
     await prisma.$transaction(async (tx) => {
       await tx.$executeRaw`SELECT set_config('app.tenant_id', ${tenantId}, true)`;
+      await tx.leaveRequest.deleteMany({ where: { tenantId, employeeId: priyaId, reason: { contains: E2E_TAG } } });
       await tx.employee.update({ where: { id: priyaId }, data: { managerId: null } });
     });
     await prisma.$disconnect();
@@ -71,7 +81,7 @@ describe("Leave request lifecycle (e2e)", () => {
     const createRes = await request(app.getHttpServer())
       .post("/api/v1/leave/requests")
       .set("Cookie", adminCookie)
-      .send({ leaveType: "Casual", startDate, endDate, reason: "e2e test" });
+      .send({ leaveType: "Casual", startDate, endDate, reason: E2E_TAG });
     expect(createRes.status).toBe(201);
     expect(createRes.body.data.status).toBe("Pending");
     const requestId = createRes.body.data.id;
@@ -92,7 +102,7 @@ describe("Leave request lifecycle (e2e)", () => {
     const createRes = await request(app.getHttpServer())
       .post("/api/v1/leave/requests")
       .set("Cookie", adminCookie)
-      .send({ leaveType: "Sick", startDate, endDate });
+      .send({ leaveType: "Sick", startDate, endDate, reason: E2E_TAG });
     const requestId = createRes.body.data.id;
 
     await request(app.getHttpServer())
@@ -112,7 +122,7 @@ describe("Leave request lifecycle (e2e)", () => {
     const createRes = await request(app.getHttpServer())
       .post("/api/v1/leave/requests")
       .set("Cookie", adminCookie)
-      .send({ leaveType: "Annual", startDate, endDate });
+      .send({ leaveType: "Annual", startDate, endDate, reason: E2E_TAG });
     const requestId = createRes.body.data.id;
 
     const cancelRes = await request(app.getHttpServer())

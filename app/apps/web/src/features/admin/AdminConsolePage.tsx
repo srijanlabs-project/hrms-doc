@@ -1,4 +1,5 @@
 import { useAuth } from "../auth/AuthProvider";
+import { FeatureFlagsPanel } from "./FeatureFlagsPanel";
 import { NumberSeriesPanel } from "./NumberSeriesPanel";
 import { SystemSettingsPanel } from "./SystemSettingsPanel";
 
@@ -33,6 +34,7 @@ export function AdminConsolePage() {
 
       <SystemSettingsPanel />
       <NumberSeriesPanel />
+      <FeatureFlagsPanel />
     </div>
   );
 }

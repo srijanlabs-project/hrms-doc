@@ -159,6 +159,7 @@ model Tenant {
   loanAdvances                LoanAdvance[]
   incentiveBonuses            IncentiveBonus[]
   reportDefinitions           ReportDefinition[]
+  featureFlags                FeatureFlag[]
 
   @@map("tenants")
 }
@@ -4439,4 +4440,26 @@ model ReportDefinition {
 
   @@index([tenantId])
   @@map("report_definitions")
+}
+
+/// W0·E30 DevOps and Operations — feature toggles. A real boolean flag store
+/// with an isEnabled() helper any service can call, not a rollout-percentage/
+/// A-B-test framework (no current consumer needs staged rollout — the
+/// System Settings key/value store already covers arbitrary tenant config,
+/// this is deliberately narrower: on/off switches with a stable key).
+model FeatureFlag {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  key         String
+  name        String
+  description String?
+  enabled     Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, key])
+  @@map("feature_flags")
 }

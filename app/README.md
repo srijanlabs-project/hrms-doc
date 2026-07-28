@@ -32,10 +32,17 @@ npm run test:cov --workspace @staffsy/api    # with coverage
 Runs against your real local Postgres (the same `staffsy` database `npm run
 db:seed` populates) — there's no separate test database or mocked Prisma
 client, since the RLS suite specifically needs real Postgres RLS policies to
-prove tenant isolation against. A few tests write ephemeral rows (a
+prove tenant isolation against. Runs with `--runInBand` (serial, not
+parallel workers) deliberately: several e2e specs read/write the same
+shared tenant's data (e.g. Priya Sharma's leave balance), and running them
+concurrently across Jest's default multi-worker pool produced real,
+intermittent race-condition failures. A few tests write ephemeral rows (a
 `test-*`/`e2e-test-*` tenant, a throwaway Department) directly into that
 database and don't clean them up — harmless in a local dev DB, but don't
-point `DATABASE_URL` at anything you care about keeping pristine.
+point `DATABASE_URL` at anything you care about keeping pristine. The
+leave-request suite is the exception: it tags every row it creates and
+hard-deletes them in `afterAll`, since leaving real Approved decisions
+behind would silently exhaust Priya's small seeded balance on the next run.
 
 Coverage (W0·E32, "broader integration coverage" scope): RLS tenant
 isolation across 5 tables (`test/rls.integration.spec.ts`), the payroll

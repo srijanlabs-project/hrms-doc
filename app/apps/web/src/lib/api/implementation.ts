@@ -60,3 +60,8 @@ export function listGoLiveChecklist(): Promise<GoLiveChecklistItem[]> {
 export function setGoLiveChecklistItem(key: string, completed: boolean): Promise<GoLiveChecklistItem> {
   return apiRequest(`/implementation/checklist/${key}`, { method: "PATCH", body: JSON.stringify({ completed }) });
 }
+
+/** Same-origin link — the session cookie rides along automatically, no fetch() needed. */
+export function bulkExportUrl(entityType: ImportableEntityType): string {
+  return `/api/v1/implementation/export?entityType=${encodeURIComponent(entityType)}`;
+}

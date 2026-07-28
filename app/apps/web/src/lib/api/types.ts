@@ -2198,6 +2198,15 @@ export interface SystemSetting {
   updatedAt: string;
 }
 
+export interface FeatureFlag {
+  id: string;
+  key: string;
+  name: string;
+  description: string | null;
+  enabled: boolean;
+  updatedAt: string;
+}
+
 export interface UpsertSystemSettingInput {
   value: string;
   description?: string;

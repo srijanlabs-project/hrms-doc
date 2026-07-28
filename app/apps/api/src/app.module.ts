@@ -36,6 +36,7 @@ import { NumberSeriesModule } from "./platform/number-series/number-series.modul
 import { SchedulerModule } from "./platform/scheduler/scheduler.module";
 import { SystemSettingModule } from "./platform/system-setting/system-setting.module";
 import { ProvisioningModule } from "./platform/provisioning/provisioning.module";
+import { FeatureFlagModule } from "./platform/feature-flag/feature-flag.module";
 import { PlatformModule } from "./platform/platform.module";
 import { PrismaModule } from "./platform/prisma/prisma.module";
 import { RecruitmentModule } from "./recruitment/recruitment.module";
@@ -69,6 +70,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     NumberSeriesModule,
     SystemSettingModule,
     ProvisioningModule,
+    FeatureFlagModule,
     DocumentGenerationModule,
     SchedulerModule,
     OrgModule,
