@@ -11,6 +11,23 @@ export function getWorkforceTrend(months = 12): Promise<MonthPoint[]> {
   return apiRequest(`/analytics/workforce/trend?months=${months}`);
 }
 
+export interface DistributionSlice {
+  label: string;
+  count: number;
+}
+
+export interface ExecutiveSummary {
+  activeHeadcount: number;
+  latestAttritionRate: number;
+  averageTenureYears: number;
+  departmentDistribution: DistributionSlice[];
+  genderDistribution: DistributionSlice[];
+}
+
+export function getExecutiveSummary(): Promise<ExecutiveSummary> {
+  return apiRequest("/analytics/workforce/executive-summary");
+}
+
 export const REPORTABLE_ENTITY_TYPES = ["Employee", "LeaveRequest", "PayrollRunResult"] as const;
 export type ReportableEntityType = (typeof REPORTABLE_ENTITY_TYPES)[number];
 

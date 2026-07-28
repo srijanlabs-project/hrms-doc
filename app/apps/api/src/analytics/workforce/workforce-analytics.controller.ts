@@ -14,4 +14,10 @@ export class WorkforceAnalyticsController {
     const data = await this.service.getTrend(Number.isFinite(parsed) ? parsed : 12);
     return { data };
   }
+
+  @Get("executive-summary")
+  async getExecutiveSummary() {
+    const data = await this.service.getExecutiveSummary();
+    return { data };
+  }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { EmployeeRepository } from "../../people/employee/employee.repository";
+import { PrismaService } from "../../platform/prisma/prisma.service";
 import { RequestContextService } from "../../platform/context/request-context.service";
 import { AuthenticationAppError } from "../../platform/errors/errors";
 
@@ -8,6 +9,19 @@ export interface MonthPoint {
   headcount: number;
   separations: number;
   attritionRate: number;
+}
+
+export interface DistributionSlice {
+  label: string;
+  count: number;
+}
+
+export interface ExecutiveSummary {
+  activeHeadcount: number;
+  latestAttritionRate: number;
+  averageTenureYears: number;
+  departmentDistribution: DistributionSlice[];
+  genderDistribution: DistributionSlice[];
 }
 
 function monthKey(date: Date): string {
@@ -31,6 +45,7 @@ function monthEnd(year: number, monthIndex0: number): Date {
 export class WorkforceAnalyticsService {
   constructor(
     private readonly employeeRepository: EmployeeRepository,
+    private readonly prisma: PrismaService,
     private readonly requestContext: RequestContextService,
   ) {}
 
@@ -69,6 +84,52 @@ export class WorkforceAnalyticsService {
     }
 
     return points;
+  }
+
+  /**
+   * Executive dashboard + diversity analytics (W5·E25 gap closure, Batch C).
+   * Folds diversity breakdowns directly into the executive summary rather
+   * than a separate module — both are just distribution slices over the
+   * same active-employee population, not two different dashboard concepts.
+   * The spec's Strategic Command Centre (recommendation-led insights on
+   * attrition risk/succession/leadership pipeline) stays deferred — no
+   * defined KPI/recommendation model exists to build against yet.
+   */
+  async getExecutiveSummary(): Promise<ExecutiveSummary> {
+    const { tenantId } = this.requireAuthenticated();
+    const active = await this.employeeRepository.findActive(tenantId);
+    const trend = await this.getTrend(1);
+    const latestAttritionRate = trend.at(-1)?.attritionRate ?? 0;
+
+    const now = Date.now();
+    const tenures = active
+      .filter((e) => e.joiningDate)
+      .map((e) => (now - new Date(e.joiningDate!).getTime()) / (365.25 * 86_400_000));
+    const averageTenureYears = tenures.length > 0 ? Number((tenures.reduce((a, b) => a + b, 0) / tenures.length).toFixed(1)) : 0;
+
+    const departmentDistribution = this.tally(active.map((e) => e.department?.name ?? "Unassigned"));
+
+    const personalDetails = await this.prisma.withTenant(tenantId, (tx) =>
+      tx.personalDetail.findMany({ where: { tenantId, employeeId: { in: active.map((e) => e.id) } }, select: { employeeId: true, gender: true } }),
+    );
+    const genderByEmployeeId = new Map(personalDetails.map((p) => [p.employeeId, p.gender]));
+    const genderDistribution = this.tally(active.map((e) => genderByEmployeeId.get(e.id) || "Not specified"));
+
+    return {
+      activeHeadcount: active.length,
+      latestAttritionRate,
+      averageTenureYears,
+      departmentDistribution,
+      genderDistribution,
+    };
+  }
+
+  private tally(values: string[]): DistributionSlice[] {
+    const counts = new Map<string, number>();
+    for (const value of values) {
+      counts.set(value, (counts.get(value) ?? 0) + 1);
+    }
+    return [...counts.entries()].map(([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count);
   }
 
   private requireAuthenticated(): { tenantId: string } {

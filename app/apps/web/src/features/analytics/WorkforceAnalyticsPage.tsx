@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Card } from "../../components/ui/Card";
 import { KpiCard } from "../../components/ui/KpiCard";
-import { getWorkforceTrend } from "../../lib/api/analytics";
+import { getExecutiveSummary, getWorkforceTrend } from "../../lib/api/analytics";
 import { useAuth } from "../auth/AuthProvider";
 import { TrendBarChart } from "./TrendBarChart";
 
@@ -27,6 +27,11 @@ export function WorkforceAnalyticsPage() {
   const trend = useQuery({
     queryKey: ["workforce-trend", months],
     queryFn: () => getWorkforceTrend(months),
+    enabled: isAdmin,
+  });
+  const executive = useQuery({
+    queryKey: ["workforce-executive-summary"],
+    queryFn: getExecutiveSummary,
     enabled: isAdmin,
   });
 
@@ -80,6 +85,25 @@ export function WorkforceAnalyticsPage() {
 
       <Card title="Monthly Separations">
         <TrendBarChart bars={points.map((p) => ({ label: monthLabel(p.month), value: p.separations }))} />
+      </Card>
+
+      <header>
+        <h2 className="text-xl font-bold">Executive Summary</h2>
+        <p className="text-ink-muted">Headcount composition across the current active workforce.</p>
+      </header>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <KpiCard label="Active Headcount" value={String(executive.data?.activeHeadcount ?? 0)} />
+        <KpiCard label="Attrition Rate (this month)" value={`${executive.data?.latestAttritionRate ?? 0}%`} />
+        <KpiCard label="Average Tenure" value={`${executive.data?.averageTenureYears ?? 0} yrs`} />
+      </div>
+
+      <Card title="Headcount by Department">
+        <TrendBarChart bars={(executive.data?.departmentDistribution ?? []).map((d) => ({ label: d.label, value: d.count }))} />
+      </Card>
+
+      <Card title="Diversity — Gender Distribution">
+        <TrendBarChart bars={(executive.data?.genderDistribution ?? []).map((d) => ({ label: d.label, value: d.count }))} />
       </Card>
     </div>
   );
