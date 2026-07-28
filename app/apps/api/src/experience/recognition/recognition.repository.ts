@@ -51,4 +51,11 @@ export class RecognitionRepository {
       }),
     );
   }
+
+  async sumPointsReceived(tenantId: string, employeeId: string): Promise<number> {
+    const result = await this.prisma.withTenant(tenantId, (tx) =>
+      tx.recognition.aggregate({ where: { tenantId, toEmployeeId: employeeId }, _sum: { points: true } }),
+    );
+    return result._sum.points ?? 0;
+  }
 }

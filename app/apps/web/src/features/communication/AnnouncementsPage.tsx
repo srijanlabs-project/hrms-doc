@@ -6,10 +6,12 @@ import {
   archiveAnnouncement,
   createAnnouncement,
   listAllAnnouncementsAdmin,
+  listPublishedAnnouncements,
   publishAnnouncement,
 } from "../../lib/api/communication";
 import { ApiError } from "../../lib/api/http";
 import { useAuth } from "../auth/AuthProvider";
+import { AnnouncementCommentThread } from "./AnnouncementCommentThread";
 import { announcementStatusTone, categoryTone } from "./status-tone";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -104,10 +106,35 @@ function AnnouncementRow({ id, title, body, category, status }: { id: string; ti
   );
 }
 
+/** Self-service: browse published announcements and join the conversation via comments. */
+function PublishedAnnouncementsPanel() {
+  const published = useQuery({ queryKey: ["announcements-published"], queryFn: listPublishedAnnouncements });
+
+  return (
+    <Card title="Company Announcements">
+      <ul className="space-y-3">
+        {published.data?.map((a) => (
+          <li key={a.id} className="rounded-lg border border-border p-3">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">{a.title}</span>
+              <Badge tone={categoryTone(a.category)}>{a.category}</Badge>
+            </div>
+            <p className="mt-1 text-sm text-ink-muted">{a.body}</p>
+            <AnnouncementCommentThread announcementId={a.id} />
+          </li>
+        ))}
+        {published.data?.length === 0 && <p className="text-ink-muted">No announcements published yet.</p>}
+      </ul>
+    </Card>
+  );
+}
+
 /**
  * Announcements — docs/03-module-specifications/23-communication-platform.md.
- * Self-service: published announcements also surface on the home dashboard.
- * Admin (gated below): create/publish/archive the full catalog.
+ * Self-service: published announcements, also surfaced on the home
+ * dashboard, now with a real comment thread per announcement (Wave 3 E15 gap
+ * closure — "employee communications"). Admin (gated below): create/publish/
+ * archive the full catalog.
  */
 export function AnnouncementsPage() {
   const { user } = useAuth();
@@ -121,7 +148,9 @@ export function AnnouncementsPage() {
         <p className="text-ink-muted">Company-wide announcements, news, and bulletin-board posts.</p>
       </header>
 
-      {isAdmin ? (
+      <PublishedAnnouncementsPanel />
+
+      {isAdmin && (
         <Card title="Manage Announcements">
           <CreateAnnouncementForm />
           <ul className="space-y-2">
@@ -131,8 +160,6 @@ export function AnnouncementsPage() {
             {announcements.data?.length === 0 && <p className="text-ink-muted">No announcements yet.</p>}
           </ul>
         </Card>
-      ) : (
-        <p className="text-ink-muted">Published announcements appear on your home dashboard.</p>
       )}
     </div>
   );

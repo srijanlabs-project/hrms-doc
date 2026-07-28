@@ -2167,6 +2167,136 @@ export interface CreateAnnouncementInput {
   category?: Announcement["category"];
 }
 
+/** Wave 4 W4·E15 gap closure ("employee communications") — comments on Announcement. */
+export interface AnnouncementComment {
+  id: string;
+  employee: { id: string; legalName: string };
+  body: string;
+  createdAt: string;
+}
+
+/** Wave 4 W4·E15 gap closure ("rewards") — redemption catalog behind Recognition's points counter. */
+export interface RewardCatalogItem {
+  id: string;
+  name: string;
+  description: string | null;
+  pointsCost: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface CreateRewardItemInput {
+  name: string;
+  description?: string;
+  pointsCost: number;
+}
+
+export interface RewardRedemption {
+  id: string;
+  rewardItem: { id: string; name: string; pointsCost: number };
+  employee: { id: string; legalName: string; employeeCode: string };
+  pointsSpent: number;
+  status: "Requested" | "Fulfilled" | "Cancelled";
+  decisionNote: string | null;
+  fulfilledAt: string | null;
+  cancelledAt: string | null;
+  createdAt: string;
+}
+
+export interface RewardBalance {
+  pointsReceived: number;
+  pointsSpent: number;
+  pointsAvailable: number;
+}
+
+/** Wave 4 W4·E15 gap closure ("communities"). */
+export interface Community {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  status: "Active" | "Archived";
+  isMember: boolean;
+  createdAt: string;
+}
+
+export interface CreateCommunityInput {
+  name: string;
+  description?: string;
+  category?: string;
+}
+
+/** Wave 4 W4·E15 gap closure ("social feed") — text-only, no photo uploads. */
+export interface FeedComment {
+  id: string;
+  employee: { id: string; legalName: string };
+  body: string;
+  createdAt: string;
+}
+
+export interface FeedPost {
+  id: string;
+  employee: { id: string; legalName: string };
+  communityId: string | null;
+  body: string;
+  comments: FeedComment[];
+  _count: { likes: number };
+  createdAt: string;
+}
+
+export interface CreatePostInput {
+  body: string;
+  communityId?: string;
+}
+
+/** Wave 4 W4·E15 gap closure ("events") — company/team events with RSVP. */
+export interface ExperienceEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  location: string | null;
+  startAt: string;
+  status: "Draft" | "Published" | "Cancelled";
+  _count: { rsvps: number };
+  createdAt: string;
+}
+
+export interface CreateEventInput {
+  title: string;
+  description?: string;
+  location?: string;
+  startAt: string;
+}
+
+export interface EventRsvp {
+  id: string;
+  eventId: string;
+  employeeId: string;
+  response: "Going" | "Interested" | "Declined";
+}
+
+/** Wave 4 W4·E15 gap closure ("wellness programs") — mirrors LearningCourse/Enrollment. */
+export interface WellnessProgram {
+  id: string;
+  title: string;
+  description: string | null;
+  category: "Fitness" | "MentalHealth" | "Nutrition" | "Other";
+  startDate: string;
+  endDate: string | null;
+  status: "Active" | "Closed";
+  isEnrolled: boolean;
+  _count: { enrollments: number };
+  createdAt: string;
+}
+
+export interface CreateWellnessProgramInput {
+  title: string;
+  description?: string;
+  category?: WellnessProgram["category"];
+  startDate: string;
+  endDate?: string;
+}
+
 
 /** Wave 4 W4·E21 Visitor and Workplace Management — a gate pass IS the visitor record. */
 export interface Visitor {

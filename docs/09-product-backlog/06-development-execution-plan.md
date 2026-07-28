@@ -766,3 +766,23 @@ Goal: close E14's three remaining pending items, continuing the 16-batch sweep. 
 **Incidental, not fixed**: none surfaced this batch.
 
 Done when: verified end to end. **Met** — created a Diwali Bonus payout cycle, proposed a ₹25,000 item for an employee, approved it, and posted it; confirmed via direct DB query that posting created a real `IncentiveBonus` row and a real `ArrearEntry` (status Pending, `source_type = IncentiveBonus`) ready for the next payroll run — no parallel payout path. Granted a 10,000-unit ESOP grant with a vesting start two years in the past (4-year vest, 12-month cliff) and confirmed both the admin panel and the self-service "My ESOP Grants" card independently computed 5,000 vested units (24 of 48 months elapsed). Cross-tenant isolation confirmed via actual login switching: Globex (Alex Carter) saw zero payout cycles and zero ESOP grants org-wide, and cross-tenant attempts to close the Srijan Labs payout cycle and cancel its ESOP grant by ID both correctly returned 404.
+
+# 53. Phase 51 — Batch J: W4·E15 Employee Experience gap closure (rewards, social feed, communities, events, employee communications, wellness programs) ✅ Done
+
+Goal: close E15's six remaining pending items, the largest single batch in the sweep. Each area is scoped down deliberately from the module spec's AI/photo/vendor-dependent ambitions to a genuinely buildable slice, and two of the six reuse existing entities rather than inventing parallel ones.
+
+**Rewards**: a `RewardCatalogItem`/`RewardRedemption` pair closing the loop Recognition's own comment flagged as deferred ("no redemption catalog"). Points balance is always computed live — sum of `Recognition.points` received minus points already committed to non-cancelled redemptions — never stored. `RewardRedemptionService.redeem()` re-checks the live balance server-side even though the UI already disables the button when insufficient, and returns a clear `INSUFFICIENT_POINTS` validation error either way.
+
+**Social feed**: `FeedPost`/`FeedComment`/`FeedLike`, text-only — no photo/image uploads, avoiding the moderation/consent infrastructure this build deliberately doesn't have. `communityId` null means a company-wide post; a non-null value scopes it to a community, so the same model serves both without a parallel community-feed entity.
+
+**Communities**: `Community`/`CommunityMembership`, self-service by default — any employee can start one, matching this build's established self-service-first philosophy for anything personal/social (career planning, PIP, etc.).
+
+**Events**: `ExperienceEvent`/`EventRsvp`. Admin creates and publishes (Draft → Published), employees RSVP Going/Interested/Declined via an upsert keyed on the compound unique constraint, so re-RSVPing just changes the response rather than erroring.
+
+**Employee communications**: no new broadcast entity — instead, `AnnouncementComment` adds a real two-way engagement layer directly onto E23's existing `Announcement` entity, turning the one-way broadcast into an actual conversation. The quote/culture library and AI-generated milestone cards stay deferred exactly as `Announcement`'s own comment already documents (no moderation/photo-consent/vendor infra).
+
+**Wellness programs**: `WellnessProgram`/`WellnessEnrollment`, mirroring `LearningCourse`/`LearningEnrollment`'s exact catalog-plus-enrollment shape.
+
+**Incidental, not fixed**: none surfaced this batch.
+
+Done when: verified end to end. **Met** — added a Coffee Voucher (20 pts) to the reward catalog; confirmed the redeem button was correctly disabled at 0 points, and a direct API redemption attempt at 0 points was rejected server-side with a clear `INSUFFICIENT_POINTS` message. Had a second employee (Sneha Reddy) recognize the admin (Priya Sharma) for 30 points, then redeemed the voucher (balance dropped to 10 available), and fulfilled the redemption as admin — both self-service and admin views updated to Fulfilled. Posted to the company feed, liked and commented on the post, created and joined a community, created and published an event and RSVP'd Going, created a wellness program and enrolled — all rendered correctly end to end. Posted a comment on a published Announcement, confirming the new two-way engagement layer. Cross-tenant isolation confirmed via actual login switching: Globex (Alex Carter) saw zero rewards/communities/feed posts/events/wellness programs org-wide, and cross-tenant attempts to join the Srijan Labs community and RSVP to its event by ID both correctly returned 404.

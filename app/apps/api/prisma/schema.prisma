@@ -172,6 +172,18 @@ model Tenant {
   featureFlags                FeatureFlag[]
   consentRecords              ConsentRecord[]
   candidateAssessments        CandidateAssessment[]
+  rewardCatalogItems          RewardCatalogItem[]
+  rewardRedemptions           RewardRedemption[]
+  communities                 Community[]
+  communityMemberships        CommunityMembership[]
+  feedPosts                   FeedPost[]
+  feedComments                FeedComment[]
+  feedLikes                   FeedLike[]
+  experienceEvents            ExperienceEvent[]
+  eventRsvps                  EventRsvp[]
+  announcementComments        AnnouncementComment[]
+  wellnessPrograms            WellnessProgram[]
+  wellnessEnrollments         WellnessEnrollment[]
 
   @@map("tenants")
 }
@@ -509,6 +521,14 @@ model Employee {
   healthRecords                HealthRecord[]
   documentRecords              Document[]
   consentRecords               ConsentRecord[]
+  rewardRedemptions            RewardRedemption[]
+  communityMemberships         CommunityMembership[]
+  feedPosts                    FeedPost[]
+  feedComments                 FeedComment[]
+  feedLikes                    FeedLike[]
+  eventRsvps                   EventRsvp[]
+  announcementComments         AnnouncementComment[]
+  wellnessEnrollments          WellnessEnrollment[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
@@ -4172,7 +4192,8 @@ model Announcement {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  tenant   Tenant                @relation(fields: [tenantId], references: [id])
+  comments AnnouncementComment[]
 
   @@index([tenantId, status])
   @@map("announcements")
@@ -4844,4 +4865,264 @@ model ConsentRecord {
 
   @@unique([tenantId, employeeId, purpose])
   @@map("consent_records")
+}
+
+/// Wave 4 W4·E15 Employee Experience gap closure ("rewards") — a redemption
+/// catalog behind Recognition's existing points counter, closing the loop
+/// Recognition's own comment flagged as deferred ("no redemption catalog").
+/// Points balance is always computed live (sum of Recognition.points
+/// received), never stored — same live-computation discipline used
+/// throughout this build.
+model RewardCatalogItem {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  name        String
+  description String?
+  pointsCost  Int     @map("points_cost")
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant             @relation(fields: [tenantId], references: [id])
+  redemptions RewardRedemption[]
+
+  @@index([tenantId])
+  @@map("reward_catalog_items")
+}
+
+model RewardRedemption {
+  id           String @id @default(uuid()) @db.Uuid
+  tenantId     String @map("tenant_id") @db.Uuid
+  employeeId   String @map("employee_id") @db.Uuid
+  rewardItemId String @map("reward_item_id") @db.Uuid
+
+  pointsSpent Int @map("points_spent")
+
+  /// Requested | Fulfilled | Cancelled
+  status String @default("Requested")
+
+  decisionNote String?   @map("decision_note")
+  fulfilledAt  DateTime? @map("fulfilled_at") @db.Timestamptz(6)
+  cancelledAt  DateTime? @map("cancelled_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant     Tenant            @relation(fields: [tenantId], references: [id])
+  employee   Employee          @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rewardItem RewardCatalogItem @relation(fields: [rewardItemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("reward_redemptions")
+}
+
+/// Wave 4 W4·E15 gap closure ("communities") — join-based interest groups. A
+/// community can optionally host its own scoped feed via FeedPost.communityId.
+model Community {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  name        String
+  description String?
+  category    String  @default("General")
+
+  /// Active | Archived
+  status String @default("Active")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant                @relation(fields: [tenantId], references: [id])
+  memberships CommunityMembership[]
+  posts       FeedPost[]
+
+  @@index([tenantId])
+  @@map("communities")
+}
+
+model CommunityMembership {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  communityId String   @map("community_id") @db.Uuid
+  employeeId  String   @map("employee_id") @db.Uuid
+  joinedAt    DateTime @default(now()) @map("joined_at") @db.Timestamptz(6)
+
+  tenant    Tenant    @relation(fields: [tenantId], references: [id])
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee  Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, communityId, employeeId])
+  @@index([tenantId])
+  @@map("community_memberships")
+}
+
+/// Wave 4 W4·E15 gap closure ("social feed") — text-only company/community
+/// feed. No photo/image uploads: avoids the moderation/consent infrastructure
+/// this build deliberately doesn't have (see the deferred AI celebration-card
+/// generation elsewhere in this spec). communityId null = company-wide post.
+model FeedPost {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  employeeId  String  @map("employee_id") @db.Uuid
+  communityId String? @map("community_id") @db.Uuid
+  body        String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant    Tenant        @relation(fields: [tenantId], references: [id])
+  employee  Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  community Community?    @relation(fields: [communityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  comments  FeedComment[]
+  likes     FeedLike[]
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, communityId])
+  @@map("feed_posts")
+}
+
+model FeedComment {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  postId     String @map("post_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+  body       String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  post     FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId, postId])
+  @@map("feed_comments")
+}
+
+model FeedLike {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  postId     String   @map("post_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id])
+  post     FeedPost @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, postId, employeeId])
+  @@index([tenantId, postId])
+  @@map("feed_likes")
+}
+
+/// Wave 4 W4·E15 gap closure ("events") — company/team events with RSVP.
+model ExperienceEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @map("tenant_id") @db.Uuid
+  title       String
+  description String?
+  location    String?
+  startAt     DateTime @map("start_at") @db.Timestamptz(6)
+
+  /// Draft | Published | Cancelled
+  status String @default("Draft")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant      @relation(fields: [tenantId], references: [id])
+  rsvps  EventRsvp[]
+
+  @@index([tenantId, startAt])
+  @@map("experience_events")
+}
+
+model EventRsvp {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  eventId    String @map("event_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// Going | Interested | Declined
+  response String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+  event    ExperienceEvent @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, eventId, employeeId])
+  @@index([tenantId, eventId])
+  @@map("event_rsvps")
+}
+
+/// Wave 4 W4·E15 gap closure ("employee communications") — a real two-way
+/// engagement layer on top of E23's existing Announcement broadcast entity,
+/// rather than a duplicate broadcast mechanism. Quote/culture libraries and
+/// AI-generated milestone cards stay deferred per Announcement's own scope
+/// (no moderation/photo-consent/vendor infra in this build).
+model AnnouncementComment {
+  id             String @id @default(uuid()) @db.Uuid
+  tenantId       String @map("tenant_id") @db.Uuid
+  announcementId String @map("announcement_id") @db.Uuid
+  employeeId     String @map("employee_id") @db.Uuid
+  body           String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id])
+  announcement Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId, announcementId])
+  @@map("announcement_comments")
+}
+
+/// Wave 4 W4·E15 gap closure ("wellness programs") — catalog + enrollment,
+/// mirroring LearningCourse/LearningEnrollment's exact shape.
+model WellnessProgram {
+  id          String  @id @default(uuid()) @db.Uuid
+  tenantId    String  @map("tenant_id") @db.Uuid
+  title       String
+  description String?
+
+  /// Fitness | MentalHealth | Nutrition | Other
+  category String @default("Other")
+
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+
+  /// Active | Closed
+  status String @default("Active")
+
+  createdByUserId String @map("created_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant      Tenant               @relation(fields: [tenantId], references: [id])
+  enrollments WellnessEnrollment[]
+
+  @@index([tenantId])
+  @@map("wellness_programs")
+}
+
+model WellnessEnrollment {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  programId  String   @map("program_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  enrolledAt DateTime @default(now()) @map("enrolled_at") @db.Timestamptz(6)
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id])
+  program  WellnessProgram @relation(fields: [programId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  employee Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, programId, employeeId])
+  @@index([tenantId, programId])
+  @@map("wellness_enrollments")
 }
