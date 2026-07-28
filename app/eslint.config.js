@@ -23,6 +23,7 @@ export default tseslint.config(
       "docs/**",
       "tools/**",
       "ui-studio/**",
+      "**/jest.config.js",
     ],
   },
   js.configs.recommended,
