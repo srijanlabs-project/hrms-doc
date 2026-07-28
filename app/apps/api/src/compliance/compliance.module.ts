@@ -35,5 +35,6 @@ import { StatutoryComplianceService } from "./statutory-compliance.service";
     EmployeeRepository,
     CompensationRepository,
   ],
+  exports: [ComplianceCalendarService],
 })
 export class ComplianceModule {}

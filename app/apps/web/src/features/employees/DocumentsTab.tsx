@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { Badge } from "../../components/ui/Badge";
 import { Card } from "../../components/ui/Card";
 import { fileDownloadUrl, uploadFile } from "../../lib/api/files";
-import { addEmployeeDocument, addIdentityDocument, getCareer, getIdentityFinance } from "../../lib/api/people-extras";
+import { addEmployeeDocument, addIdentityDocument, getCareer, getIdentityFinance, revealSensitiveField } from "../../lib/api/people-extras";
 
 const DOCUMENT_TYPES = ["OfferLetter", "Payslip", "Certificate", "IdProof", "Contract", "Other"];
 const IDENTITY_TYPES = ["PAN", "Aadhaar", "Passport", "DrivingLicense", "VoterID", "NationalID", "Visa", "Other"];
@@ -23,6 +23,12 @@ export function DocumentsTab({ employeeId }: { employeeId: string }) {
   const [documentNumber, setDocumentNumber] = useState("");
   const [idFile, setIdFile] = useState<File | null>(null);
   const idFileInputRef = useRef<HTMLInputElement>(null);
+
+  const [revealedIds, setRevealedIds] = useState<Record<string, string>>({});
+  const revealMutation = useMutation({
+    mutationFn: (recordId: string) => revealSensitiveField(employeeId, "IdentityDocument", recordId),
+    onSuccess: (result, recordId) => setRevealedIds((prev) => ({ ...prev, [recordId]: result.value })),
+  });
 
   const docMutation = useMutation({
     mutationFn: async () => {
@@ -134,7 +140,17 @@ export function DocumentsTab({ employeeId }: { employeeId: string }) {
         <ul className="space-y-1">
           {identityFinance.data?.identityDocuments.map((d) => (
             <li key={d.id} className="rounded-lg border border-border p-2 text-sm">
-              {d.documentType}: {d.documentNumber} <Badge tone="warning">{d.status}</Badge>
+              {d.documentType}: <span className="font-mono">{revealedIds[d.id] ?? d.documentNumber}</span>{" "}
+              {!revealedIds[d.id] && (
+                <button
+                  type="button"
+                  onClick={() => revealMutation.mutate(d.id)}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Reveal
+                </button>
+              )}{" "}
+              <Badge tone="warning">{d.status}</Badge>
               {d.file && (
                 <>
                   {" · "}

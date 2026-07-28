@@ -2,16 +2,27 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Badge } from "../../components/ui/Badge";
 import { Card } from "../../components/ui/Card";
+import { listMyConsent, setMyConsent } from "../../lib/api/consent";
 import { addCertification, addEducation, addPriorExperience, addSkill, getBackground } from "../../lib/api/people-extras";
+import { CONSENT_PURPOSES } from "../../lib/api/types";
+import { useAuth } from "../auth/AuthProvider";
 
 const SKILL_TYPES = ["Skill", "Language"];
 const PROFICIENCY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"];
 
 /** Consolidates education & experience, certifications, and skills/languages. */
 export function MoreTab({ employeeId }: { employeeId: string }) {
+  const { user } = useAuth();
+  const isSelf = user?.employeeId === employeeId;
   const queryClient = useQueryClient();
   const background = useQuery({ queryKey: ["background", employeeId], queryFn: () => getBackground(employeeId) });
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["background", employeeId] });
+
+  const consent = useQuery({ queryKey: ["consent-mine"], queryFn: listMyConsent, enabled: isSelf });
+  const consentMutation = useMutation({
+    mutationFn: ({ purpose, status }: { purpose: string; status: "Granted" | "Revoked" }) => setMyConsent(purpose, status),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["consent-mine"] }),
+  });
 
   const [degree, setDegree] = useState("");
   const [institution, setInstitution] = useState("");
@@ -200,6 +211,44 @@ export function MoreTab({ employeeId }: { employeeId: string }) {
           {background.data?.skills.length === 0 && <p className="text-xs text-ink-faint">No skills or languages recorded.</p>}
         </ul>
       </Card>
+
+      {isSelf && (
+        <Card title="Privacy & Consent">
+          <p className="mb-3 text-xs text-ink-faint">Control what you've agreed to share or be contacted about.</p>
+          <ul className="space-y-1">
+            {CONSENT_PURPOSES.map((purpose) => {
+              const record = consent.data?.find((r) => r.purpose === purpose);
+              const status = record?.status ?? "Not Set";
+              return (
+                <li key={purpose} className="flex items-center justify-between rounded-lg border border-border p-2 text-sm">
+                  <span>{purpose}</span>
+                  <span className="flex items-center gap-2">
+                    <Badge tone={status === "Granted" ? "positive" : status === "Revoked" ? "negative" : "neutral"}>{status}</Badge>
+                    {status !== "Granted" && (
+                      <button
+                        type="button"
+                        onClick={() => consentMutation.mutate({ purpose, status: "Granted" })}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Grant
+                      </button>
+                    )}
+                    {status !== "Revoked" && status !== "Not Set" && (
+                      <button
+                        type="button"
+                        onClick={() => consentMutation.mutate({ purpose, status: "Revoked" })}
+                        className="text-xs text-negative hover:underline"
+                      >
+                        Revoke
+                      </button>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </Card>
+      )}
     </div>
   );
 }

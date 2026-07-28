@@ -6,6 +6,7 @@ import { WorkforceAnalyticsPage } from "./features/analytics/WorkforceAnalyticsP
 import { CustomReportBuilderPage } from "./features/analytics/CustomReportBuilderPage";
 import { AuditLogPage } from "./features/security/AuditLogPage";
 import { AccessReviewPage } from "./features/security/AccessReviewPage";
+import { ComplianceOverviewPage } from "./features/security/ComplianceOverviewPage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
@@ -112,6 +113,7 @@ export default function App() {
           <Route path="/settings" element={<AdminConsolePage />} />
           <Route path="/security/audit-logs" element={<AuditLogPage />} />
           <Route path="/security/access-reviews" element={<AccessReviewPage />} />
+          <Route path="/security/compliance-overview" element={<ComplianceOverviewPage />} />
           <Route path="/ops" element={<OpsPage />} />
           <Route path="/implementation" element={<ImplementationHubPage />} />
           <Route path="/security" element={<SecurityPage />} />

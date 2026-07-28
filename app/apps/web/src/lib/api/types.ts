@@ -2207,6 +2207,31 @@ export interface FeatureFlag {
   updatedAt: string;
 }
 
+export const CONSENT_PURPOSES = [
+  "BackgroundVerification",
+  "DataSharingThirdParty",
+  "MarketingCommunications",
+  "Photography",
+  "Other",
+] as const;
+export type ConsentPurpose = (typeof CONSENT_PURPOSES)[number];
+
+export interface ConsentRecord {
+  id: string;
+  purpose: string;
+  status: "Granted" | "Revoked";
+  grantedAt: string;
+  revokedAt: string | null;
+  notes: string | null;
+  employee?: { legalName: string };
+}
+
+export interface ComplianceOverview {
+  complianceTasks: { open: number; overdue: number };
+  accessReview: { id: string; periodLabel: string; totalItems: number; pendingItems: number } | null;
+  consent: { total: number; revoked: number };
+}
+
 export interface UpsertSystemSettingInput {
   value: string;
   description?: string;

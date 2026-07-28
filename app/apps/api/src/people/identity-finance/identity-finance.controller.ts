@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
 import { CreateBankAccountDto } from "./dto/create-bank-account.dto";
 import { CreateIdentityDocumentDto } from "./dto/create-identity-document.dto";
+import { RevealSensitiveFieldDto } from "./dto/reveal-sensitive-field.dto";
 import { UpsertTaxProfileDto } from "./dto/upsert-tax-profile.dto";
 import { IdentityFinanceService } from "./identity-finance.service";
 
@@ -33,6 +34,13 @@ export class IdentityFinanceController {
   @HttpCode(200)
   async upsertTaxProfile(@Param("employeeId") employeeId: string, @Body() dto: UpsertTaxProfileDto) {
     const data = await this.service.upsertTaxProfile(employeeId, dto);
+    return { data };
+  }
+
+  @Post("identity-finance/reveal")
+  @HttpCode(200)
+  async reveal(@Param("employeeId") employeeId: string, @Body() dto: RevealSensitiveFieldDto) {
+    const data = await this.service.reveal(employeeId, dto);
     return { data };
   }
 }

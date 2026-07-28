@@ -160,6 +160,7 @@ model Tenant {
   incentiveBonuses            IncentiveBonus[]
   reportDefinitions           ReportDefinition[]
   featureFlags                FeatureFlag[]
+  consentRecords              ConsentRecord[]
 
   @@map("tenants")
 }
@@ -491,6 +492,7 @@ model Employee {
   conductedSafetyAssessments   SafetyAssessment[]
   healthRecords                HealthRecord[]
   documentRecords              Document[]
+  consentRecords               ConsentRecord[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
@@ -4462,4 +4464,33 @@ model FeatureFlag {
 
   @@unique([tenantId, key])
   @@map("feature_flags")
+}
+
+/// W0·E29 Security and Governance — consent management. One record per
+/// (employee, purpose); status flips between Granted/Revoked rather than
+/// accumulating history rows, since no consumer needs a full consent-change
+/// timeline yet — just the current state.
+model ConsentRecord {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// BackgroundVerification | DataSharingThirdParty | MarketingCommunications | Photography | Other
+  purpose String
+
+  /// Granted | Revoked
+  status String @default("Granted")
+
+  grantedAt DateTime  @default(now()) @map("granted_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  notes     String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, employeeId, purpose])
+  @@map("consent_records")
 }

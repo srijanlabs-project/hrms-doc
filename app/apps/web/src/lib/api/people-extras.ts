@@ -53,6 +53,16 @@ export function addBankAccount(employeeId: string, input: CreateBankAccountInput
 export function upsertTaxProfile(employeeId: string, input: UpsertTaxProfileInput) {
   return apiRequest(`${base(employeeId)}/tax-profile`, { method: "PUT", body: JSON.stringify(input) });
 }
+export function revealSensitiveField(
+  employeeId: string,
+  recordType: "IdentityDocument" | "BankAccount",
+  recordId: string,
+): Promise<{ field: string; value: string }> {
+  return apiRequest(`${base(employeeId)}/identity-finance/reveal`, {
+    method: "POST",
+    body: JSON.stringify({ recordType, recordId }),
+  });
+}
 
 export function getBackground(employeeId: string): Promise<BackgroundBundle> {
   return apiRequest<BackgroundBundle>(`${base(employeeId)}/background`);

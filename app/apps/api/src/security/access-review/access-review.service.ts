@@ -52,6 +52,15 @@ export class AccessReviewService {
     return this.repository.findAllCycles(this.tenantId);
   }
 
+  /** Compliance-overview rollup consumer — summarizes the currently open cycle, if any. */
+  async getOpenCycleSummary() {
+    const cycles = await this.repository.findAllCycles(this.tenantId);
+    const open = cycles.find((c) => c.status === "Open");
+    if (!open) return null;
+    const pendingItems = await this.repository.countPendingItems(this.tenantId, open.id);
+    return { id: open.id, periodLabel: open.periodLabel, totalItems: open._count.items, pendingItems };
+  }
+
   async getCycle(id: string) {
     const cycle = await this.repository.findCycleWithItems(this.tenantId, id);
     if (!cycle) {

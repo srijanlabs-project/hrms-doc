@@ -108,6 +108,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Organization Settings", to: "/organization", icon: Network },
         { label: "Audit Logs", to: "/security/audit-logs", icon: ScrollText },
         { label: "Access Reviews", to: "/security/access-reviews", icon: UserCheck },
+        { label: "Compliance Overview", to: "/security/compliance-overview", icon: ClipboardCheck },
         { label: "Operations", to: "/ops", icon: Server },
         { label: "Implementation & Migration", to: "/implementation", icon: UploadCloud },
       ],

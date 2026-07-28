@@ -10,6 +10,7 @@ import {
   listSalaryRevisions,
   proposeSalaryRevision,
   rejectSalaryRevision,
+  revealSensitiveField,
   upsertTaxProfile,
 } from "../../lib/api/people-extras";
 
@@ -51,6 +52,12 @@ export function CompensationTab({ employeeId, isAdmin }: { employeeId: string; i
   const approveMutation = useMutation({ mutationFn: (id: string) => approveSalaryRevision(id), onSuccess: invalidateRevisions });
   const rejectMutation = useMutation({ mutationFn: (id: string) => rejectSalaryRevision(id), onSuccess: invalidateRevisions });
   const applyMutation = useMutation({ mutationFn: (id: string) => applySalaryRevision(id), onSuccess: invalidateRevisions });
+
+  const [revealedAccountIds, setRevealedAccountIds] = useState<Record<string, string>>({});
+  const revealAccountMutation = useMutation({
+    mutationFn: (recordId: string) => revealSensitiveField(employeeId, "BankAccount", recordId),
+    onSuccess: (result, recordId) => setRevealedAccountIds((prev) => ({ ...prev, [recordId]: result.value })),
+  });
 
   const bankMutation = useMutation({
     mutationFn: () => addBankAccount(employeeId, { accountHolderName, accountNumber, bankName }),
@@ -157,7 +164,17 @@ export function CompensationTab({ employeeId, isAdmin }: { employeeId: string; i
         <ul className="space-y-1">
           {identityFinance.data?.bankAccounts.map((b) => (
             <li key={b.id} className="rounded-lg border border-border p-2 text-sm">
-              {b.bankName} · ****{b.accountNumber.slice(-4)} {b.isPrimary && <Badge tone="info">Primary</Badge>}
+              {b.bankName} · <span className="font-mono">{revealedAccountIds[b.id] ?? b.accountNumber}</span>{" "}
+              {!revealedAccountIds[b.id] && (
+                <button
+                  type="button"
+                  onClick={() => revealAccountMutation.mutate(b.id)}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Reveal
+                </button>
+              )}{" "}
+              {b.isPrimary && <Badge tone="info">Primary</Badge>}
             </li>
           ))}
         </ul>
