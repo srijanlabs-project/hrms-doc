@@ -18,5 +18,6 @@ import { TransferPromotionService } from "./transfer-promotion/transfer-promotio
   imports: [LeaveModule, ExpenseModule, TravelModule, PeopleModule, AttendanceModule, AuthModule, NotificationsModule],
   controllers: [TeamDashboardController, TransferPromotionController],
   providers: [TeamDashboardService, TransferPromotionService, TransferPromotionRepository, CareerRepository],
+  exports: [TeamDashboardService],
 })
 export class MssModule {}

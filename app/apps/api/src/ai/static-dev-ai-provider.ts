@@ -7,6 +7,8 @@ const DEFAULT_SUGGESTIONS = [
   "Did I mark attendance today?",
   "What's my latest payslip?",
   "How many employees do we have?",
+  "What's our attrition trend?",
+  "What's pending my approval?",
 ];
 
 function money(value: number | null): string {
@@ -72,6 +74,63 @@ export class StaticDevAiProvider implements AiProvider {
       return this.reply(`Your organization currently has ${count} employee record(s).`);
     }
 
+    if (text.includes("attrition") || text.includes("workforce trend") || text.includes("headcount trend")) {
+      const trend = await this.data.getWorkforceTrendSummary();
+      if (!trend) {
+        return this.reply("No workforce trend data is available yet.");
+      }
+      return this.reply(
+        `This month's headcount is ${trend.headcount}, with ${trend.separations} separation(s) and a ${trend.attritionRate}% attrition rate.`,
+      );
+    }
+
+    if (text.includes("approval") || (text.includes("pending") && text.includes("me"))) {
+      const summary = await this.data.getPendingApprovalsSummary();
+      if (summary === null) {
+        return this.reply("Your account isn't linked to an employee record, so there's no approval queue to check.");
+      }
+      if (summary.count === 0) {
+        return this.reply("You have no pending approvals right now.");
+      }
+      return this.reply(
+        `You have ${summary.count} pending approval(s), the oldest waiting ${summary.oldestDays} day(s). Check the Team Dashboard for details.`,
+      );
+    }
+
+    if (text.includes("succession") || text.includes("critical role")) {
+      const summary = await this.data.getSuccessionCoverageSummary();
+      if (summary === "restricted") {
+        return this.reply("Succession planning is restricted to HR Operations and Org Admin roles.");
+      }
+      if (summary.total === 0) {
+        return this.reply("No critical roles are configured yet.");
+      }
+      const uncoveredLine = summary.uncoveredTitles.length
+        ? ` Uncovered: ${summary.uncoveredTitles.join(", ")}.`
+        : "";
+      return this.reply(`${summary.covered} of ${summary.total} critical role(s) have ready successor coverage.${uncoveredLine}`);
+    }
+
+    if (text.includes("recognition") || text.includes("kudos")) {
+      const summary = await this.data.getRecognitionSummary();
+      if (summary === null) {
+        return this.reply("Your account isn't linked to an employee record, so there's no recognition activity to show.");
+      }
+      return this.reply(`You've received ${summary.received} recognition(s) and given ${summary.given}.`);
+    }
+
+    if (text.includes("team") && (text.includes("training") || text.includes("learning") || text.includes("compliance"))) {
+      const summary = await this.data.getTeamLearningGapSummary();
+      if (summary === null) {
+        return this.reply("You don't have any direct reports to show training completion for.");
+      }
+      if (summary.incomplete.length === 0) {
+        return this.reply("Your team has no overdue mandatory training.");
+      }
+      const lines = summary.incomplete.map((i) => `${i.employeeName}: ${i.courseTitle}`);
+      return this.reply(`Mandatory training not yet complete:\n${lines.join("\n")}`);
+    }
+
     if (text.includes("holiday")) {
       return this.reply("The holiday calendar isn't available yet — check with HR for upcoming holidays.");
     }
@@ -81,7 +140,7 @@ export class StaticDevAiProvider implements AiProvider {
     }
 
     return this.reply(
-      "I can help with your leave balance, today's attendance, your latest payslip, or company headcount. Try one of the suggestions below.",
+      "I can help with your leave balance, today's attendance, your latest payslip, company headcount, attrition trends, your pending approvals, succession coverage, recognition, or your team's training completion. Try one of the suggestions below.",
     );
   }
 

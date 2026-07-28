@@ -18,5 +18,6 @@ import { WorkforceAnalyticsService } from "./workforce/workforce-analytics.servi
   imports: [PeopleModule],
   controllers: [WorkforceAnalyticsController, CustomReportController],
   providers: [WorkforceAnalyticsService, CustomReportRepository, CustomReportService],
+  exports: [WorkforceAnalyticsService],
 })
 export class AnalyticsModule {}

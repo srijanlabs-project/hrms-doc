@@ -19,5 +19,6 @@ import { TalentAssessmentService } from "./talent-assessment.service";
     SuccessionService,
     SuccessionRepository,
   ],
+  exports: [SuccessionService],
 })
 export class TalentModule {}

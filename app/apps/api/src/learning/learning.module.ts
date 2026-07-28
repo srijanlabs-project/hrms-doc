@@ -24,5 +24,6 @@ import { EnrollmentService } from "./enrollment/enrollment.service";
     CertificationService,
     CertificationRepository,
   ],
+  exports: [EnrollmentService],
 })
 export class LearningModule {}

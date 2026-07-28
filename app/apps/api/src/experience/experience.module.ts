@@ -19,5 +19,6 @@ import { SurveyService } from "./survey/survey.service";
   imports: [AuthModule, PeopleModule, NotificationsModule],
   controllers: [SurveyController, RecognitionController],
   providers: [SurveyService, SurveyRepository, RecognitionService, RecognitionRepository],
+  exports: [RecognitionService],
 })
 export class ExperienceModule {}
