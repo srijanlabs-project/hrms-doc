@@ -37,6 +37,14 @@ function RequestRow({ request, isAdmin, onDecide }: { request: TransferPromotion
           <p className="mt-1 text-xs text-ink-faint">
             Effective {new Date(request.effectiveDate).toLocaleDateString("en-IN")} · {request.reason}
           </p>
+          {request.changeType === "Promotion" && (
+            <p className="mt-1 text-xs text-ink-faint">
+              Latest appraisal rating:{" "}
+              {request.latestAppraisalRating !== null
+                ? `${request.latestAppraisalRating}/5 (${request.latestAppraisalPeriodYear})`
+                : "No finalized appraisal on record"}
+            </p>
+          )}
           {request.decisionNote && <p className="mt-1 text-xs text-ink-faint">Note: {request.decisionNote}</p>}
         </div>
         {isAdmin && request.status === "Proposed" && (

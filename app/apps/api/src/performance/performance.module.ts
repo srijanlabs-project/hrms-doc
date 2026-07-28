@@ -23,6 +23,9 @@ import { GoalService } from "./goal/goal.service";
 import { KeyResultController } from "./keyresult/keyresult.controller";
 import { KeyResultRepository } from "./keyresult/keyresult.repository";
 import { KeyResultService } from "./keyresult/keyresult.service";
+import { PipController } from "./pip/pip.controller";
+import { PipRepository } from "./pip/pip.repository";
+import { PipService } from "./pip/pip.service";
 
 /** Performance Management, Phase 7 — docs/03-module-specifications/11-performance-management.md, deepened per Wave 3 E11. */
 @Module({
@@ -35,6 +38,7 @@ import { KeyResultService } from "./keyresult/keyresult.service";
     CalibrationController,
     CompetencyController,
     CheckInController,
+    PipController,
   ],
   providers: [
     GoalService,
@@ -51,6 +55,8 @@ import { KeyResultService } from "./keyresult/keyresult.service";
     CompetencyRepository,
     CheckInService,
     CheckInRepository,
+    PipService,
+    PipRepository,
   ],
 })
 export class PerformanceModule {}

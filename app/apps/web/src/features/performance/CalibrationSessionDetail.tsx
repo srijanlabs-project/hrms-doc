@@ -2,9 +2,35 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Badge } from "../../components/ui/Badge";
 import { Card } from "../../components/ui/Card";
+import { TrendBarChart } from "../analytics/TrendBarChart";
 import { ApiError } from "../../lib/api/http";
 import { adjustCalibrationCase, closeCalibrationSession, generateCalibrationCases, getCalibrationSession } from "../../lib/api/performance";
 import type { CalibrationCase } from "../../lib/api/types";
+
+const RATINGS = [1, 2, 3, 4, 5];
+
+/** W3·E11 "bell curve" gap closure — a real rating-distribution histogram over this session's own cases, before and after calibration. No forced-ranking/guidance-band enforcement: the spec explicitly forbids silently auto-editing ratings. */
+function DistributionChart({ cases }: { cases: CalibrationCase[] }) {
+  if (cases.length === 0) return null;
+  const originalBars = RATINGS.map((r) => ({ label: String(r), value: cases.filter((c) => c.originalRating === r).length }));
+  const calibratedBars = RATINGS.map((r) => ({
+    label: String(r),
+    value: cases.filter((c) => (c.calibratedRating ?? c.originalRating) === r).length,
+  }));
+
+  return (
+    <div className="mb-4 grid grid-cols-1 gap-4 rounded-lg border border-border p-3 sm:grid-cols-2">
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">Original Rating Distribution</p>
+        <TrendBarChart bars={originalBars} />
+      </div>
+      <div>
+        <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-faint">Calibrated Rating Distribution</p>
+        <TrendBarChart bars={calibratedBars} />
+      </div>
+    </div>
+  );
+}
 
 function CaseRow({ calibrationCase, sessionId }: { calibrationCase: CalibrationCase; sessionId: string }) {
   const queryClient = useQueryClient();
@@ -109,6 +135,7 @@ export function CalibrationSessionDetail({ sessionId }: { sessionId: string }) {
       {session.data.cases.length === 0 && (
         <p className="text-ink-muted">No cases yet — generate cases from finalized appraisals for this period.</p>
       )}
+      <DistributionChart cases={session.data.cases} />
       <ul className="space-y-2">
         {session.data.cases.map((c) => (
           <CaseRow key={c.id} calibrationCase={c} sessionId={sessionId} />

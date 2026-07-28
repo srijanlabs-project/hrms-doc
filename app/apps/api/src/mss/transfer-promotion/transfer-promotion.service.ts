@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { AuthRepository } from "../../auth/auth.repository";
 import { NotificationService } from "../../notifications/notification.service";
+import { AppraisalRepository } from "../../performance/appraisal/appraisal.repository";
 import { CareerRepository } from "../../people/career/career.repository";
 import { CurrentEmployeeService } from "../../people/current-employee.service";
 import { EmployeeRepository } from "../../people/employee/employee.repository";
@@ -45,6 +46,7 @@ export class TransferPromotionService {
     private readonly authRepository: AuthRepository,
     private readonly notificationService: NotificationService,
     private readonly currentEmployee: CurrentEmployeeService,
+    private readonly appraisalRepository: AppraisalRepository,
     private readonly requestContext: RequestContextService,
   ) {}
 
@@ -59,6 +61,13 @@ export class TransferPromotionService {
       throw new ForbiddenAppError(this.requestContext.correlationId);
     }
 
+    // W3·E11 "promotions linkage" gap closure: snapshot the rating that
+    // justified this request, same as CalibrationCase.originalRating —
+    // the live appraisal can change or get calibrated afterward.
+    const appraisals = await this.appraisalRepository.findForEmployee(tenantId, dto.employeeId);
+    const latestFinalized = appraisals.find((a) => a.status === "Finalized");
+    const latestAppraisalRating = latestFinalized ? (latestFinalized.calibratedRating ?? latestFinalized.managerRating) : null;
+
     const request = await this.repository.create(tenantId, {
       employeeId: dto.employeeId,
       requestedByUserId: userId,
@@ -68,6 +77,8 @@ export class TransferPromotionService {
       toGradeId: dto.toGradeId,
       effectiveDate: new Date(dto.effectiveDate),
       reason: dto.reason,
+      latestAppraisalRating,
+      latestAppraisalPeriodYear: latestFinalized?.periodYear ?? null,
     });
 
     const admins = await this.authRepository.findUsersWithAnyRole(tenantId, ADMIN_ROLES);

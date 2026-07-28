@@ -21,6 +21,8 @@ export interface TransferPromotionRequest {
   decidedByUserId: string | null;
   decisionNote: string | null;
   appliedAt: string | null;
+  latestAppraisalRating: number | null;
+  latestAppraisalPeriodYear: number | null;
   createdAt: string;
 }
 

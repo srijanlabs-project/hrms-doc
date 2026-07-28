@@ -6,6 +6,7 @@ import { LeaveModule } from "../leave/leave.module";
 import { NotificationsModule } from "../notifications/notifications.module";
 import { CareerRepository } from "../people/career/career.repository";
 import { PeopleModule } from "../people/people.module";
+import { AppraisalRepository } from "../performance/appraisal/appraisal.repository";
 import { TravelModule } from "../travel/travel.module";
 import { TeamDashboardController } from "./team-dashboard.controller";
 import { TeamDashboardService } from "./team-dashboard.service";
@@ -17,7 +18,7 @@ import { TransferPromotionService } from "./transfer-promotion/transfer-promotio
 @Module({
   imports: [LeaveModule, ExpenseModule, TravelModule, PeopleModule, AttendanceModule, AuthModule, NotificationsModule],
   controllers: [TeamDashboardController, TransferPromotionController],
-  providers: [TeamDashboardService, TransferPromotionService, TransferPromotionRepository, CareerRepository],
+  providers: [TeamDashboardService, TransferPromotionService, TransferPromotionRepository, CareerRepository, AppraisalRepository],
   exports: [TeamDashboardService],
 })
 export class MssModule {}

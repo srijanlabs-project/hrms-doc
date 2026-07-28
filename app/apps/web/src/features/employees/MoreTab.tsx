@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Badge } from "../../components/ui/Badge";
 import { Card } from "../../components/ui/Card";
 import { listMyConsent, setMyConsent } from "../../lib/api/consent";
+import { listMyPips } from "../../lib/api/performance";
 import { addCertification, addEducation, addPriorExperience, addSkill, getBackground } from "../../lib/api/people-extras";
 import { CONSENT_PURPOSES } from "../../lib/api/types";
 import { useAuth } from "../auth/AuthProvider";
@@ -19,6 +20,7 @@ export function MoreTab({ employeeId }: { employeeId: string }) {
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ["background", employeeId] });
 
   const consent = useQuery({ queryKey: ["consent-mine"], queryFn: listMyConsent, enabled: isSelf });
+  const myPips = useQuery({ queryKey: ["pips", "mine"], queryFn: listMyPips, enabled: isSelf });
   const consentMutation = useMutation({
     mutationFn: ({ purpose, status }: { purpose: string; status: "Granted" | "Revoked" }) => setMyConsent(purpose, status),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["consent-mine"] }),
@@ -246,6 +248,35 @@ export function MoreTab({ employeeId }: { employeeId: string }) {
                 </li>
               );
             })}
+          </ul>
+        </Card>
+      )}
+
+      {isSelf && (
+        <Card title="Performance Improvement Plans">
+          <ul className="space-y-2">
+            {myPips.data?.map((pip) => (
+              <li key={pip.id} className="rounded-lg border border-border p-2 text-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <span>
+                    {new Date(pip.startDate).toLocaleDateString("en-IN")} – {new Date(pip.endDate).toLocaleDateString("en-IN")}
+                  </span>
+                  <Badge tone={pip.status === "Completed" ? "positive" : pip.status === "Failed" ? "negative" : pip.status === "Extended" ? "warning" : "info"}>
+                    {pip.status}
+                  </Badge>
+                </div>
+                <p className="mt-1 text-xs text-ink-faint">{pip.reason}</p>
+                <ul className="mt-2 space-y-0.5">
+                  {pip.objectives.map((o) => (
+                    <li key={o.id} className="text-xs">
+                      <Badge tone={o.status === "Completed" ? "positive" : "neutral"}>{o.status === "Completed" ? "Done" : "Pending"}</Badge>{" "}
+                      {o.title}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+            {myPips.data?.length === 0 && <p className="text-xs text-ink-faint">No performance improvement plans on record.</p>}
           </ul>
         </Card>
       )}

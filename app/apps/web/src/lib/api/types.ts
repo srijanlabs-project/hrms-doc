@@ -1554,6 +1554,37 @@ export interface CreateCalibrationSessionInput {
   cohortLabel: string;
 }
 
+/** W3·E11 gap closure — Performance Improvement Plan. */
+export interface PipObjective {
+  id: string;
+  title: string;
+  targetDate: string | null;
+  status: "NotStarted" | "Completed";
+  completedAt: string | null;
+}
+
+export interface PerformanceImprovementPlan {
+  id: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string; managerId: string | null };
+  reason: string;
+  startDate: string;
+  endDate: string;
+  status: "Active" | "Completed" | "Extended" | "Failed";
+  outcomeNotes: string | null;
+  closedAt: string | null;
+  objectives: PipObjective[];
+  createdAt: string;
+}
+
+export interface CreatePipInput {
+  employeeId: string;
+  reason: string;
+  startDate: string;
+  endDate: string;
+  objectives: string[];
+}
+
 /** Workforce Management (E07) — 03-shift-management.md. No version history: edits apply immediately. */
 export interface ShiftDefinition {
   id: string;

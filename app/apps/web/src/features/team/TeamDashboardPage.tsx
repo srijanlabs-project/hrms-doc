@@ -7,6 +7,7 @@ import { KpiCard } from "../../components/ui/KpiCard";
 import { getTeamDashboard } from "../../lib/api/team-dashboard";
 import { useAuth } from "../auth/AuthProvider";
 import { employeeStatusTone } from "../employees/status-tone";
+import { PipPanel } from "./PipPanel";
 import { TransferPromotionPanel } from "./TransferPromotionPanel";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -90,6 +91,7 @@ export function TeamDashboardPage() {
       </div>
 
       <TransferPromotionPanel roster={dashboard.data?.roster ?? []} isAdmin={isAdmin} />
+      <PipPanel roster={dashboard.data?.roster ?? []} isAdmin={isAdmin} />
     </div>
   );
 }

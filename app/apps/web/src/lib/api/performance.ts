@@ -15,9 +15,11 @@ import type {
   FeedbackCampaign,
   FeedbackPendingRequest,
   FeedbackSummary,
+  CreatePipInput,
   Goal,
   KeyResult,
   NominateRaterInput,
+  PerformanceImprovementPlan,
   SubmitFeedback360Input,
 } from "./types";
 
@@ -206,5 +208,32 @@ export function adjustCalibrationCase(caseId: string, calibratedRating: number, 
   return apiRequest(`/performance/calibration/cases/${caseId}/adjust`, {
     method: "POST",
     body: JSON.stringify({ calibratedRating, rationale }),
+  });
+}
+
+export function createPip(input: CreatePipInput): Promise<PerformanceImprovementPlan> {
+  return apiRequest<PerformanceImprovementPlan>("/performance/pips", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function listMyPips(): Promise<PerformanceImprovementPlan[]> {
+  return apiRequest<PerformanceImprovementPlan[]>("/performance/pips/mine");
+}
+
+export function listTeamPips(): Promise<PerformanceImprovementPlan[]> {
+  return apiRequest<PerformanceImprovementPlan[]>("/performance/pips/team");
+}
+
+export function listAllPips(): Promise<PerformanceImprovementPlan[]> {
+  return apiRequest<PerformanceImprovementPlan[]>("/performance/pips");
+}
+
+export function completePipObjective(objectiveId: string): Promise<PerformanceImprovementPlan> {
+  return apiRequest<PerformanceImprovementPlan>(`/performance/pips/objectives/${objectiveId}/complete`, { method: "POST" });
+}
+
+export function closePip(id: string, outcome: string, outcomeNotes?: string): Promise<PerformanceImprovementPlan> {
+  return apiRequest<PerformanceImprovementPlan>(`/performance/pips/${id}/close`, {
+    method: "POST",
+    body: JSON.stringify({ outcome, outcomeNotes }),
   });
 }
