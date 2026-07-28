@@ -12,6 +12,7 @@ import { CommunicationModule } from "./communication/communication.module";
 import { ContractorModule } from "./contractor/contractor.module";
 import { DocumentModule } from "./document/document.module";
 import { SecurityModule } from "./security/security.module";
+import { PermissionsMatrixModule } from "./security/permissions-matrix/permissions-matrix.module";
 import { OpsModule } from "./ops/ops.module";
 import { ImplementationModule } from "./implementation/implementation.module";
 import { ExitModule } from "./exit/exit.module";
@@ -105,6 +106,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     HealthSafetyModule,
     DocumentModule,
     SecurityModule,
+    PermissionsMatrixModule,
     OpsModule,
     ImplementationModule,
   ],

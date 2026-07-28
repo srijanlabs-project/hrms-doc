@@ -7,6 +7,7 @@ import { CustomReportBuilderPage } from "./features/analytics/CustomReportBuilde
 import { AuditLogPage } from "./features/security/AuditLogPage";
 import { AccessReviewPage } from "./features/security/AccessReviewPage";
 import { ComplianceOverviewPage } from "./features/security/ComplianceOverviewPage";
+import { PermissionsMatrixPage } from "./features/security/PermissionsMatrixPage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
@@ -114,6 +115,7 @@ export default function App() {
           <Route path="/security/audit-logs" element={<AuditLogPage />} />
           <Route path="/security/access-reviews" element={<AccessReviewPage />} />
           <Route path="/security/compliance-overview" element={<ComplianceOverviewPage />} />
+          <Route path="/security/permissions-matrix" element={<PermissionsMatrixPage />} />
           <Route path="/ops" element={<OpsPage />} />
           <Route path="/implementation" element={<ImplementationHubPage />} />
           <Route path="/security" element={<SecurityPage />} />
