@@ -63,6 +63,7 @@ export class ExpenseClaimService {
       merchant: dto.merchant,
       businessPurpose: dto.businessPurpose,
       approverId: approverEmployeeId,
+      travelRequestId: dto.travelRequestId,
     });
 
     if (approverUserId) {

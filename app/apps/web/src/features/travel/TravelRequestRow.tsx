@@ -9,20 +9,24 @@ function money(value: number): string {
 export function TravelRequestRow({
   request,
   showEmployee = false,
+  isSelected = false,
   onCancel,
   onApprove,
   onReject,
   onMarkCompleted,
+  onManage,
 }: {
   request: TravelRequest;
   showEmployee?: boolean;
+  isSelected?: boolean;
   onCancel?: (id: string) => void;
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
   onMarkCompleted?: (id: string) => void;
+  onManage?: (id: string) => void;
 }) {
   return (
-    <li className="rounded-lg border border-border p-3">
+    <li className={`rounded-lg border p-3 ${isSelected ? "border-primary bg-primary-soft" : "border-border"}`}>
       <div className="flex items-center justify-between">
         <div>
           <span className="font-medium">
@@ -41,6 +45,15 @@ export function TravelRequestRow({
           )}
         </div>
         <div className="flex shrink-0 gap-2">
+          {onManage && (
+            <button
+              type="button"
+              onClick={() => onManage(request.id)}
+              className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-hover"
+            >
+              {isSelected ? "Hide" : "Manage Trip"}
+            </button>
+          )}
           {request.status === "Pending" && onCancel && (
             <button
               type="button"

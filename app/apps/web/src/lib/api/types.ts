@@ -181,6 +181,53 @@ export interface CreateTravelRequestInput {
   purpose?: string;
 }
 
+/** Wave 3 W4·E16 gap closure ("trip planning" + "itinerary"). */
+export interface TravelItinerarySegment {
+  id: string;
+  travelRequestId: string;
+  sequence: number;
+  mode: "Flight" | "Train" | "Bus" | "Car" | "Hotel" | "Other";
+  fromLocation: string;
+  toLocation: string;
+  departAt: string;
+  arriveAt: string | null;
+  bookingReference: string | null;
+  notes: string | null;
+}
+
+export interface CreateItinerarySegmentInput {
+  sequence: number;
+  mode: TravelItinerarySegment["mode"];
+  fromLocation: string;
+  toLocation: string;
+  departAt: string;
+  arriveAt?: string;
+  bookingReference?: string;
+  notes?: string;
+}
+
+/** Wave 3 W4·E16 gap closure ("travel advances"). */
+export interface TravelAdvance {
+  id: string;
+  travelRequestId: string;
+  employee: { id: string; legalName: string; employeeCode: string };
+  requestedAmount: number;
+  approvedAmount: number | null;
+  status: "Requested" | "Approved" | "Rejected" | "Disbursed";
+  decisionNote: string | null;
+  disbursedAt: string | null;
+  createdAt: string;
+}
+
+/** Wave 3 W4·E16 gap closure ("travel expense settlement") — always computed live. */
+export interface TravelSettlement {
+  travelRequestId: string;
+  totalAdvance: number;
+  totalExpenses: number;
+  netAmount: number;
+  netDirection: "EmployeeOwesCompany" | "CompanyOwesEmployee" | "Settled";
+}
+
 export interface Asset {
   id: string;
   assetTag: string;

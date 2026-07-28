@@ -184,6 +184,8 @@ model Tenant {
   announcementComments        AnnouncementComment[]
   wellnessPrograms            WellnessProgram[]
   wellnessEnrollments         WellnessEnrollment[]
+  travelItinerarySegments     TravelItinerarySegment[]
+  travelAdvances              TravelAdvance[]
 
   @@map("tenants")
 }
@@ -529,6 +531,7 @@ model Employee {
   eventRsvps                   EventRsvp[]
   announcementComments         AnnouncementComment[]
   wellnessEnrollments          WellnessEnrollment[]
+  travelAdvances               TravelAdvance[]
 
   @@unique([tenantId, employeeCode])
   @@index([tenantId])
@@ -1983,6 +1986,12 @@ model ExpenseClaim {
   merchant        String?
   businessPurpose String?  @map("business_purpose")
 
+  /// Wave 3 W4·E16 gap closure ("travel expense settlement") — an optional
+  /// link so a trip's expense claims can be reconciled live against its
+  /// travel advances. Null for non-travel expenses.
+  travelRequestId String?        @map("travel_request_id") @db.Uuid
+  travelRequest   TravelRequest? @relation(fields: [travelRequestId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
   /// Pending | Approved | Rejected | Paid | Cancelled
   status String @default("Pending")
 
@@ -2004,6 +2013,7 @@ model ExpenseClaim {
   @@index([tenantId])
   @@index([tenantId, employeeId])
   @@index([tenantId, approverId])
+  @@index([tenantId, travelRequestId])
   @@map("expense_claims")
 }
 
@@ -2050,12 +2060,83 @@ model TravelRequest {
   updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
 
-  tenant Tenant @relation(fields: [tenantId], references: [id])
+  tenant            Tenant                   @relation(fields: [tenantId], references: [id])
+  itinerarySegments TravelItinerarySegment[]
+  advances          TravelAdvance[]
+  expenseClaims     ExpenseClaim[]
 
   @@index([tenantId])
   @@index([tenantId, employeeId])
   @@index([tenantId, approverId])
   @@map("travel_requests")
+}
+
+/// Wave 3 W4·E16 gap closure ("trip planning" + "itinerary") — one model
+/// covers both: planning a trip IS building its leg-by-leg itinerary. No
+/// booking-tool integration — bookingReference is free-text the employee
+/// fills in after booking elsewhere, not a live vendor lookup.
+model TravelItinerarySegment {
+  id              String @id @default(uuid()) @db.Uuid
+  tenantId        String @map("tenant_id") @db.Uuid
+  travelRequestId String @map("travel_request_id") @db.Uuid
+
+  sequence Int
+
+  /// Flight | Train | Bus | Car | Hotel | Other
+  mode String
+
+  fromLocation String    @map("from_location")
+  toLocation   String    @map("to_location")
+  departAt     DateTime  @map("depart_at") @db.Timestamptz(6)
+  arriveAt     DateTime? @map("arrive_at") @db.Timestamptz(6)
+
+  bookingReference String? @map("booking_reference")
+  notes            String?
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  travelRequest TravelRequest @relation(fields: [travelRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, travelRequestId])
+  @@map("travel_itinerary_segments")
+}
+
+/// Wave 3 W4·E16 gap closure ("travel advances") — a cash-advance request
+/// against an approved trip. No repayment schedule (unlike LoanAdvance/E09):
+/// reconciliation happens once, at settlement, against the trip's linked
+/// expense claims (see TravelSettlementService), not via recurring payroll
+/// deduction.
+model TravelAdvance {
+  id              String   @id @default(uuid()) @db.Uuid
+  tenantId        String   @map("tenant_id") @db.Uuid
+  travelRequestId String   @map("travel_request_id") @db.Uuid
+  employeeId      String   @map("employee_id") @db.Uuid
+  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  requestedAmount Float  @map("requested_amount")
+  approvedAmount  Float? @map("approved_amount")
+
+  /// Requested | Approved | Rejected | Disbursed
+  status String @default("Requested")
+
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+  disbursedAt     DateTime? @map("disbursed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant        Tenant        @relation(fields: [tenantId], references: [id])
+  travelRequest TravelRequest @relation(fields: [travelRequestId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, travelRequestId])
+  @@index([tenantId, employeeId])
+  @@map("travel_advances")
 }
 
 /// Wave 4 slice of docs/08-submodule-specifications/18-asset-management/01-asset-assignment.md

@@ -1,4 +1,4 @@
-import { IsDateString, IsIn, IsOptional, IsPositive, IsString, Length } from "class-validator";
+import { IsDateString, IsIn, IsOptional, IsPositive, IsString, IsUUID, Length } from "class-validator";
 
 const EXPENSE_CATEGORIES = ["Travel", "Lodging", "Meals", "Transport", "OfficeSupplies", "Other"] as const;
 
@@ -21,4 +21,9 @@ export class CreateExpenseClaimDto {
   @IsString()
   @Length(0, 500)
   businessPurpose?: string;
+
+  /** Wave 3 W4·E16 gap closure ("travel expense settlement") — links this claim to a trip. */
+  @IsOptional()
+  @IsUUID()
+  travelRequestId?: string;
 }
