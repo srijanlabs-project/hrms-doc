@@ -1,8 +1,11 @@
 import { apiRequest } from "./http";
 import type {
   AddSuccessorInput,
+  CareerPlan,
+  CreateCareerPlanInput,
   CreateCriticalRoleInput,
   CriticalRole,
+  CriticalRoleWithRisk,
   Successor,
   TalentAssessment,
   UpsertTalentAssessmentInput,
@@ -41,4 +44,36 @@ export function removeSuccessor(id: string): Promise<Successor> {
 
 export function runSuccessionCoverageCheckNow(): Promise<{ triggered: boolean }> {
   return apiRequest<{ triggered: boolean }>("/talent/succession/run-now", { method: "POST" });
+}
+
+export function getWorkforcePlanningView(): Promise<CriticalRoleWithRisk[]> {
+  return apiRequest<CriticalRoleWithRisk[]>("/talent/succession/workforce-planning");
+}
+
+export function createMyCareerPlan(input: CreateCareerPlanInput): Promise<CareerPlan> {
+  return apiRequest<CareerPlan>("/talent/career-plans", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function listMyCareerPlans(): Promise<CareerPlan[]> {
+  return apiRequest<CareerPlan[]>("/talent/career-plans/mine");
+}
+
+export function listTeamCareerPlans(): Promise<CareerPlan[]> {
+  return apiRequest<CareerPlan[]>("/talent/career-plans/team");
+}
+
+export function listAllCareerPlans(): Promise<CareerPlan[]> {
+  return apiRequest<CareerPlan[]>("/talent/career-plans");
+}
+
+export function addCareerPlanAction(planId: string, title: string): Promise<CareerPlan> {
+  return apiRequest<CareerPlan>(`/talent/career-plans/${planId}/actions`, { method: "POST", body: JSON.stringify({ title }) });
+}
+
+export function completeCareerPlanAction(actionId: string): Promise<CareerPlan> {
+  return apiRequest<CareerPlan>(`/talent/career-plans/actions/${actionId}/complete`, { method: "POST" });
+}
+
+export function updateCareerPlanStatus(planId: string, status: string): Promise<CareerPlan> {
+  return apiRequest<CareerPlan>(`/talent/career-plans/${planId}/status`, { method: "POST", body: JSON.stringify({ status }) });
 }

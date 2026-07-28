@@ -7,6 +7,7 @@ import { KpiCard } from "../../components/ui/KpiCard";
 import { getTeamDashboard } from "../../lib/api/team-dashboard";
 import { useAuth } from "../auth/AuthProvider";
 import { employeeStatusTone } from "../employees/status-tone";
+import { CareerPlanTeamPanel } from "../talent/CareerPlanTeamPanel";
 import { PipPanel } from "./PipPanel";
 import { TransferPromotionPanel } from "./TransferPromotionPanel";
 
@@ -92,6 +93,7 @@ export function TeamDashboardPage() {
 
       <TransferPromotionPanel roster={dashboard.data?.roster ?? []} isAdmin={isAdmin} />
       <PipPanel roster={dashboard.data?.roster ?? []} isAdmin={isAdmin} />
+      <CareerPlanTeamPanel isAdmin={isAdmin} />
     </div>
   );
 }

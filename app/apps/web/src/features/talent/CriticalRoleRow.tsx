@@ -4,11 +4,11 @@ import { Badge } from "../../components/ui/Badge";
 import { listEmployees } from "../../lib/api/employees";
 import { ApiError } from "../../lib/api/http";
 import { addSuccessor, deactivateCriticalRole, removeSuccessor } from "../../lib/api/talent";
-import type { CriticalRole } from "../../lib/api/types";
+import type { CriticalRoleWithRisk } from "../../lib/api/types";
 
 const READINESS_LEVELS = ["ReadyNow", "Ready1Year", "Ready2Years", "Unknown"] as const;
 
-export function CriticalRoleRow({ role }: { role: CriticalRole }) {
+export function CriticalRoleRow({ role }: { role: CriticalRoleWithRisk }) {
   const queryClient = useQueryClient();
   const employees = useQuery({ queryKey: ["employees"], queryFn: listEmployees });
 
@@ -45,6 +45,11 @@ export function CriticalRoleRow({ role }: { role: CriticalRole }) {
             <Badge tone="positive">Covered</Badge>
           ) : (
             <Badge tone="negative">At Risk</Badge>
+          )}
+          {role.departmentRisk && (
+            <Badge tone={role.departmentRisk.attritionRate >= 20 ? "negative" : role.departmentRisk.attritionRate >= 10 ? "warning" : "neutral"}>
+              Dept attrition {role.departmentRisk.attritionRate}%
+            </Badge>
           )}
           <button
             type="button"

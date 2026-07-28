@@ -958,6 +958,46 @@ export interface AddSuccessorInput {
   notes?: string;
 }
 
+/** Wave 3 E13 gap closure ("workforce planning linkage"). */
+export interface DepartmentRisk {
+  departmentId: string | null;
+  departmentName: string;
+  headcount: number;
+  attritionRate: number;
+}
+
+export interface CriticalRoleWithRisk extends CriticalRole {
+  departmentRisk: DepartmentRisk | null;
+}
+
+/** Wave 3 E13 gap closure ("career planning"). */
+export interface CareerPlanAction {
+  id: string;
+  title: string;
+  status: "NotStarted" | "Completed";
+  completedAt: string | null;
+}
+
+export interface CareerPlan {
+  id: string;
+  employeeId: string;
+  employee: { id: string; legalName: string; employeeCode: string; managerId: string | null };
+  targetDesignationId: string | null;
+  targetDesignation: { id: string; title: string } | null;
+  timeframeYears: number | null;
+  developmentNotes: string;
+  status: "Draft" | "Active" | "Achieved" | "Cancelled";
+  actions: CareerPlanAction[];
+  createdAt: string;
+}
+
+export interface CreateCareerPlanInput {
+  targetDesignationId?: string;
+  timeframeYears?: number;
+  developmentNotes: string;
+  actions?: string[];
+}
+
 export interface Company {
   id: string;
   code: string;

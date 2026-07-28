@@ -1,6 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { AuthRepository } from "../../auth/auth.repository";
+import { WorkforceAnalyticsService } from "../../analytics/workforce/workforce-analytics.service";
 import { NotificationService } from "../../notifications/notification.service";
 import { PrismaService } from "../../platform/prisma/prisma.service";
 import { RequestContextService } from "../../platform/context/request-context.service";
@@ -49,6 +50,7 @@ export class SuccessionService {
     private readonly repository: SuccessionRepository,
     private readonly authRepository: AuthRepository,
     private readonly notificationService: NotificationService,
+    private readonly workforceAnalytics: WorkforceAnalyticsService,
     private readonly prisma: PrismaService,
     private readonly requestContext: RequestContextService,
   ) {}
@@ -68,6 +70,22 @@ export class SuccessionService {
     const { tenantId } = this.requireAuthenticated();
     const roles = await this.repository.findRoles(tenantId, activeOnly);
     return roles.map((role) => ({ ...role, hasReadyCoverage: hasReadyCoverage(role.successors) }));
+  }
+
+  /**
+   * Wave 3 E13 gap closure ("workforce planning linkage") — cross-references
+   * each critical role's department against real department-level attrition
+   * risk (WorkforceAnalyticsService), so coverage priority can be weighed
+   * against workforce trends, not criticality tier alone.
+   */
+  async getWorkforcePlanningView() {
+    const roles = await this.listRoles(true);
+    const departmentRisk = await this.workforceAnalytics.getDepartmentRiskSummary(3);
+    const riskByDepartmentId = new Map(departmentRisk.map((d) => [d.departmentId, d]));
+    return roles.map((role) => ({
+      ...role,
+      departmentRisk: role.departmentId ? (riskByDepartmentId.get(role.departmentId) ?? null) : null,
+    }));
   }
 
   async deactivateRole(id: string) {

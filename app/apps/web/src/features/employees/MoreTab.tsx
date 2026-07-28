@@ -7,6 +7,7 @@ import { listMyPips } from "../../lib/api/performance";
 import { addCertification, addEducation, addPriorExperience, addSkill, getBackground } from "../../lib/api/people-extras";
 import { CONSENT_PURPOSES } from "../../lib/api/types";
 import { useAuth } from "../auth/AuthProvider";
+import { CareerPlanSelfPanel } from "../talent/CareerPlanSelfPanel";
 
 const SKILL_TYPES = ["Skill", "Language"];
 const PROFICIENCY_LEVELS = ["Beginner", "Intermediate", "Advanced", "Expert"];
@@ -280,6 +281,8 @@ export function MoreTab({ employeeId }: { employeeId: string }) {
           </ul>
         </Card>
       )}
+
+      {isSelf && <CareerPlanSelfPanel />}
     </div>
   );
 }

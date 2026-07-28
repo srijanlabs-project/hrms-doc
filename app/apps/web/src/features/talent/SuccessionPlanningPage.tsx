@@ -5,7 +5,7 @@ import { useAuth } from "../auth/AuthProvider";
 import { listDepartments } from "../../lib/api/departments";
 import { listEmployees } from "../../lib/api/employees";
 import { ApiError } from "../../lib/api/http";
-import { createCriticalRole, listCriticalRoles, runSuccessionCoverageCheckNow } from "../../lib/api/talent";
+import { createCriticalRole, getWorkforcePlanningView, runSuccessionCoverageCheckNow } from "../../lib/api/talent";
 import { CriticalRoleRow } from "./CriticalRoleRow";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -23,7 +23,7 @@ export function SuccessionPlanningPage() {
   const queryClient = useQueryClient();
   const isAdmin = ADMIN_ROLES.some((role) => user?.roles.includes(role));
 
-  const roles = useQuery({ queryKey: ["critical-roles"], queryFn: listCriticalRoles, enabled: isAdmin });
+  const roles = useQuery({ queryKey: ["critical-roles"], queryFn: getWorkforcePlanningView, enabled: isAdmin });
   const employees = useQuery({ queryKey: ["employees"], queryFn: listEmployees, enabled: isAdmin });
   const departments = useQuery({ queryKey: ["departments"], queryFn: listDepartments, enabled: isAdmin });
 

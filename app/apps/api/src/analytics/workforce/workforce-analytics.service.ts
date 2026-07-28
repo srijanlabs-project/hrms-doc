@@ -24,6 +24,13 @@ export interface ExecutiveSummary {
   genderDistribution: DistributionSlice[];
 }
 
+export interface DepartmentRisk {
+  departmentId: string | null;
+  departmentName: string;
+  headcount: number;
+  attritionRate: number;
+}
+
 function monthKey(date: Date): string {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
 }
@@ -122,6 +129,46 @@ export class WorkforceAnalyticsService {
       departmentDistribution,
       genderDistribution,
     };
+  }
+
+  /**
+   * Wave 3 E13 gap closure ("workforce planning linkage") — per-department
+   * headcount and trailing attrition rate, so succession-planning decisions
+   * (which critical roles most need coverage) can be weighed against real
+   * department-level attrition risk rather than criticality tier alone.
+   */
+  async getDepartmentRiskSummary(monthsBack = 3): Promise<DepartmentRisk[]> {
+    const { tenantId } = this.requireAuthenticated();
+    const employees = await this.employeeRepository.findAll(tenantId);
+    const now = new Date();
+    const windowStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (monthsBack - 1), 1));
+
+    const buckets = new Map<string, { departmentId: string | null; departmentName: string; headcount: number; separations: number }>();
+    for (const employee of employees) {
+      const key = employee.departmentId ?? "unassigned";
+      if (!buckets.has(key)) {
+        buckets.set(key, {
+          departmentId: employee.departmentId ?? null,
+          departmentName: employee.department?.name ?? "Unassigned",
+          headcount: 0,
+          separations: 0,
+        });
+      }
+      const bucket = buckets.get(key)!;
+      const stillActive = !employee.lastWorkingDay || new Date(employee.lastWorkingDay) > now;
+      if (stillActive) bucket.headcount++;
+      if (employee.lastWorkingDay) {
+        const left = new Date(employee.lastWorkingDay);
+        if (left >= windowStart && left <= now) bucket.separations++;
+      }
+    }
+
+    return [...buckets.values()].map((b) => ({
+      departmentId: b.departmentId,
+      departmentName: b.departmentName,
+      headcount: b.headcount,
+      attritionRate: b.headcount > 0 ? Number(((b.separations / b.headcount) * 100).toFixed(2)) : 0,
+    }));
   }
 
   private tally(values: string[]): DistributionSlice[] {

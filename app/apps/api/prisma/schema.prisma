@@ -155,6 +155,8 @@ model Tenant {
   learningPaths               LearningPath[]
   learningPathCourses         LearningPathCourse[]
   learningPathEnrollments     LearningPathEnrollment[]
+  careerPlans                 CareerPlan[]
+  careerPlanActions           CareerPlanAction[]
   flexibleHoursPolicies       FlexibleHoursPolicy[]
   employeeFlexAssignments     EmployeeFlexAssignment[]
   shiftRotationPatterns       ShiftRotationPattern[]
@@ -450,6 +452,7 @@ model Employee {
   transferPromotionRequests    TransferPromotionRequest[]   @relation("TransferPromotionRequestEmployee")
   performanceImprovementPlans  PerformanceImprovementPlan[]
   learningPathEnrollments      LearningPathEnrollment[]
+  careerPlans                  CareerPlan[]
   onboardingCase               OnboardingCase?
   goals                        Goal[]
   appraisals                   Appraisal[]
@@ -2111,6 +2114,7 @@ model Designation {
   positions                 Position[]
   employees                 Employee[]
   transferPromotionRequests TransferPromotionRequest[]
+  careerPlans               CareerPlan[]
 
   @@unique([tenantId, code])
   @@index([tenantId])
@@ -4181,6 +4185,61 @@ model PipObjective {
   @@index([tenantId])
   @@index([tenantId, pipId])
   @@map("pip_objectives")
+}
+
+/// Wave 3 E13 gap closure ("career planning") — an employee's own aspiration
+/// document: a target designation/timeframe plus a flat action checklist,
+/// mirroring PerformanceImprovementPlan/PipObjective's exact case-plus-
+/// checklist pattern. Self-service by default (unlike PIP): the employee
+/// creates and drives their own plan; their manager and org_admin/hr_ops get
+/// read access plus the ability to add supporting actions, not to create
+/// the plan itself. No unique constraint on employeeId — a new plan can be
+/// started once an earlier one is Achieved or Cancelled, same as PIP allows
+/// multiple cycles over time.
+model CareerPlan {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  targetDesignationId String?      @map("target_designation_id") @db.Uuid
+  targetDesignation   Designation? @relation(fields: [targetDesignationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  timeframeYears      Int?         @map("timeframe_years")
+  developmentNotes    String?      @map("development_notes")
+
+  /// Draft | Active | Achieved | Cancelled
+  status String @default("Draft")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant  Tenant             @relation(fields: [tenantId], references: [id])
+  actions CareerPlanAction[]
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@map("career_plans")
+}
+
+model CareerPlanAction {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  planId   String @map("plan_id") @db.Uuid
+
+  title String
+
+  /// NotStarted | Completed
+  status      String    @default("NotStarted")
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id])
+  plan   CareerPlan @relation(fields: [planId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([tenantId])
+  @@index([tenantId, planId])
+  @@map("career_plan_actions")
 }
 
 /// Wave 2 W2·E07 deepening gap-closure, 07-workforce-management (flexible hours

@@ -20,6 +20,12 @@ export class SuccessionController {
     return { data };
   }
 
+  @Get("workforce-planning")
+  async getWorkforcePlanningView() {
+    const data = await this.service.getWorkforcePlanningView();
+    return { data };
+  }
+
   @Post("roles")
   @HttpCode(201)
   async createRole(@Body() dto: CreateCriticalRoleDto) {
