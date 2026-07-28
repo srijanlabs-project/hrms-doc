@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "../../components/ui/Badge";
 import { advanceApplication, rejectApplication } from "../../lib/api/recruitment";
 import type { Application } from "../../lib/api/types";
+import { AssessmentSection } from "./AssessmentSection";
 import { InterviewSection } from "./InterviewSection";
 import { OfferSection } from "./OfferSection";
 import { applicationStageTone } from "./status-tone";
@@ -64,6 +65,9 @@ export function ApplicationRow({ application }: { application: Application }) {
         <InterviewSection application={application} />
       )}
       {(application.stage === "Offer" || application.stage === "Hired") && <OfferSection application={application} />}
+      {application.stage !== "Applied" && application.stage !== "Rejected" && (
+        <AssessmentSection candidateId={application.candidateId} applicationId={application.id} />
+      )}
     </li>
   );
 }

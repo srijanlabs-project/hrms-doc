@@ -98,6 +98,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Statutory Compliance", to: "/compliance", icon: ClipboardCheck },
         { label: "Integrations", to: "/integrations", icon: Plug },
         { label: "Recruitment", to: "/recruitment", icon: Briefcase },
+        { label: "Talent Pool", to: "/recruitment/talent-pool", icon: Briefcase },
         { label: "Onboarding", to: "/onboarding/cases", icon: ListChecks },
         { label: "Bulk Import", to: "/people/employees/bulk-import", icon: FileUp },
         { label: "Talent 9-Box", to: "/talent", icon: Target },

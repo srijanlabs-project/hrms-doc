@@ -18,6 +18,12 @@ export class CandidateService {
     return this.repository.findAll(tenantId);
   }
 
+  /** Talent Pool: sourced candidates not yet linked to any requisition. */
+  async listPool() {
+    const { tenantId } = this.requireAuthenticated();
+    return this.repository.findPool(tenantId);
+  }
+
   async create(dto: CreateCandidateDto) {
     const { tenantId } = this.requireAuthenticated();
     try {
@@ -25,6 +31,8 @@ export class CandidateService {
         fullName: dto.fullName,
         email: dto.email,
         source: dto.source ?? "Direct",
+        tags: dto.tags ?? [],
+        notes: dto.notes,
       });
     } catch {
       throw new AppError({

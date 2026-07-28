@@ -416,6 +416,8 @@ export interface Candidate {
   fullName: string;
   email: string;
   source: string;
+  tags: string[];
+  notes: string | null;
   createdAt: string;
 }
 
@@ -423,6 +425,27 @@ export interface CreateCandidateInput {
   fullName: string;
   email: string;
   source?: string;
+  tags?: string[];
+  notes?: string;
+}
+
+export interface CandidateAssessment {
+  id: string;
+  candidateId: string;
+  applicationId: string | null;
+  type: string;
+  score: number | null;
+  maxScore: number | null;
+  notes: string | null;
+  administeredAt: string;
+}
+
+export interface CreateAssessmentInput {
+  applicationId?: string;
+  type: string;
+  score?: number;
+  maxScore?: number;
+  notes?: string;
 }
 
 export interface ApplicationOfferRef {

@@ -6,6 +6,9 @@ import { PeopleModule } from "../people/people.module";
 import { ApplicationController } from "./candidate/application.controller";
 import { ApplicationRepository } from "./candidate/application.repository";
 import { ApplicationService } from "./candidate/application.service";
+import { CandidateAssessmentController } from "./candidate/candidate-assessment.controller";
+import { CandidateAssessmentRepository } from "./candidate/candidate-assessment.repository";
+import { CandidateAssessmentService } from "./candidate/candidate-assessment.service";
 import { CandidateController } from "./candidate/candidate.controller";
 import { CandidateRepository } from "./candidate/candidate.repository";
 import { CandidateService } from "./candidate/candidate.service";
@@ -31,6 +34,7 @@ import { RequisitionService } from "./requisition/requisition.service";
   controllers: [
     RequisitionController,
     CandidateController,
+    CandidateAssessmentController,
     ReferralController,
     InternalMobilityController,
     ApplicationController,
@@ -42,6 +46,8 @@ import { RequisitionService } from "./requisition/requisition.service";
     RequisitionRepository,
     CandidateService,
     CandidateRepository,
+    CandidateAssessmentService,
+    CandidateAssessmentRepository,
     ReferralService,
     InternalMobilityService,
     ApplicationService,

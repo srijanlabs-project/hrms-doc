@@ -161,6 +161,7 @@ model Tenant {
   reportDefinitions           ReportDefinition[]
   featureFlags                FeatureFlag[]
   consentRecords              ConsentRecord[]
+  candidateAssessments        CandidateAssessment[]
 
   @@map("tenants")
 }
@@ -910,11 +911,18 @@ model Candidate {
   employeeId String?   @map("employee_id") @db.Uuid
   employee   Employee? @relation("InternalMobilityCandidate", fields: [employeeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
+  /// Talent Pool (W3·E06 gap closure): a candidate with zero applications is,
+  /// by definition, a pool/sourced candidate — no separate pool entity.
+  /// tags/notes exist to make that pool searchable.
+  tags  String[] @default([])
+  notes String?
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  tenant       Tenant                @relation(fields: [tenantId], references: [id])
   applications Application[]
+  assessments  CandidateAssessment[]
 
   @@unique([tenantId, email])
   @@index([tenantId])
@@ -937,16 +945,46 @@ model Application {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  tenant          Tenant           @relation(fields: [tenantId], references: [id])
-  requisition     Requisition      @relation(fields: [requisitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  candidate       Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tenant          Tenant                @relation(fields: [tenantId], references: [id])
+  requisition     Requisition           @relation(fields: [requisitionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  candidate       Candidate             @relation(fields: [candidateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   offer           Offer?
   interviewRounds InterviewRound[]
+  assessments     CandidateAssessment[]
 
   @@unique([requisitionId, candidateId])
   @@index([tenantId])
   @@index([tenantId, requisitionId])
   @@map("applications")
+}
+
+/// Pre-hire candidate assessments (W3·E06 gap closure) — a distinct concept
+/// from employee-facing performance/competency assessments (E11/E13):
+/// administered during the recruitment pipeline, before conversion.
+model CandidateAssessment {
+  id            String       @id @default(uuid()) @db.Uuid
+  tenantId      String       @map("tenant_id") @db.Uuid
+  candidateId   String       @map("candidate_id") @db.Uuid
+  candidate     Candidate    @relation(fields: [candidateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  applicationId String?      @map("application_id") @db.Uuid
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  /// Technical | Aptitude | Behavioral | Other
+  type     String
+  score    Float?
+  maxScore Float?  @map("max_score")
+  notes    String?
+
+  administeredAt       DateTime @default(now()) @map("administered_at") @db.Timestamptz(6)
+  administeredByUserId String?  @map("administered_by_user_id") @db.Uuid
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, candidateId])
+  @@map("candidate_assessments")
 }
 
 /// v1 slice of 06-interview-scheduling.md: collapses interview_plan/

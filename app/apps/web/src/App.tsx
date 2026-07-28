@@ -48,6 +48,7 @@ import { CompetenciesPage } from "./features/performance/CompetenciesPage";
 import { CheckInsPage } from "./features/performance/CheckInsPage";
 import { GoalsPage } from "./features/performance/GoalsPage";
 import { RecruitmentPage } from "./features/recruitment/RecruitmentPage";
+import { TalentPoolPage } from "./features/recruitment/TalentPoolPage";
 import { ReferralPage } from "./features/recruitment/ReferralPage";
 import { InternalMobilityPage } from "./features/recruitment/InternalMobilityPage";
 import { ReportsHubPage } from "./features/reports/ReportsHubPage";
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="/payroll" element={<PayrollWorkspacePage />} />
           <Route path="/payslips" element={<PayslipsPage />} />
           <Route path="/recruitment" element={<RecruitmentPage />} />
+          <Route path="/recruitment/talent-pool" element={<TalentPoolPage />} />
           <Route path="/recruitment/refer" element={<ReferralPage />} />
           <Route path="/recruitment/internal-jobs" element={<InternalMobilityPage />} />
           <Route path="/onboarding" element={<OnboardingHomePage />} />

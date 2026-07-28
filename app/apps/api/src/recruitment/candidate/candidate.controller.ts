@@ -15,6 +15,12 @@ export class CandidateController {
     return { data };
   }
 
+  @Get("pool")
+  async listPool() {
+    const data = await this.service.listPool();
+    return { data };
+  }
+
   @Post()
   @HttpCode(201)
   async create(@Body() dto: CreateCandidateDto) {

@@ -3,6 +3,8 @@ import type {
   Application,
   BackgroundCheck,
   Candidate,
+  CandidateAssessment,
+  CreateAssessmentInput,
   CreateCandidateInput,
   CreateRequisitionInput,
   InternalMobilityCandidate,
@@ -44,6 +46,22 @@ export function listCandidates(): Promise<Candidate[]> {
 
 export function createCandidate(input: CreateCandidateInput): Promise<Candidate> {
   return apiRequest<Candidate>("/recruitment/candidates", { method: "POST", body: JSON.stringify(input) });
+}
+
+/** Talent Pool: candidates with zero applications — sourced, not yet applied to anything. */
+export function listTalentPool(): Promise<Candidate[]> {
+  return apiRequest<Candidate[]>("/recruitment/candidates/pool");
+}
+
+export function listCandidateAssessments(candidateId: string): Promise<CandidateAssessment[]> {
+  return apiRequest<CandidateAssessment[]>(`/recruitment/candidates/${candidateId}/assessments`);
+}
+
+export function createCandidateAssessment(candidateId: string, input: CreateAssessmentInput): Promise<CandidateAssessment> {
+  return apiRequest<CandidateAssessment>(`/recruitment/candidates/${candidateId}/assessments`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
 }
 
 export function listApplications(requisitionId: string): Promise<Application[]> {

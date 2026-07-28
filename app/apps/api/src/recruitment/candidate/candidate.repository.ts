@@ -55,4 +55,14 @@ export class CandidateRepository {
       }),
     );
   }
+
+  /** Talent Pool (W3·E06 gap closure): candidates with zero applications — sourced, not yet applied to anything. */
+  findPool(tenantId: string): Promise<Candidate[]> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.candidate.findMany({
+        where: { tenantId, applications: { none: {} } },
+        orderBy: { createdAt: "desc" },
+      }),
+    );
+  }
 }
