@@ -42,6 +42,13 @@ export class AssetAssignmentRepository {
     );
   }
 
+  /** Used by AssetAuditRepository to snapshot who currently holds an asset. */
+  findActiveForAsset(tenantId: string, assetId: string): Promise<AssetAssignmentWithRefs | null> {
+    return this.prisma.withTenant(tenantId, (tx) =>
+      tx.assetAssignment.findFirst({ where: { tenantId, assetId, status: "Assigned" }, include: includeRefs }),
+    );
+  }
+
   findAll(tenantId: string): Promise<AssetAssignmentWithRefs[]> {
     return this.prisma.withTenant(tenantId, (tx) =>
       tx.assetAssignment.findMany({

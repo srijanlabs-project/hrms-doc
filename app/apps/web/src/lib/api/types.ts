@@ -302,6 +302,82 @@ export interface AssetAssignment {
   notes: string | null;
 }
 
+export interface MaintenanceRecord {
+  id: string;
+  assetId: string;
+  asset: AssetAssignmentRef;
+  maintenanceType: string;
+  description: string;
+  status: string;
+  scheduledDate: string;
+  completedDate: string | null;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CreateMaintenanceRecordInput {
+  assetId: string;
+  maintenanceType: string;
+  description: string;
+  scheduledDate: string;
+}
+
+export interface AssetAuditCycle {
+  id: string;
+  periodLabel: string;
+  status: string;
+  createdAt: string;
+  closedAt: string | null;
+  _count?: { items: number };
+}
+
+export interface AssetAuditItem {
+  id: string;
+  cycleId: string;
+  assetId: string;
+  asset: AssetAssignmentRef;
+  statusSnapshot: string;
+  assignedToSnapshot: string | null;
+  finding: string;
+  reviewedByUserId: string | null;
+  reviewedAt: string | null;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface AssetAuditCycleWithItems extends AssetAuditCycle {
+  items: AssetAuditItem[];
+}
+
+export interface SoftwareLicense {
+  id: string;
+  name: string;
+  vendor: string | null;
+  totalSeats: number;
+  seatsUsed: number;
+  expiryDate: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export interface CreateLicenseInput {
+  name: string;
+  vendor?: string;
+  totalSeats: number;
+  expiryDate?: string;
+}
+
+export interface LicenseAssignment {
+  id: string;
+  licenseId: string;
+  license: { id: string; name: string; vendor: string | null };
+  employeeId: string;
+  employee: LeaveRequestEmployeeRef;
+  assignedAt: string;
+  revokedAt: string | null;
+  status: string;
+}
+
 export interface CreateLeaveRequestInput {
   leaveType: string;
   startDate: string;
