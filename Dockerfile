@@ -7,6 +7,10 @@
 FROM node:20-slim AS build
 WORKDIR /app
 
+# Prisma's query engine needs libssl to detect the OpenSSL version at generate/runtime,
+# or it falls back to a guessed default and warns on every invocation.
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 # Install once for the whole workspace (single root lockfile covers both apps).
 COPY app/package.json app/package-lock.json ./
 COPY app/apps/api/package.json ./apps/api/package.json
@@ -24,6 +28,9 @@ RUN npm run build --workspace @staffsy/web
 FROM node:20-slim AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
+
+# Same reason as the build stage: the CMD below runs `prisma migrate deploy` on every start.
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/apps/api/dist ./apps/api/dist
