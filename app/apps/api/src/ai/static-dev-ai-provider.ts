@@ -9,6 +9,7 @@ const DEFAULT_SUGGESTIONS = [
   "How many employees do we have?",
   "What's our attrition trend?",
   "What's pending my approval?",
+  "How's our recruiting pipeline?",
 ];
 
 function money(value: number | null): string {
@@ -131,6 +132,16 @@ export class StaticDevAiProvider implements AiProvider {
       return this.reply(`Mandatory training not yet complete:\n${lines.join("\n")}`);
     }
 
+    if (text.includes("requisition") || text.includes("pipeline") || text.includes("recruiting") || text.includes("open roles")) {
+      const summary = await this.data.getRecruitingPipelineSummary();
+      if (summary === "restricted") {
+        return this.reply("Recruiting pipeline details are restricted to HR Operations and Org Admin roles.");
+      }
+      return this.reply(
+        `${summary.openRequisitions} open requisition(s), ${summary.activePipelineCandidates} candidate(s) active in the pipeline, and ${summary.offersPendingDecision} offer(s) pending a decision.`,
+      );
+    }
+
     if (text.includes("holiday")) {
       return this.reply("The holiday calendar isn't available yet — check with HR for upcoming holidays.");
     }
@@ -140,7 +151,7 @@ export class StaticDevAiProvider implements AiProvider {
     }
 
     return this.reply(
-      "I can help with your leave balance, today's attendance, your latest payslip, company headcount, attrition trends, your pending approvals, succession coverage, recognition, or your team's training completion. Try one of the suggestions below.",
+      "I can help with your leave balance, today's attendance, your latest payslip, company headcount, attrition trends, your pending approvals, succession coverage, recognition, your team's training completion, or the recruiting pipeline. Try one of the suggestions below.",
     );
   }
 

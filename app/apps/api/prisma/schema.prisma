@@ -104,6 +104,7 @@ model Tenant {
   importBatches               ImportBatch[]
   importBatchRows             ImportBatchRow[]
   goLiveChecklistItems        GoLiveChecklistItem[]
+  departmentBudgets           DepartmentBudget[]
   testSuites                  TestSuite[]
   testCases                   TestCase[]
   testRuns                    TestRun[]
@@ -297,6 +298,7 @@ model Department {
   criticalRoles             CriticalRole[]
   externalWorkers           ExternalWorker[]
   transferPromotionRequests TransferPromotionRequest[]
+  departmentBudgets         DepartmentBudget[]
 
   @@unique([tenantId, code])
   @@index([tenantId])
@@ -2743,6 +2745,17 @@ model PersonalDetail {
   permanentCountry       String? @map("permanent_country")
   permanentPincode       String? @map("permanent_pincode")
 
+  /// W5·P gap closure: "medical information" catalog item. Masked-by-default,
+  /// reveal-and-audit via PersonalDetailService.revealMedicalField() — same
+  /// data-masking discipline W0·E29 applied to identity documents/bank
+  /// accounts, extended here to free-text fields (a fixed placeholder rather
+  /// than a length-preserving mask, since revealing length would itself leak
+  /// information about a free-text medical field).
+  allergies         String? @map("allergies")
+  medicalConditions String? @map("medical_conditions")
+  physicianName     String? @map("physician_name")
+  physicianPhone    String? @map("physician_phone")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
@@ -3318,6 +3331,15 @@ model GoLiveChecklistItem {
   key      String
   label    String
 
+  /// Setup | Cutover — W5·P gap closure ("cutover"). A Cutover-phase item is
+  /// the go/no-go governance sequence for flipping a tenant to live, kept as
+  /// a type tag on this same flat checklist rather than a parallel
+  /// CutoverPlan model — same type-tagged-collapse discipline used
+  /// throughout this build (TestSuite.suiteType, Ticket.queue). Still no
+  /// second environment or legacy system to actually cut over between —
+  /// this remains governance tracking, not an environment-switch mechanism.
+  phase String @default("Setup")
+
   completed         Boolean   @default(false)
   completedByUserId String?   @map("completed_by_user_id") @db.Uuid
   completedAt       DateTime? @map("completed_at") @db.Timestamptz(6)
@@ -3328,6 +3350,31 @@ model GoLiveChecklistItem {
 
   @@unique([tenantId, key])
   @@map("go_live_checklist_items")
+}
+
+/// W5·P gap closure ("budget approvals"). A live-computed spend rollup per
+/// department per year — no new approval workflow (expense/travel/per-diem
+/// approvals already exist and are untouched); this just gives the
+/// approving manager real budget context alongside those decisions. Spend
+/// is always recomputed from real ExpenseClaim/TravelAdvance/PerDiemClaim
+/// rows, never stored, the same live-computation discipline used throughout
+/// this build (ESOP vesting, reward balances, travel settlement).
+model DepartmentBudget {
+  id              String @id @default(uuid()) @db.Uuid
+  tenantId        String @map("tenant_id") @db.Uuid
+  departmentId    String @map("department_id") @db.Uuid
+  periodYear      Int    @map("period_year")
+  allocatedAmount Float  @map("allocated_amount")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([tenantId, departmentId, periodYear])
+  @@index([tenantId])
+  @@map("department_budgets")
 }
 
 /// Wave 5·E32 gap closure ("regression testing", "performance testing",

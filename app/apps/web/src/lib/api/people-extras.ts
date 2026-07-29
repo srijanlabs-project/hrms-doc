@@ -16,6 +16,7 @@ import type {
   CreateSkillInput,
   DecideProbationInput,
   IdentityFinanceBundle,
+  MedicalField,
   PersonalDetailBundle,
   SalaryRevision,
   TimelineEvent,
@@ -39,6 +40,12 @@ export function addEmergencyContact(employeeId: string, input: CreateEmergencyCo
 }
 export function removeEmergencyContact(employeeId: string, id: string) {
   return apiRequest(`${base(employeeId)}/personal-detail/emergency-contacts/${id}`, { method: "DELETE" });
+}
+export function revealMedicalField(employeeId: string, field: MedicalField): Promise<{ field: MedicalField; value: string | null }> {
+  return apiRequest(`${base(employeeId)}/personal-detail/medical-info/reveal`, {
+    method: "POST",
+    body: JSON.stringify({ field }),
+  });
 }
 
 export function getIdentityFinance(employeeId: string): Promise<IdentityFinanceBundle> {

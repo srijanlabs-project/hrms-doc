@@ -59,6 +59,6 @@ import { RequisitionService } from "./requisition/requisition.service";
     OfferRepository,
     BackgroundCheckRepository,
   ],
-  exports: [RequisitionRepository, ApplicationRepository],
+  exports: [RequisitionRepository, ApplicationRepository, OfferRepository],
 })
 export class RecruitmentModule {}

@@ -11,7 +11,7 @@ export class GoLiveChecklistRepository {
     );
   }
 
-  createMany(tenantId: string, items: { key: string; label: string }[]) {
+  createMany(tenantId: string, items: { key: string; label: string; phase: string }[]) {
     return this.prisma.withTenant(tenantId, (tx) =>
       tx.goLiveChecklistItem.createMany({ data: items.map((item) => ({ tenantId, ...item })) }),
     );

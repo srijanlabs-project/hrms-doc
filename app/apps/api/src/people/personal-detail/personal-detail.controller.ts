@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from "@nestjs/common";
 import { CreateEmergencyContactDto } from "./dto/create-emergency-contact.dto";
+import { RevealMedicalFieldDto } from "./dto/reveal-medical-field.dto";
 import { UpsertPersonalDetailDto } from "./dto/upsert-personal-detail.dto";
 import { PersonalDetailService } from "./personal-detail.service";
 
@@ -33,5 +34,12 @@ export class PersonalDetailController {
   async removeEmergencyContact(@Param("employeeId") employeeId: string, @Param("id") id: string) {
     await this.service.removeEmergencyContact(employeeId, id);
     return { data: { deleted: true } };
+  }
+
+  @Post("medical-info/reveal")
+  @HttpCode(200)
+  async revealMedicalField(@Param("employeeId") employeeId: string, @Body() dto: RevealMedicalFieldDto) {
+    const data = await this.service.revealMedicalField(employeeId, dto);
+    return { data };
   }
 }

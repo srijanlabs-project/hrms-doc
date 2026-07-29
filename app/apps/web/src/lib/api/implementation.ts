@@ -49,6 +49,8 @@ export interface GoLiveChecklistItem {
   id: string;
   key: string;
   label: string;
+  /** Setup | Cutover (W5·P gap closure) */
+  phase: string;
   completed: boolean;
   completedAt: string | null;
 }

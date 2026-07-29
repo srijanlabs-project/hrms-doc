@@ -1476,7 +1476,14 @@ export interface PersonalDetail {
   permanentState: string | null;
   permanentCountry: string | null;
   permanentPincode: string | null;
+  /** Masked server-side by default (W5·P gap closure) — call revealMedicalField() for the real value. */
+  allergies: string | null;
+  medicalConditions: string | null;
+  physicianName: string | null;
+  physicianPhone: string | null;
 }
+
+export type MedicalField = "allergies" | "medicalConditions" | "physicianName" | "physicianPhone";
 
 export interface UpsertPersonalDetailInput {
   maritalStatus?: string;
@@ -1488,6 +1495,10 @@ export interface UpsertPersonalDetailInput {
   currentState?: string;
   currentCountry?: string;
   currentPincode?: string;
+  allergies?: string;
+  medicalConditions?: string;
+  physicianName?: string;
+  physicianPhone?: string;
 }
 
 export interface EmergencyContact {

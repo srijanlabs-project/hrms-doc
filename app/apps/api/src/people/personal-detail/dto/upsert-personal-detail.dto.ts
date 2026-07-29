@@ -74,4 +74,24 @@ export class UpsertPersonalDetailDto {
   @IsString()
   @Length(0, 20)
   permanentPincode?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 300)
+  allergies?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 300)
+  medicalConditions?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 120)
+  physicianName?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  physicianPhone?: string;
 }

@@ -9,6 +9,9 @@ import { PayslipService } from "../payroll/payslip/payslip.service";
 import { EmployeeRepository } from "../people/employee/employee.repository";
 import { RequestContextService } from "../platform/context/request-context.service";
 import { NotFoundAppError } from "../platform/errors/errors";
+import { ApplicationRepository } from "../recruitment/candidate/application.repository";
+import { OfferRepository } from "../recruitment/offer/offer.repository";
+import { RequisitionRepository } from "../recruitment/requisition/requisition.repository";
 import { SuccessionService } from "../talent/succession/succession.service";
 
 const ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -51,6 +54,9 @@ export class AiDataService {
     private readonly recognitionService: RecognitionService,
     private readonly enrollmentService: EnrollmentService,
     private readonly requestContext: RequestContextService,
+    private readonly requisitionRepository: RequisitionRepository,
+    private readonly applicationRepository: ApplicationRepository,
+    private readonly offerRepository: OfferRepository,
   ) {}
 
   async getLeaveBalances() {
@@ -118,6 +124,35 @@ export class AiDataService {
       if (isNoEmployeeError(err)) return null;
       throw err;
     }
+  }
+
+  /**
+   * Recruiter copilot (W5·P gap closure). No dedicated "recruiter" role
+   * exists in this build (only org_admin/hr_ops/manager), so this is gated
+   * the same way succession coverage is — org_admin/hr_ops only — rather
+   * than left open to every manager, since requisition compensation bands
+   * and full pipeline detail aren't something every manager should see
+   * company-wide.
+   */
+  async getRecruitingPipelineSummary(): Promise<
+    { openRequisitions: number; activePipelineCandidates: number; offersPendingDecision: number } | "restricted"
+  > {
+    const roles = this.requestContext.roles;
+    if (!ADMIN_ROLES.some((role) => roles.includes(role))) {
+      return "restricted";
+    }
+    const tenantId = this.requestContext.tenantId!;
+    const [requisitions, stageCounts, offers] = await Promise.all([
+      this.requisitionRepository.findAll(tenantId),
+      this.applicationRepository.countByStage(tenantId),
+      this.offerRepository.findAll(tenantId),
+    ]);
+    const openRequisitions = requisitions.filter((r) => r.status === "Published").length;
+    const activePipelineCandidates = Object.entries(stageCounts)
+      .filter(([stage]) => stage !== "Rejected" && stage !== "Hired")
+      .reduce((sum, [, count]) => sum + count, 0);
+    const offersPendingDecision = offers.filter((o) => o.status === "PendingApproval" || o.status === "Approved" || o.status === "Issued").length;
+    return { openRequisitions, activePipelineCandidates, offersPendingDecision };
   }
 
   /** Empty for a non-manager — same self-limiting pattern as pending approvals/team attendance. */
