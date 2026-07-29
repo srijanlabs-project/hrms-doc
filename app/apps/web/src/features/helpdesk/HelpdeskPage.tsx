@@ -1,5 +1,7 @@
 import { useAuth } from "../auth/AuthProvider";
+import { GrievanceCaseAdminPanel } from "./GrievanceCaseAdminPanel";
 import { KnowledgeBasePanel } from "./KnowledgeBasePanel";
+import { MyGrievanceCasesPanel } from "./MyGrievanceCasesPanel";
 import { MyTicketsPanel } from "./MyTicketsPanel";
 import { TicketQueuePanel } from "./TicketQueuePanel";
 
@@ -7,11 +9,12 @@ const ADMIN_ROLES = ["org_admin", "hr_ops"];
 
 /**
  * Helpdesk and Case Management — docs/03-module-specifications/19-helpdesk-case-management.md.
- * v1: tickets (+comments, SLA due dates, nightly escalation sweep) and a
- * knowledge base. HR/IT/Admin/Finance collapse into one queue-tagged ticket
- * model; Service Agent/Queue Manager collapse to org_admin/hr_ops. Employee
- * relations and grievance management stays deferred — see
- * schema.prisma's Ticket comment for why.
+ * v1: tickets (+comments, SLA due dates, nightly escalation sweep), a
+ * knowledge base, and confidential employee relations/grievance cases.
+ * HR/IT/Admin/Finance collapse into one queue-tagged ticket model; Service
+ * Agent/Queue Manager collapse to org_admin/hr_ops. Grievance cases are a
+ * separate model and access path entirely — see schema.prisma's
+ * GrievanceCase comment for why.
  */
 export function HelpdeskPage() {
   const { user } = useAuth();
@@ -27,6 +30,9 @@ export function HelpdeskPage() {
       <MyTicketsPanel />
       <KnowledgeBasePanel isAdmin={isAdmin} />
       {isAdmin && <TicketQueuePanel />}
+
+      <MyGrievanceCasesPanel />
+      {isAdmin && <GrievanceCaseAdminPanel />}
     </div>
   );
 }

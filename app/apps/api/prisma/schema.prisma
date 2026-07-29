@@ -143,6 +143,7 @@ model Tenant {
   recognitions                Recognition[]
   tickets                     Ticket[]
   ticketComments              TicketComment[]
+  grievanceCases              GrievanceCase[]
   slaPolicies                 SlaPolicy[]
   knowledgeArticles           KnowledgeArticle[]
   vendors                     Vendor[]
@@ -473,6 +474,8 @@ model Employee {
   recognitionsReceived         Recognition[]                @relation("RecognitionToEmployee")
   ticketsRaised                Ticket[]                     @relation("TicketRaiser")
   ticketsAssigned              Ticket[]                     @relation("TicketAgent")
+  grievanceCasesFiled          GrievanceCase[]              @relation("GrievanceCaseEmployee")
+  grievanceCasesHandled        GrievanceCase[]              @relation("GrievanceCaseHandler")
   transferPromotionRequests    TransferPromotionRequest[]   @relation("TransferPromotionRequestEmployee")
   performanceImprovementPlans  PerformanceImprovementPlan[]
   learningPathEnrollments      LearningPathEnrollment[]
@@ -4143,6 +4146,46 @@ model TicketComment {
 
   @@index([tenantId, ticketId])
   @@map("ticket_comments")
+}
+
+/// Wave 4·E19 gap closure ("employee relations and grievance management") —
+/// deliberately a separate model from Ticket, not another queue value, since
+/// grievances need confidentiality Ticket's model can't give: no general
+/// helpdesk agent pool ever sees these, only org_admin/hr_ops and the filing
+/// employee themselves (enforced in GrievanceService, mirroring TicketService's
+/// own raiser-or-admin visibility check). No comment thread — a single
+/// resolutionSummary written once at Resolved is enough for a v1 slice, and
+/// avoids building a second confidential-vs-visible-to-raiser split like
+/// Ticket's isInternal comments already solve for the non-confidential case.
+model GrievanceCase {
+  id         String @id @default(uuid()) @db.Uuid
+  tenantId   String @map("tenant_id") @db.Uuid
+  employeeId String @map("employee_id") @db.Uuid
+
+  /// Grievance | Harassment | Discrimination | PolicyViolation | Other
+  caseType    String @map("case_type")
+  subject     String
+  description String
+
+  /// Received | UnderInvestigation | Resolved | Closed
+  status String @default("Received")
+
+  assignedHandlerId String? @map("assigned_handler_id") @db.Uuid
+  resolutionSummary String? @map("resolution_summary")
+
+  resolvedAt DateTime? @map("resolved_at") @db.Timestamptz(6)
+  closedAt   DateTime? @map("closed_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  employee        Employee  @relation("GrievanceCaseEmployee", fields: [employeeId], references: [id])
+  assignedHandler Employee? @relation("GrievanceCaseHandler", fields: [assignedHandlerId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([tenantId, status])
+  @@index([tenantId, employeeId])
+  @@map("grievance_cases")
 }
 
 model SlaPolicy {

@@ -5,8 +5,10 @@ import type {
   CreateKnowledgeArticleInput,
   CreateSlaPolicyInput,
   CreateTicketInput,
+  GrievanceCase,
   KnowledgeArticle,
   SlaPolicy,
+  SubmitGrievanceCaseInput,
   Ticket,
   TicketComment,
   TicketWithComments,
@@ -82,4 +84,34 @@ export function listPublishedKnowledgeArticles(queue?: string): Promise<Knowledg
 
 export function listAllKnowledgeArticlesAdmin(): Promise<KnowledgeArticle[]> {
   return apiRequest<KnowledgeArticle[]>("/helpdesk/knowledge-articles/admin");
+}
+
+export function submitGrievanceCase(input: SubmitGrievanceCaseInput): Promise<GrievanceCase> {
+  return apiRequest<GrievanceCase>("/helpdesk/grievance-cases", { method: "POST", body: JSON.stringify(input) });
+}
+
+export function listMyGrievanceCases(): Promise<GrievanceCase[]> {
+  return apiRequest<GrievanceCase[]>("/helpdesk/grievance-cases/my");
+}
+
+export function listAllGrievanceCases(): Promise<GrievanceCase[]> {
+  return apiRequest<GrievanceCase[]>("/helpdesk/grievance-cases/all");
+}
+
+export function assignGrievanceHandler(id: string, handlerEmployeeId: string): Promise<GrievanceCase> {
+  return apiRequest<GrievanceCase>(`/helpdesk/grievance-cases/${id}/assign-handler`, {
+    method: "POST",
+    body: JSON.stringify({ handlerEmployeeId }),
+  });
+}
+
+export function resolveGrievanceCase(id: string, resolutionSummary: string): Promise<GrievanceCase> {
+  return apiRequest<GrievanceCase>(`/helpdesk/grievance-cases/${id}/resolve`, {
+    method: "POST",
+    body: JSON.stringify({ resolutionSummary }),
+  });
+}
+
+export function closeGrievanceCase(id: string): Promise<GrievanceCase> {
+  return apiRequest<GrievanceCase>(`/helpdesk/grievance-cases/${id}/close`, { method: "POST" });
 }

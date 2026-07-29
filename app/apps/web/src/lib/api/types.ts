@@ -2219,6 +2219,26 @@ export interface CloseTicketInput {
   satisfactionRating?: number;
 }
 
+export interface GrievanceCase {
+  id: string;
+  employee: { id: string; legalName: string };
+  assignedHandler: { id: string; legalName: string } | null;
+  caseType: "Grievance" | "Harassment" | "Discrimination" | "PolicyViolation" | "Other";
+  subject: string;
+  description: string;
+  status: "Received" | "UnderInvestigation" | "Resolved" | "Closed";
+  resolutionSummary: string | null;
+  resolvedAt: string | null;
+  closedAt: string | null;
+  createdAt: string;
+}
+
+export interface SubmitGrievanceCaseInput {
+  caseType: GrievanceCase["caseType"];
+  subject: string;
+  description: string;
+}
+
 export interface SlaPolicy {
   id: string;
   queue: string;

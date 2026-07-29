@@ -15,6 +15,20 @@ export function ticketStatusTone(status: string): BadgeTone {
   }
 }
 
+export function grievanceStatusTone(status: string): BadgeTone {
+  switch (status) {
+    case "Resolved":
+      return "positive";
+    case "Closed":
+      return "neutral";
+    case "UnderInvestigation":
+      return "info";
+    case "Received":
+    default:
+      return "warning";
+  }
+}
+
 export function priorityTone(priority: string): BadgeTone {
   switch (priority) {
     case "Urgent":
