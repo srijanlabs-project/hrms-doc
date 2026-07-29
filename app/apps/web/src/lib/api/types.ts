@@ -141,6 +141,7 @@ export interface ExpenseClaim {
   decisionNote: string | null;
   decidedAt: string | null;
   paidAt: string | null;
+  receiptFile: StoredFileRef | null;
   createdAt: string;
 }
 
@@ -150,6 +151,43 @@ export interface CreateExpenseClaimInput {
   expenseDate: string;
   merchant?: string;
   businessPurpose?: string;
+  receiptFileId?: string;
+}
+
+export interface PerDiemPolicy {
+  id: string;
+  category: string;
+  dailyRate: number;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface CreatePerDiemPolicyInput {
+  category: string;
+  dailyRate: number;
+}
+
+export interface PerDiemClaim {
+  id: string;
+  employeeId: string;
+  employee: LeaveRequestEmployeeRef;
+  policyId: string;
+  policy: Pick<PerDiemPolicy, "id" | "category" | "dailyRate">;
+  travelRequestId: string | null;
+  numberOfDays: number;
+  computedAmount: number;
+  status: string;
+  approverId: string | null;
+  decisionNote: string | null;
+  decidedAt: string | null;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export interface SubmitPerDiemClaimInput {
+  policyId: string;
+  numberOfDays: number;
+  travelRequestId?: string;
 }
 
 export interface TravelRequest {

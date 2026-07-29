@@ -4,10 +4,12 @@ import { PrismaService } from "../platform/prisma/prisma.service";
 
 export type ExpenseClaimWithEmployee = ExpenseClaim & {
   employee: { id: string; legalName: string; employeeCode: string };
+  receiptFile: { id: string; originalName: string; mimeType: string } | null;
 };
 
 const includeEmployee = {
   employee: { select: { id: true, legalName: true, employeeCode: true } },
+  receiptFile: { select: { id: true, originalName: true, mimeType: true } },
 } satisfies Prisma.ExpenseClaimInclude;
 
 /** Data access only. Every method runs inside PrismaService.withTenant for RLS scoping. */

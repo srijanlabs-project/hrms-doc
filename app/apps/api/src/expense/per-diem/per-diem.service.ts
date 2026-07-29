@@ -1,77 +1,101 @@
 import { Injectable } from "@nestjs/common";
-import { AuthRepository } from "../auth/auth.repository";
-import { DelegationService } from "../auth/delegation/delegation.service";
-import { NotificationService } from "../notifications/notification.service";
-import { CurrentEmployeeService } from "../people/current-employee.service";
-import { EmployeeRepository } from "../people/employee/employee.repository";
-import { RequestContextService } from "../platform/context/request-context.service";
-import { AppError } from "../platform/errors/app-error";
+import { AuthRepository } from "../../auth/auth.repository";
+import { DelegationService } from "../../auth/delegation/delegation.service";
+import { NotificationService } from "../../notifications/notification.service";
+import { CurrentEmployeeService } from "../../people/current-employee.service";
+import { EmployeeRepository } from "../../people/employee/employee.repository";
+import { RequestContextService } from "../../platform/context/request-context.service";
+import { AppError } from "../../platform/errors/app-error";
 import {
   AuthenticationAppError,
   ForbiddenAppError,
   NotFoundAppError,
-} from "../platform/errors/errors";
-import { WebhookDispatchService } from "../webhook/webhook.service";
-import { ExpenseClaimRepository } from "./expense-claim.repository";
-import type { CreateExpenseClaimDto } from "./dto/create-expense-claim.dto";
+} from "../../platform/errors/errors";
+import type { CreatePerDiemPolicyDto } from "./dto/create-per-diem-policy.dto";
+import type { SubmitPerDiemClaimDto } from "./dto/submit-per-diem-claim.dto";
+import { PerDiemClaimRepository } from "./per-diem-claim.repository";
+import { PerDiemPolicyRepository } from "./per-diem-policy.repository";
 
 type Decision = "Approved" | "Rejected";
 
 function stateConflict(message: string, currentState: string) {
   return new AppError({
-    errorRef: "ERR-EXPENSE-001",
-    code: "EXPENSE-001",
+    errorRef: "ERR-EXPENSE-002",
+    code: "EXPENSE-002",
     category: "state-conflict",
     severity: "medium",
     httpStatus: 409,
     message,
     retryable: false,
     tenantSafe: true,
-    objectRef: "OBJ-EXPENSE-CLAIM",
+    objectRef: "OBJ-PER-DIEM-CLAIM",
     details: { currentState },
   });
 }
 
 /**
- * v1 slice — see schema.prisma's ExpenseClaim comment for the full list of
- * collapsed spec features. Approval permission pattern mirrors
- * LeaveRequestService exactly (assigned manager or org_admin/hr_ops override).
+ * Wave 3 W4·E17 gap closure ("per diem"). Claim lifecycle mirrors
+ * ExpenseClaimService exactly (Pending -> Approved/Rejected -> Paid), but
+ * computedAmount is a stored snapshot taken at submission time rather than a
+ * live computation — like a benefits enrollment's allocated amount, it should
+ * not silently change if the policy's daily rate is edited later.
  */
 @Injectable()
-export class ExpenseClaimService {
+export class PerDiemService {
   constructor(
-    private readonly repository: ExpenseClaimRepository,
+    private readonly policyRepository: PerDiemPolicyRepository,
+    private readonly claimRepository: PerDiemClaimRepository,
     private readonly employeeRepository: EmployeeRepository,
     private readonly authRepository: AuthRepository,
     private readonly notificationService: NotificationService,
     private readonly currentEmployee: CurrentEmployeeService,
     private readonly requestContext: RequestContextService,
     private readonly delegationService: DelegationService,
-    private readonly webhookDispatchService: WebhookDispatchService,
   ) {}
 
-  async create(dto: CreateExpenseClaimDto) {
+  async createPolicy(dto: CreatePerDiemPolicyDto) {
+    const { tenantId } = this.requireAuthenticated();
+    return this.policyRepository.create(tenantId, {
+      category: dto.category,
+      dailyRate: dto.dailyRate,
+      active: true,
+    });
+  }
+
+  async listActivePolicies() {
+    const { tenantId } = await this.currentEmployee.resolve();
+    return this.policyRepository.findActive(tenantId);
+  }
+
+  async listAllPoliciesAdmin() {
+    const { tenantId } = this.requireAuthenticated();
+    return this.policyRepository.findAll(tenantId);
+  }
+
+  async submitClaim(dto: SubmitPerDiemClaimDto) {
     const { tenantId, employee } = await this.currentEmployee.resolve();
+
+    const policy = await this.policyRepository.findById(tenantId, dto.policyId);
+    if (!policy || !policy.active) {
+      throw new NotFoundAppError("OBJ-PER-DIEM-POLICY", "Per diem policy not found.");
+    }
 
     const { approverEmployeeId, approverUserId } = await this.resolveApprover(tenantId, employee.managerId);
 
-    const claim = await this.repository.create(tenantId, {
+    const claim = await this.claimRepository.create(tenantId, {
       employeeId: employee.id,
-      category: dto.category,
-      amount: dto.amount,
-      expenseDate: new Date(dto.expenseDate),
-      merchant: dto.merchant,
-      businessPurpose: dto.businessPurpose,
-      approverId: approverEmployeeId,
+      policyId: policy.id,
       travelRequestId: dto.travelRequestId,
-      receiptFileId: dto.receiptFileId,
+      numberOfDays: dto.numberOfDays,
+      computedAmount: policy.dailyRate * dto.numberOfDays,
+      approverId: approverEmployeeId,
     });
 
     if (approverUserId) {
       await this.notificationService.notify(tenantId, approverUserId, {
-        type: "expense.claim.submitted",
-        title: "New expense claim",
-        body: `${employee.legalName} submitted a ${dto.category} claim for ₹${dto.amount.toLocaleString("en-IN")}.`,
+        type: "expense.perdiem.submitted",
+        title: "New per diem claim",
+        body: `${employee.legalName} submitted a ${policy.category} per diem claim for ${dto.numberOfDays} day(s).`,
         linkPath: "/expenses",
       });
     }
@@ -81,25 +105,25 @@ export class ExpenseClaimService {
 
   async listMine() {
     const { tenantId, employee } = await this.currentEmployee.resolve();
-    return this.repository.findForEmployee(tenantId, employee.id);
+    return this.claimRepository.findForEmployee(tenantId, employee.id);
   }
 
   async listForApproval() {
     const { tenantId, employee } = await this.currentEmployee.resolve();
-    return this.repository.findForApprover(tenantId, employee.id);
+    return this.claimRepository.findForApprover(tenantId, employee.id);
   }
 
   /** org_admin/hr_ops only — see controller's @Roles guard. */
-  async listAll() {
+  async listAllAdmin() {
     const { tenantId } = this.requireAuthenticated();
-    return this.repository.findAll(tenantId);
+    return this.claimRepository.findAll(tenantId);
   }
 
   async decide(id: string, decision: Decision, note?: string) {
     const { tenantId, userId } = this.requireAuthenticated();
-    const claim = await this.repository.findById(tenantId, id);
+    const claim = await this.claimRepository.findById(tenantId, id);
     if (!claim) {
-      throw new NotFoundAppError("OBJ-EXPENSE-CLAIM", "Expense claim not found.");
+      throw new NotFoundAppError("OBJ-PER-DIEM-CLAIM", "Per diem claim not found.");
     }
 
     const user = await this.authRepository.findUserById(tenantId, userId);
@@ -118,49 +142,33 @@ export class ExpenseClaimService {
       throw stateConflict(`This claim is already ${claim.status.toLowerCase()}.`, claim.status);
     }
 
-    await this.repository.decide(tenantId, id, { status: decision, decisionNote: note, decidedByUserId: userId });
+    await this.claimRepository.decide(tenantId, id, { status: decision, decisionNote: note, decidedByUserId: userId });
 
     const employeeUser = await this.authRepository.findUserByEmployeeId(tenantId, claim.employeeId);
     if (employeeUser) {
       await this.notificationService.notify(tenantId, employeeUser.id, {
-        type: `expense.claim.${decision.toLowerCase()}`,
-        title: `Expense claim ${decision.toLowerCase()}`,
-        body: `Your ${claim.category} claim for ₹${claim.amount.toLocaleString("en-IN")} was ${decision.toLowerCase()}.`,
+        type: `expense.perdiem.${decision.toLowerCase()}`,
+        title: `Per diem claim ${decision.toLowerCase()}`,
+        body: `Your ${claim.policy.category} per diem claim was ${decision.toLowerCase()}.`,
         linkPath: "/expenses",
       });
     }
 
-    await this.webhookDispatchService.dispatch(tenantId, `expense.claim.${decision.toLowerCase()}`, {
-      claimId: id,
-      employeeId: claim.employeeId,
-      category: claim.category,
-      amount: claim.amount,
-      status: decision,
-    });
-
-    return this.repository.findById(tenantId, id);
+    return this.claimRepository.findById(tenantId, id);
   }
 
-  async cancel(id: string) {
-    const { tenantId, employee } = await this.currentEmployee.resolve();
-    const count = await this.repository.cancel(tenantId, id, employee.id);
-    if (count === 0) {
-      throw new NotFoundAppError("OBJ-EXPENSE-CLAIM", "Claim not found, not yours, or no longer pending.");
-    }
-  }
-
-  /** Admin-only stand-in for the whole Reimbursements submodule — see schema.prisma's ExpenseClaim comment. */
+  /** Admin-only stand-in, mirrors ExpenseClaimService.markPaid. */
   async markPaid(id: string) {
     const { tenantId } = this.requireAuthenticated();
-    const claim = await this.repository.findById(tenantId, id);
+    const claim = await this.claimRepository.findById(tenantId, id);
     if (!claim) {
-      throw new NotFoundAppError("OBJ-EXPENSE-CLAIM", "Expense claim not found.");
+      throw new NotFoundAppError("OBJ-PER-DIEM-CLAIM", "Per diem claim not found.");
     }
-    const count = await this.repository.markPaid(tenantId, id);
+    const count = await this.claimRepository.markPaid(tenantId, id);
     if (count === 0) {
       throw stateConflict("Only an Approved claim can be marked as paid.", claim.status);
     }
-    return this.repository.findById(tenantId, id);
+    return this.claimRepository.findById(tenantId, id);
   }
 
   private async resolveApprover(tenantId: string, managerId: string | null) {

@@ -26,4 +26,9 @@ export class CreateExpenseClaimDto {
   @IsOptional()
   @IsUUID()
   travelRequestId?: string;
+
+  /** Wave 3 W4·E17 gap closure ("receipts") — id of a StoredFile already uploaded via POST /files. */
+  @IsOptional()
+  @IsUUID()
+  receiptFileId?: string;
 }

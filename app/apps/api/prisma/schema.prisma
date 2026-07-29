@@ -55,6 +55,8 @@ model Tenant {
   payoutPlanItems             PayoutPlanItem[]
   esopGrants                  EsopGrant[]
   expenseClaims               ExpenseClaim[]
+  perDiemPolicies             PerDiemPolicy[]
+  perDiemClaims               PerDiemClaim[]
   travelRequests              TravelRequest[]
   assets                      Asset[]
   assetAssignments            AssetAssignment[]
@@ -483,6 +485,8 @@ model Employee {
   esopGrants                   EsopGrant[]
   expenseClaims                ExpenseClaim[]               @relation("ExpenseClaimEmployee")
   approvedExpenseClaims        ExpenseClaim[]               @relation("ExpenseClaimApprover")
+  perDiemClaims                PerDiemClaim[]               @relation("PerDiemClaimEmployee")
+  approvedPerDiemClaims        PerDiemClaim[]               @relation("PerDiemClaimApprover")
   travelRequests               TravelRequest[]              @relation("TravelRequestEmployee")
   approvedTravelRequests       TravelRequest[]              @relation("TravelRequestApprover")
   assetAssignments             AssetAssignment[]
@@ -1992,6 +1996,13 @@ model ExpenseClaim {
   travelRequestId String?        @map("travel_request_id") @db.Uuid
   travelRequest   TravelRequest? @relation(fields: [travelRequestId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
+  /// Wave 3 W4·E17 gap closure ("receipts") — reuses the existing File
+  /// Storage engine exactly like EmployeeDocument: the client uploads via the
+  /// generic POST /files first, then passes the returned id here. No
+  /// duplicate-detection or OCR — that stays deferred (no OCR infra).
+  receiptFileId String?     @map("receipt_file_id") @db.Uuid
+  receiptFile   StoredFile? @relation(fields: [receiptFileId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
   /// Pending | Approved | Rejected | Paid | Cancelled
   status String @default("Pending")
 
@@ -2015,6 +2026,73 @@ model ExpenseClaim {
   @@index([tenantId, approverId])
   @@index([tenantId, travelRequestId])
   @@map("expense_claims")
+}
+
+/// Wave 3 W4·E17 gap closure ("per diem") — admin-configured daily allowance
+/// rate by category. No multi-currency, no location-tiered rates — a single
+/// flat rate per category.
+model PerDiemPolicy {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  /// Domestic | International | Other
+  category  String
+  dailyRate Float   @map("daily_rate")
+  active    Boolean @default(true)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id])
+  claims PerDiemClaim[]
+
+  @@index([tenantId])
+  @@map("per_diem_policies")
+}
+
+/// Wave 3 W4·E17 gap closure ("per diem") — mirrors ExpenseClaim's exact
+/// Pending -> Approved/Rejected -> Paid lifecycle. computedAmount is a
+/// snapshot taken at submission time (policy.dailyRate * numberOfDays), not
+/// live-recomputed — like a benefits enrollment's allocated amount, this is a
+/// decision made at a point in time, not a running balance that should
+/// follow later rate changes.
+model PerDiemClaim {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  employeeId String   @map("employee_id") @db.Uuid
+  employee   Employee @relation("PerDiemClaimEmployee", fields: [employeeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  policyId String        @map("policy_id") @db.Uuid
+  policy   PerDiemPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  travelRequestId String?        @map("travel_request_id") @db.Uuid
+  travelRequest   TravelRequest? @relation(fields: [travelRequestId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  numberOfDays   Int   @map("number_of_days")
+  computedAmount Float @map("computed_amount")
+
+  /// Pending | Approved | Rejected | Paid
+  status String @default("Pending")
+
+  approverId String?   @map("approver_id") @db.Uuid
+  approver   Employee? @relation("PerDiemClaimApprover", fields: [approverId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  decisionNote    String?   @map("decision_note")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(6)
+  decidedByUserId String?   @map("decided_by_user_id") @db.Uuid
+
+  paidAt DateTime? @map("paid_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId])
+  @@index([tenantId, employeeId])
+  @@index([tenantId, approverId])
+  @@map("per_diem_claims")
 }
 
 /// Wave 4 slice of docs/08-submodule-specifications/16-travel-management/01-travel-requests.md.
@@ -2064,6 +2142,7 @@ model TravelRequest {
   itinerarySegments TravelItinerarySegment[]
   advances          TravelAdvance[]
   expenseClaims     ExpenseClaim[]
+  perDiemClaims     PerDiemClaim[]
 
   @@index([tenantId])
   @@index([tenantId, employeeId])
@@ -2910,6 +2989,7 @@ model StoredFile {
   healthRecords           HealthRecord[]
   documentVersions        DocumentVersion[]
   backupRecords           BackupRecord[]
+  expenseClaims           ExpenseClaim[]
 
   @@index([tenantId])
   @@map("stored_files")
