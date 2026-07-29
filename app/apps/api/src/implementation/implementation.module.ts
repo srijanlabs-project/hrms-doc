@@ -16,5 +16,6 @@ import { ImportEngineService } from "./import-batch/import-engine.service";
   imports: [OrgModule, LeaveModule, PeopleModule],
   controllers: [ImportBatchController, GoLiveChecklistController, BulkExportController],
   providers: [ImportEngineService, ImportBatchRepository, GoLiveChecklistService, GoLiveChecklistRepository, BulkExportService],
+  exports: [ImportEngineService],
 })
 export class ImplementationModule {}

@@ -104,6 +104,10 @@ model Tenant {
   importBatches               ImportBatch[]
   importBatchRows             ImportBatchRow[]
   goLiveChecklistItems        GoLiveChecklistItem[]
+  testSuites                  TestSuite[]
+  testCases                   TestCase[]
+  testRuns                    TestRun[]
+  testResults                 TestResult[]
   mfaFactors                  MfaFactor[]
   delegations                 Delegation[]
   shiftDefinitions            ShiftDefinition[]
@@ -3324,6 +3328,115 @@ model GoLiveChecklistItem {
 
   @@unique([tenantId, key])
   @@map("go_live_checklist_items")
+}
+
+/// Wave 5·E32 gap closure ("regression testing", "performance testing",
+/// "security testing", "accessibility testing", "UAT support") — one
+/// type-tagged suite/case/run/result engine, the same collapse-by-type-tag
+/// pattern used throughout this build (Ticket's queue, HealthRecord's
+/// recordType). Records real manual/checklist-style test execution and a
+/// UAT signoff decision directly on the run — no live load-generation, no
+/// SAST/DAST/axe-core automated scanning, since those need dedicated
+/// test-automation/security-tool infrastructure this build doesn't have;
+/// what's real here is planning cases, executing runs, recording pass/fail
+/// results, and a governed sign-off, matching this module's own spec's
+/// "Test run dashboard" / "UAT sign-off workspace" screens.
+model TestSuite {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  name        String
+  /// Regression | Performance | Security | Accessibility | UAT
+  suiteType   String  @map("suite_type")
+  description String?
+
+  /// Active | Archived
+  status String @default("Active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant     @relation(fields: [tenantId], references: [id])
+  cases  TestCase[]
+  runs   TestRun[]
+
+  @@index([tenantId])
+  @@map("test_suites")
+}
+
+model TestCase {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  suiteId String    @map("suite_id") @db.Uuid
+  suite   TestSuite @relation(fields: [suiteId], references: [id], onDelete: Cascade)
+
+  title          String
+  steps          String
+  expectedResult String  @map("expected_result")
+  isActive       Boolean @default(true) @map("is_active")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant  Tenant       @relation(fields: [tenantId], references: [id])
+  results TestResult[]
+
+  @@index([tenantId])
+  @@index([tenantId, suiteId])
+  @@map("test_cases")
+}
+
+model TestRun {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  suiteId String    @map("suite_id") @db.Uuid
+  suite   TestSuite @relation(fields: [suiteId], references: [id])
+
+  /// Planned | Running | Passed | Failed | Blocked | SignedOff
+  status String @default("Planned")
+
+  executedByUserId String    @map("executed_by_user_id") @db.Uuid
+  startedAt        DateTime? @map("started_at") @db.Timestamptz(6)
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz(6)
+
+  /// Set only once status reaches SignedOff — Approved | Rejected.
+  signoffDecision   String?   @map("signoff_decision")
+  signoffNotes      String?   @map("signoff_notes")
+  signedOffByUserId String?   @map("signed_off_by_user_id") @db.Uuid
+  signedOffAt       DateTime? @map("signed_off_at") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  tenant  Tenant       @relation(fields: [tenantId], references: [id])
+  results TestResult[]
+
+  @@index([tenantId])
+  @@index([tenantId, suiteId])
+  @@map("test_runs")
+}
+
+model TestResult {
+  id       String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+
+  runId  String   @map("run_id") @db.Uuid
+  run    TestRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
+  caseId String   @map("case_id") @db.Uuid
+  case   TestCase @relation(fields: [caseId], references: [id])
+
+  /// Pending | Pass | Fail | Blocked
+  outcome String  @default("Pending")
+  notes   String?
+
+  recordedAt DateTime? @map("recorded_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([runId, caseId])
+  @@index([tenantId])
+  @@index([tenantId, runId])
+  @@map("test_results")
 }
 
 /// Foundation & Platform (E00) — Document Generation + Template engines,

@@ -10,6 +10,7 @@ import {
   CheckSquare,
   ClipboardCheck,
   Clock,
+  FlaskConical,
   Plug,
   UserCog,
   FileText,
@@ -113,6 +114,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Permissions Matrix", to: "/security/permissions-matrix", icon: UserCog },
         { label: "Operations", to: "/ops", icon: Server },
         { label: "Implementation & Migration", to: "/implementation", icon: UploadCloud },
+        { label: "Testing & Quality", to: "/testing", icon: FlaskConical },
       ],
     });
   }

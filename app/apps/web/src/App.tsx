@@ -10,6 +10,7 @@ import { ComplianceOverviewPage } from "./features/security/ComplianceOverviewPa
 import { PermissionsMatrixPage } from "./features/security/PermissionsMatrixPage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
+import { TestingHubPage } from "./features/testing/TestingHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { ProvisionTenantPage } from "./features/auth/ProvisionTenantPage";
 import { ProtectedRoute } from "./features/auth/ProtectedRoute";
@@ -120,6 +121,7 @@ export default function App() {
           <Route path="/security/permissions-matrix" element={<PermissionsMatrixPage />} />
           <Route path="/ops" element={<OpsPage />} />
           <Route path="/implementation" element={<ImplementationHubPage />} />
+          <Route path="/testing" element={<TestingHubPage />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/requests" element={<RequestsHubPage />} />
           <Route path="/team" element={<TeamDashboardPage />} />

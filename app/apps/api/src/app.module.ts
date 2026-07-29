@@ -46,6 +46,7 @@ import { RequestsHubModule } from "./requests-hub/requests-hub.module";
 import { ReportsModule } from "./reports/reports.module";
 import { HealthSafetyModule } from "./health-safety/health-safety.module";
 import { TalentModule } from "./talent/talent.module";
+import { TestingModule } from "./testing/testing.module";
 import { TravelModule } from "./travel/travel.module";
 import { WebhookModule } from "./webhook/webhook.module";
 import { WorkforceModule } from "./workforce/workforce.module";
@@ -109,6 +110,7 @@ import { WorkplaceModule } from "./workplace/workplace.module";
     PermissionsMatrixModule,
     OpsModule,
     ImplementationModule,
+    TestingModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],
 })
