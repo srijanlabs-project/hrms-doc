@@ -8,6 +8,8 @@ import {
   CalendarDays,
   CalendarRange,
   CheckSquare,
+  ChevronDown,
+  ChevronRight,
   ClipboardCheck,
   Clock,
   FlaskConical,
@@ -40,7 +42,8 @@ import {
   Wallet,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../features/auth/AuthProvider";
 import { RidzAvatar } from "../ui/RidzAvatar";
 
@@ -51,11 +54,15 @@ const APPROVER_ROLES = ["manager", "hr_ops", "org_admin"];
 const PAYROLL_ADMIN_ROLES = ["org_admin", "hr_ops"];
 
 /**
- * Navigation per board T-001: MY WORK / GROWTH / RESOURCES / MORE sections
- * plus the Ask Staffsy AI card. Disabled entries are registered destinations
- * whose modules are not built yet. The Team section is role-aware — a first,
- * partial step on the Phase 3 "permission-aware nav" deferral (still only
- * this one item; most of the nav remains role-blind).
+ * Navigation per board T-001: MY WORK / TEAM / ADMIN / GROWTH / RESOURCES /
+ * MORE sections plus the Ask Staffsy AI card. Disabled entries are
+ * registered destinations whose modules are not built yet. The Team/Admin
+ * sections are role-aware — a first, partial step on the Phase 3
+ * "permission-aware nav" deferral (most items are still role-blind).
+ *
+ * Sections render as an accordion (see SideNav below) — only one section's
+ * items are expanded at a time, since Admin alone had grown past 19 links
+ * and having every section always open made the panel unusable.
  */
 function buildSections(roles: string[]): NavSection[] {
   const sections: NavSection[] = [
@@ -158,49 +165,86 @@ function buildSections(roles: string[]): NavSection[] {
   return sections;
 }
 
+/** Picks the section whose item path most specifically matches the current route (longest match wins, so e.g. /performance/calibration resolves to Admin, not Growth's plain /performance). */
+function findActiveSectionTitle(sections: NavSection[], pathname: string): string | null {
+  let best: { title: string; length: number } | null = null;
+  for (const section of sections) {
+    for (const item of section.items) {
+      if (item.disabled) continue;
+      if (pathname === item.to || pathname.startsWith(`${item.to}/`)) {
+        if (!best || item.to.length > best.length) {
+          best = { title: section.title, length: item.to.length };
+        }
+      }
+    }
+  }
+  return best?.title ?? null;
+}
+
 export function SideNav() {
   const { user } = useAuth();
+  const location = useLocation();
   const sections = buildSections(user?.roles ?? []);
 
+  const [openTitle, setOpenTitle] = useState<string | null>(() => findActiveSectionTitle(sections, location.pathname) ?? sections[0]?.title ?? null);
+
+  // Accordion auto-follows navigation (e.g. via search or a quick action) so the active link is never hidden behind a collapsed group — a manual header click always overrides this.
+  useEffect(() => {
+    const activeTitle = findActiveSectionTitle(sections, location.pathname);
+    if (activeTitle) setOpenTitle(activeTitle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sections is derived fresh each render from roles, which don't change mid-session; keying on pathname alone avoids re-running on every render.
+  }, [location.pathname]);
+
   return (
-    <nav className="flex w-(--spacing-sidebar) shrink-0 flex-col border-r border-border bg-surface px-3 py-4">
-      {sections.map((section) => (
-        <div key={section.title} className="mb-5">
-          <div className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
-            {section.title}
+    <nav className="flex w-(--spacing-sidebar) shrink-0 flex-col overflow-y-auto border-r border-border bg-surface px-3 py-4">
+      {sections.map((section) => {
+        const isOpen = openTitle === section.title;
+        return (
+          <div key={section.title} className="mb-1">
+            <button
+              type="button"
+              onClick={() => setOpenTitle(isOpen ? null : section.title)}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-ink-faint hover:bg-primary-soft hover:text-primary"
+              aria-expanded={isOpen}
+            >
+              {section.title}
+              {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+            </button>
+            <div className={`overflow-hidden transition-all duration-200 ${isOpen ? "max-h-[999px] opacity-100" : "max-h-0 opacity-0"}`}>
+              <ul className="space-y-0.5 pb-3 pt-0.5">
+                {section.items.map((item) =>
+                  item.disabled ? (
+                    <li
+                      key={item.to}
+                      className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-ink-faint"
+                      title="Coming soon"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </li>
+                  ) : (
+                    <li key={item.to}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 rounded-lg px-3 py-2 font-medium ${
+                            isActive
+                              ? "bg-primary text-white"
+                              : "text-ink hover:bg-primary-soft hover:text-primary"
+                          }`
+                        }
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
           </div>
-          <ul className="space-y-0.5">
-            {section.items.map((item) =>
-              item.disabled ? (
-                <li
-                  key={item.to}
-                  className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-ink-faint"
-                  title="Coming soon"
-                >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </li>
-              ) : (
-                <li key={item.to}>
-                  <NavLink
-                    to={item.to}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-lg px-3 py-2 font-medium ${
-                        isActive
-                          ? "bg-primary text-white"
-                          : "text-ink hover:bg-primary-soft hover:text-primary"
-                      }`
-                    }
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                  </NavLink>
-                </li>
-              ),
-            )}
-          </ul>
-        </div>
-      ))}
+        );
+      })}
 
       {/* Ask Ridz card (Staffsy AI assistant), per board T-001 */}
       <div className="mt-auto rounded-(--radius-card) bg-primary-soft p-4">
