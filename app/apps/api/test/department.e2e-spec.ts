@@ -2,6 +2,10 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
 import { bootstrapTestApp } from "./utils/bootstrap";
 import { loginAs } from "./utils/login";
+import { provisionTestUser } from "./utils/provision-test-user";
+
+const ADMIN_EMAIL = "e2e-department-admin@srijanlabs.example";
+const GLOBEX_ADMIN_EMAIL = "e2e-department-admin@globex.example";
 
 /** Representative CRUD + role-gating + tenant-scoping coverage for a simple module (Organization Management's Department). */
 describe("Department CRUD (e2e)", () => {
@@ -11,7 +15,10 @@ describe("Department CRUD (e2e)", () => {
 
   beforeAll(async () => {
     app = await bootstrapTestApp();
-    adminCookie = await loginAs(app, "srijanlabs", "priya.sharma@srijanlabs.example");
+    // Dedicated logins (not the shared Priya/Alex seeds) so this file never races another spec's OTP challenge under parallel Jest workers — see provisionTestUser's own comment. Sneha (hr_ops) stays as-is since no other spec file logs in as her.
+    await provisionTestUser("srijanlabs", ADMIN_EMAIL, ["org_admin"]);
+    await provisionTestUser("globex", GLOBEX_ADMIN_EMAIL, ["org_admin"]);
+    adminCookie = await loginAs(app, "srijanlabs", ADMIN_EMAIL);
   });
 
   afterAll(async () => {
@@ -74,7 +81,7 @@ describe("Department CRUD (e2e)", () => {
   });
 
   it("does not leak the new department into a different tenant's list", async () => {
-    const globexCookie = await loginAs(app, "globex", "alex.carter@globex.example");
+    const globexCookie = await loginAs(app, "globex", GLOBEX_ADMIN_EMAIL);
     const res = await request(app.getHttpServer())
       .get("/api/v1/org/departments")
       .set("Cookie", globexCookie);

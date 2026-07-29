@@ -2,6 +2,9 @@ import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
 import { bootstrapTestApp } from "./utils/bootstrap";
 import { loginAs } from "./utils/login";
+import { provisionTestUser } from "./utils/provision-test-user";
+
+const ADMIN_EMAIL = "e2e-import-engine-admin@srijanlabs.example";
 
 /** Coverage of the W0·E31 configurable import engine — dry-run validation, commit, and rollback (soft-delete) — using Department as the target entity (simplest field shape: code + name). */
 describe("Import engine (e2e)", () => {
@@ -11,7 +14,9 @@ describe("Import engine (e2e)", () => {
 
   beforeAll(async () => {
     app = await bootstrapTestApp();
-    adminCookie = await loginAs(app, "srijanlabs", "priya.sharma@srijanlabs.example");
+    // Dedicated login (not the shared Priya seed) so this file never races another spec's OTP challenge under parallel Jest workers — see provisionTestUser's own comment.
+    await provisionTestUser("srijanlabs", ADMIN_EMAIL, ["org_admin"]);
+    adminCookie = await loginAs(app, "srijanlabs", ADMIN_EMAIL);
   });
 
   afterAll(async () => {
