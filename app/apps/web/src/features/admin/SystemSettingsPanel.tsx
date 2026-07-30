@@ -34,7 +34,7 @@ export function SystemSettingsPanel() {
 
   return (
     <Card title="System Settings">
-      <p className="mb-3 text-sm text-ink-muted">Tenant-wide configuration values, e.g. default currency, fiscal year start.</p>
+      <p className="mb-3 text-sm text-ink-muted">Company-wide configuration values, e.g. default currency, fiscal year start.</p>
       {upsertError && <p className="mb-2 rounded-lg bg-negative-soft px-3 py-2 text-negative">{upsertError}</p>}
       <form
         className="flex flex-wrap items-end gap-2"

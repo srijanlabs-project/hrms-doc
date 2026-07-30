@@ -29,7 +29,7 @@ export function AdminConsolePage() {
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold">Settings</h1>
-        <p className="text-ink-muted">Tenant-wide system settings and number series configuration.</p>
+        <p className="text-ink-muted">Company-wide system settings and number series configuration.</p>
       </header>
 
       <SystemSettingsPanel />

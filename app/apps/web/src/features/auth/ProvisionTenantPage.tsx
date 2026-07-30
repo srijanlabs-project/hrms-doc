@@ -34,13 +34,13 @@ export function ProvisionTenantPage() {
           <img src="/staffsy-logo.png" alt="Staffsy" className="h-7 w-auto" />
         </div>
 
-        <h1 className="mb-1 text-lg font-semibold">Provision a new tenant</h1>
-        <p className="mb-6 text-ink-muted">Platform-ops only. Creates the tenant plus its first org_admin login.</p>
+        <h1 className="mb-1 text-lg font-semibold">Provision a new company</h1>
+        <p className="mb-6 text-ink-muted">Platform-ops only. Creates the company plus its first org_admin login.</p>
 
         {result ? (
           <div className="space-y-3">
             <p className="rounded-lg bg-positive-soft px-3 py-2 text-positive">
-              Tenant "{result.tenant.name}" created.
+              Company "{result.tenant.name}" created.
             </p>
             <p className="text-sm text-ink-muted">
               Workspace code: <span className="font-mono font-semibold text-ink">{result.tenant.code}</span>
@@ -97,7 +97,7 @@ export function ProvisionTenantPage() {
             </label>
 
             <label className="block">
-              <span className="mb-1 block text-xs font-medium text-ink-muted">Tenant Name</span>
+              <span className="mb-1 block text-xs font-medium text-ink-muted">Company Name</span>
               <input
                 required
                 value={tenantName}
@@ -124,7 +124,7 @@ export function ProvisionTenantPage() {
               disabled={mutation.isPending}
               className="w-full rounded-lg bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-hover disabled:opacity-60"
             >
-              {mutation.isPending ? "Provisioning…" : "Create Tenant"}
+              {mutation.isPending ? "Provisioning…" : "Create Company"}
             </button>
           </form>
         )}

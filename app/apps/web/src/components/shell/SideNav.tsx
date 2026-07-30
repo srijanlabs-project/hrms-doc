@@ -47,9 +47,10 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../../features/auth/AuthProvider";
 import { RidzAvatar } from "../ui/RidzAvatar";
 
-/** groupLabel clusters items under a small non-collapsible sub-header within an open persona panel — purely visual, no effect on gating. */
+/** groupLabel buckets items into a collapsible sub-group within an open persona panel — purely visual, no effect on gating. Items with no groupLabel render directly under the persona header. */
 type NavItem = { label: string; to: string; icon: LucideIcon; disabled?: boolean; groupLabel?: string };
 type NavSection = { title: string; items: NavItem[] };
+type NavSubGroup = { label: string | null; items: NavItem[] };
 
 const APPROVER_ROLES = ["manager", "hr_ops", "org_admin"];
 const PAYROLL_ADMIN_ROLES = ["org_admin", "hr_ops"];
@@ -57,22 +58,21 @@ const PAYROLL_ADMIN_ROLES = ["org_admin", "hr_ops"];
 /**
  * Navigation grouped by persona rather than generic feature-area labels:
  * Employee (everyone) / Manager (manager, hr_ops, org_admin) / HR (hr_ops,
- * org_admin) / Tenant Org Admin (hr_ops, org_admin). This app's real
+ * org_admin) / Company Org Admin (hr_ops, org_admin). This app's real
  * authorization model only has three roles today — `org_admin`, `hr_ops`,
- * `manager` — so "HR" and "Tenant Org Admin" are visibility-identical
+ * `manager` — so "HR" and "Company Org Admin" are visibility-identical
  * (both gated on the same two roles); the split is a wayfinding aid over
  * the old flat 20-item "Admin" section, not a new permission boundary.
  * Personas the user asked about that don't correspond to any real login
  * role are deliberately not sections here: Platform Admin is the separate
- * key-gated /platform/provision flow (never appears in a logged-in
- * tenant's sidebar), and Visitors never authenticate into Staffsy at all
+ * key-gated /platform/provision flow (never appears in a signed-in
+ * company's sidebar), and Visitors never authenticate into Staffsy at all
  * (they're records an employee/host manages, not a nav persona).
  *
- * Sections render as an accordion (see SideNav below) — only one section's
- * items are expanded at a time. Within an open section, groupLabel draws a
- * small uppercase sub-header whenever it changes from the previous item,
- * so a persona with many items (Employee, HR) still scans in clusters
- * instead of one long flat list.
+ * Two-level accordion: only one persona section is expanded at a time, and
+ * within it only one sub-group. Opening a persona therefore shows just its
+ * handful of group rows (Employee: 9) rather than dumping all 32 links at
+ * once — the whole point of the grouping.
  */
 function buildSections(roles: string[]): NavSection[] {
   const sections: NavSection[] = [
@@ -154,7 +154,7 @@ function buildSections(roles: string[]): NavSection[] {
     });
 
     sections.push({
-      title: "Tenant Org Admin",
+      title: "Company Org Admin",
       items: [
         { label: "Organization Settings", to: "/organization", icon: Network, groupLabel: "Organization" },
         { label: "Integrations", to: "/integrations", icon: Plug, groupLabel: "Organization" },
@@ -175,20 +175,67 @@ function buildSections(roles: string[]): NavSection[] {
   return sections;
 }
 
-/** Picks the section whose item path most specifically matches the current route (longest match wins, so e.g. /performance/calibration resolves to HR, not Employee's plain /performance). */
-function findActiveSectionTitle(sections: NavSection[], pathname: string): string | null {
-  let best: { title: string; length: number } | null = null;
+/** Buckets a section's flat item list into ordered sub-groups, preserving declaration order. Items with no groupLabel collect into a single leading label-less bucket that renders without a sub-header. */
+function toSubGroups(items: NavItem[]): NavSubGroup[] {
+  const groups: NavSubGroup[] = [];
+  for (const item of items) {
+    const label = item.groupLabel ?? null;
+    const last = groups.at(-1);
+    if (last && last.label === label) {
+      last.items.push(item);
+    } else {
+      groups.push({ label, items: [item] });
+    }
+  }
+  return groups;
+}
+
+/** Locates the persona section + sub-group owning the current route (longest path match wins, so e.g. /performance/calibration resolves to HR's "Recruitment & Talent", not Employee's plain /performance). */
+function findActiveLocation(
+  sections: NavSection[],
+  pathname: string,
+): { sectionTitle: string; groupLabel: string | null } | null {
+  let best: { sectionTitle: string; groupLabel: string | null; length: number } | null = null;
   for (const section of sections) {
     for (const item of section.items) {
       if (item.disabled) continue;
       if (pathname === item.to || pathname.startsWith(`${item.to}/`)) {
         if (!best || item.to.length > best.length) {
-          best = { title: section.title, length: item.to.length };
+          best = { sectionTitle: section.title, groupLabel: item.groupLabel ?? null, length: item.to.length };
         }
       }
     }
   }
-  return best?.title ?? null;
+  return best ? { sectionTitle: best.sectionTitle, groupLabel: best.groupLabel } : null;
+}
+
+/** Renders one item as a link, or as a dimmed "coming soon" row when its module isn't built yet. */
+function NavItemRow({ item }: { item: NavItem }) {
+  if (item.disabled) {
+    return (
+      <li>
+        <div className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-ink-faint" title="Coming soon">
+          <item.icon className="h-4 w-4" />
+          {item.label}
+        </div>
+      </li>
+    );
+  }
+  return (
+    <li>
+      <NavLink
+        to={item.to}
+        className={({ isActive }) =>
+          `flex items-center gap-3 rounded-lg px-3 py-2 font-medium ${
+            isActive ? "bg-primary text-white" : "text-ink hover:bg-primary-soft hover:text-primary"
+          }`
+        }
+      >
+        <item.icon className="h-4 w-4" />
+        {item.label}
+      </NavLink>
+    </li>
+  );
 }
 
 export function SideNav() {
@@ -196,12 +243,17 @@ export function SideNav() {
   const location = useLocation();
   const sections = buildSections(user?.roles ?? []);
 
-  const [openTitle, setOpenTitle] = useState<string | null>(() => findActiveSectionTitle(sections, location.pathname) ?? sections[0]?.title ?? null);
+  const initial = findActiveLocation(sections, location.pathname);
+  const [openTitle, setOpenTitle] = useState<string | null>(initial?.sectionTitle ?? sections[0]?.title ?? null);
+  const [openGroup, setOpenGroup] = useState<string | null>(initial?.groupLabel ?? null);
 
-  // Accordion auto-follows navigation (e.g. via search or a quick action) so the active link is never hidden behind a collapsed group — a manual header click always overrides this.
+  // Both accordion levels auto-follow navigation (e.g. via search or a quick action) so the active link is never hidden behind a collapsed group — a manual click on either header always overrides this.
   useEffect(() => {
-    const activeTitle = findActiveSectionTitle(sections, location.pathname);
-    if (activeTitle) setOpenTitle(activeTitle);
+    const active = findActiveLocation(sections, location.pathname);
+    if (active) {
+      setOpenTitle(active.sectionTitle);
+      setOpenGroup(active.groupLabel);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- sections is derived fresh each render from roles, which don't change mid-session; keying on pathname alone avoids re-running on every render.
   }, [location.pathname]);
 
@@ -209,7 +261,7 @@ export function SideNav() {
     <nav className="flex w-(--spacing-sidebar) shrink-0 flex-col overflow-y-auto border-r border-border bg-surface px-3 py-4">
       {sections.map((section) => {
         const isOpen = openTitle === section.title;
-        let lastGroupLabel: string | undefined;
+        const subGroups = toSubGroups(section.items);
         return (
           <div key={section.title} className="mb-1">
             <button
@@ -222,44 +274,43 @@ export function SideNav() {
               {isOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
             </button>
             <div className={`overflow-hidden transition-all duration-200 ${isOpen ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}`}>
-              <ul className="space-y-0.5 pb-3 pt-0.5">
-                {section.items.map((item) => {
-                  const showGroupHeader = !!item.groupLabel && item.groupLabel !== lastGroupLabel;
-                  lastGroupLabel = item.groupLabel;
+              <div className="space-y-0.5 pb-3 pt-0.5">
+                {subGroups.map((group) => {
+                  // A label-less bucket (e.g. Manager's lone "Approvals") has no sub-header to collapse behind — render its items directly.
+                  if (group.label === null) {
+                    return (
+                      <ul key="__ungrouped" className="space-y-0.5">
+                        {group.items.map((item) => (
+                          <NavItemRow key={item.to} item={item} />
+                        ))}
+                      </ul>
+                    );
+                  }
+                  const isGroupOpen = openGroup === group.label;
                   return (
-                    <li key={item.to}>
-                      {showGroupHeader && (
-                        <div className="mb-0.5 mt-2.5 px-3 text-[10px] font-semibold uppercase tracking-wide text-ink-faint/70 first:mt-0.5">
-                          {item.groupLabel}
-                        </div>
+                    <div key={group.label}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenGroup(isGroupOpen ? null : group.label)}
+                        className={`flex w-full items-center justify-between rounded-lg py-1.5 pl-3 pr-2 text-[11px] font-medium hover:bg-primary-soft hover:text-primary ${
+                          isGroupOpen ? "text-primary" : "text-ink-muted"
+                        }`}
+                        aria-expanded={isGroupOpen}
+                      >
+                        {group.label}
+                        {isGroupOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                      </button>
+                      {isGroupOpen && (
+                        <ul className="space-y-0.5 border-l border-border pb-1 pl-2 ml-3">
+                          {group.items.map((item) => (
+                            <NavItemRow key={item.to} item={item} />
+                          ))}
+                        </ul>
                       )}
-                      {item.disabled ? (
-                        <div
-                          className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2 text-ink-faint"
-                          title="Coming soon"
-                        >
-                          <item.icon className="h-4 w-4" />
-                          {item.label}
-                        </div>
-                      ) : (
-                        <NavLink
-                          to={item.to}
-                          className={({ isActive }) =>
-                            `flex items-center gap-3 rounded-lg px-3 py-2 font-medium ${
-                              isActive
-                                ? "bg-primary text-white"
-                                : "text-ink hover:bg-primary-soft hover:text-primary"
-                            }`
-                          }
-                        >
-                          <item.icon className="h-4 w-4" />
-                          {item.label}
-                        </NavLink>
-                      )}
-                    </li>
+                    </div>
                   );
                 })}
-              </ul>
+              </div>
             </div>
           </div>
         );

@@ -142,7 +142,7 @@ export function WorkCalendarSection() {
                   onClick={() => assignMutation.mutate(c.id)}
                   className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold hover:bg-surface-hover"
                 >
-                  Assign Tenant-wide
+                  Assign Company-wide
                 </button>
               </div>
             </div>
