@@ -11,6 +11,7 @@ import { PermissionsMatrixPage } from "./features/security/PermissionsMatrixPage
 import { UserAccessPage } from "./features/security/UserAccessPage";
 import { OpsPage } from "./features/ops/OpsPage";
 import { ImplementationHubPage } from "./features/implementation/ImplementationHubPage";
+import { CompanySetupPage } from "./features/implementation/CompanySetupPage";
 import { TestingHubPage } from "./features/testing/TestingHubPage";
 import { LoginPage } from "./features/auth/LoginPage";
 import { ProvisionTenantPage } from "./features/auth/ProvisionTenantPage";
@@ -123,6 +124,7 @@ export default function App() {
           <Route path="/security/user-access" element={<UserAccessPage />} />
           <Route path="/ops" element={<OpsPage />} />
           <Route path="/implementation" element={<ImplementationHubPage />} />
+          <Route path="/implementation/company-setup" element={<CompanySetupPage />} />
           <Route path="/testing" element={<TestingHubPage />} />
           <Route path="/security" element={<SecurityPage />} />
           <Route path="/requests" element={<RequestsHubPage />} />

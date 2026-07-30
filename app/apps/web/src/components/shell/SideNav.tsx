@@ -165,6 +165,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Compliance Overview", to: "/security/compliance-overview", icon: ClipboardCheck, groupLabel: "Security & Governance" },
         { label: "Permissions Matrix", to: "/security/permissions-matrix", icon: UserCog, groupLabel: "Security & Governance" },
 
+        { label: "Company Setup", to: "/implementation/company-setup", icon: Building2, groupLabel: "Platform & Data" },
         { label: "Operations", to: "/ops", icon: Server, groupLabel: "Platform & Data" },
         { label: "Implementation & Migration", to: "/implementation", icon: UploadCloud, groupLabel: "Platform & Data" },
         { label: "Bulk Import", to: "/people/employees/bulk-import", icon: FileUp, groupLabel: "Platform & Data" },
