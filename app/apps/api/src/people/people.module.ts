@@ -26,6 +26,9 @@ import { SalaryRevisionRepository } from "./salary-revision/salary-revision.repo
 import { SalaryRevisionService } from "./salary-revision/salary-revision.service";
 import { TimelineController } from "./timeline/timeline.controller";
 import { TimelineService } from "./timeline/timeline.service";
+import { UserAccessController } from "./user-access/user-access.controller";
+import { UserAccessRepository } from "./user-access/user-access.repository";
+import { UserAccessService } from "./user-access/user-access.service";
 
 /**
  * People Core service boundary — docs/03-module-specifications/02-people-management.md.
@@ -42,6 +45,7 @@ import { TimelineService } from "./timeline/timeline.service";
     CareerController,
     SalaryRevisionController,
     TimelineController,
+    UserAccessController,
   ],
   providers: [
     EmployeeService,
@@ -62,6 +66,8 @@ import { TimelineService } from "./timeline/timeline.service";
     ArrearService,
     PayrollRunRepository,
     TimelineService,
+    UserAccessService,
+    UserAccessRepository,
   ],
   exports: [EmployeeRepository, CurrentEmployeeService, EmployeeService, BackgroundRepository],
 })

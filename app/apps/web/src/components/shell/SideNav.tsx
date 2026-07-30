@@ -159,6 +159,7 @@ function buildSections(roles: string[]): NavSection[] {
         { label: "Organization Settings", to: "/organization", icon: Network, groupLabel: "Organization" },
         { label: "Integrations", to: "/integrations", icon: Plug, groupLabel: "Organization" },
 
+        { label: "User Access", to: "/security/user-access", icon: UserCheck, groupLabel: "Security & Governance" },
         { label: "Audit Logs", to: "/security/audit-logs", icon: ScrollText, groupLabel: "Security & Governance" },
         { label: "Access Reviews", to: "/security/access-reviews", icon: UserCheck, groupLabel: "Security & Governance" },
         { label: "Compliance Overview", to: "/security/compliance-overview", icon: ClipboardCheck, groupLabel: "Security & Governance" },
